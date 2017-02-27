@@ -1,7 +1,7 @@
 "The Original Work" refers to the Sage libraries, their sample and test code, and any accompanying materials, and "The Licensor" refers to Highpoint Software Systems, a Wisconsin Limited Liability Company, headquartered in Waukesha, WI, USA.
 
 Contact Highpoint Software Systems for less restrictive licensing terms.
-Contact Highpoint Software Systems for contributor access to the GIT repository
+Contact Highpoint Software Systems for collaborator access to the GIT repository
 
 GNU AFFERO GENERAL PUBLIC LICENSE
 

@@ -12,8 +12,9 @@ using PfcAnalyst = Highpoint.Sage.Graphs.PFC.PfcAnalyst;
 using Highpoint.Sage.Utility;
 using pfcs = SageTestLib.TestPfcRepository;
 using System.Linq;
+using System.Xml;
 
-namespace SchedulerDemoMaterial {
+namespace PFCDemoMaterial {
 
     [TestClass]
     public class PfcAnalystTester {
@@ -620,7 +621,7 @@ namespace SchedulerDemoMaterial {
             IModel model = new Model(testName);
 
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, testName);
-            ( (ProcedureFunctionChart.PfcElementFactory)pfc.ElementFactory ).SetRepeatable(Guid.Empty);
+            ( (PfcElementFactory)pfc.ElementFactory ).SetRepeatable(Guid.Empty);
 
             IPfcNode beginStep = pfc.CreateStep("BEGIN", string.Empty, Guid.Empty);
             IPfcNode step1 = pfc.CreateStep("STEP1", string.Empty, Guid.Empty);
@@ -681,7 +682,7 @@ namespace SchedulerDemoMaterial {
             IModel model = new Model(testName);
 
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, testName);
-            ((ProcedureFunctionChart.PfcElementFactory)pfc.ElementFactory).SetRepeatable(Guid.Empty);
+            ((PfcElementFactory)pfc.ElementFactory).SetRepeatable(Guid.Empty);
 
             IPfcNode beginStep = pfc.CreateStep("BEGIN", string.Empty, Guid.Empty);
             IPfcNode step1 = pfc.CreateStep("STEP1", string.Empty, Guid.Empty);
@@ -746,30 +747,133 @@ namespace SchedulerDemoMaterial {
             pfc.Bind(step5, step2);
             pfc.Bind(step3, finishStep);
 
-            bool result;
-            string structure = PfcDiagnostics.GetStructure(pfc);
-            result = PfcAnalyst.IsTargetNodeLegal(step5, step1);      // no.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, step4);      // no.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, step6);      // no.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, startStep);  // no.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, step5);      // yes.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, step2);      // yes.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, step3);      // no.
-            System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
-            result = PfcAnalyst.IsTargetNodeLegal(step5, finishStep); // no.
 
+#pragma warning disable 168
+            bool result;
+#pragma warning restore 168
+            //// MASS TESTING FOR STEP-BY-STEP CHECKING
+            //string structure = PfcDiagnostics.GetStructure(pfc);
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step1);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step4);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step6);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, startStep);  // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step5);      // yes.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step2);      // yes.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step3);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, finishStep); // no.
+
+            //// ONE-OFF TESTING FOR DEBUG SUPPORT.
+            //IPfcNode from = step5;
+            //IPfcNode to = step5;
+            //bool expected = true;
+            //result = PfcAnalyst.IsTargetNodeLegal(from, to);      // no.
+            //Console.WriteLine("{1} {0} a legal target from {2}.", result?"is":"is not", to.Name, from.Name);
+            //Assert.IsTrue(result == expected);
+
+            // BULK TEST FOR AUTOMATIC TESTING.
             List<IPfcNode> results = PfcAnalyst.GetPermissibleTargetsForLinkFrom(step5);
+            results.Sort((node1, node2) => Comparer<string>.Default.Compare(node1.Name,node2.Name));
 
             string resultString = Highpoint.Sage.Utility.StringOperations.ToCommasAndAndedListOfNames(new List<IHasName>(results.ToArray()));
             Console.WriteLine(resultString);
-            Assert.IsTrue(resultString.Equals("STEP5 and STEP2"), "Valid target steps should be STEP5 and STEP2, but they were " + resultString + ".");
+            Assert.IsTrue(resultString.Equals("STEP2 and STEP5"), "Valid target steps should be STEP2 and STEP5, but they were " + resultString + ".");
 
+        }
+
+        [TestMethod]
+        public void Test_LoopbackWithinAParallelBranchFromSavedPFC_Passes()
+        {
+            ProcedureFunctionChart pfc = getProcedureFunctionChartFromFile("../../TestData/RightPFC.xml");
+
+            //IPfcNode startStep = pfc.Steps.FirstOrDefault(x => x.Name == "START");
+            //IPfcNode step1 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP1");
+            //IPfcNode step2 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP2");
+            //IPfcNode step3 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP3");
+            //IPfcNode step4 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP4");
+            IPfcNode step5 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP5");
+            //IPfcNode step6 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP6");
+            //IPfcNode finishStep = pfc.Steps.FirstOrDefault(x => x.Name == "FINISH");
+
+            List<IPfcNode> results = PfcAnalyst.GetPermissibleTargetsForLinkFrom(step5);
+            results.Sort((node1, node2) => Comparer<string>.Default.Compare(node1.Name, node2.Name));
+
+            string resultString = Highpoint.Sage.Utility.StringOperations.ToCommasAndAndedListOfNames(new List<IHasName>(results.ToArray()));
+            Console.WriteLine(resultString);
+            Assert.IsTrue(resultString.Equals("STEP2 and STEP5"), "Valid target steps should be STEP2 and STEP5, but they were " + resultString + ".");
+        }
+
+        [TestMethod]
+        public void Test_LoopbackWithinAParallelBranchFromSavedPFC_UsedToFail()
+        {
+            ProcedureFunctionChart pfc = getProcedureFunctionChartFromFile("../../TestData/WrongPFC.xml");
+
+            //IPfcNode startStep = pfc.Steps.FirstOrDefault(x => x.Name == "START");
+            //IPfcNode step1 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP1");
+            //IPfcNode step2 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP2");
+            //IPfcNode step3 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP3");
+            //IPfcNode step4 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP4");
+            IPfcNode step5 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP5");
+            //IPfcNode step6 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP6");
+            //IPfcNode finishStep = pfc.Steps.FirstOrDefault(x => x.Name == "FINISH");
+
+#pragma warning disable 168
+            bool result;
+#pragma warning restore 168
+            //// MASS TESTING FOR STEP-BY-STEP CHECKING
+            //string structure = PfcDiagnostics.GetStructure(pfc);
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step1);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step4);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step6);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, startStep);  // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step5);      // yes.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step2);      // yes.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, step3);      // no.
+            //System.Diagnostics.Debug.Assert(structure == PfcDiagnostics.GetStructure(pfc));
+            //result = PfcAnalyst.IsTargetNodeLegal(step5, finishStep); // no.
+
+            //// ONE-OFF TESTING FOR DEBUG SUPPORT.
+            //IPfcNode from = step5;
+            //IPfcNode to = step5;
+            //bool expected = true;
+            //result = PfcAnalyst.IsTargetNodeLegal(from, to);      // no.
+            //Console.WriteLine("{1} {0} a legal target from {2}.", result?"is":"is not", to.Name, from.Name);
+            //Assert.IsTrue(result == expected);
+
+            // BULK TEST FOR AUTOMATIC TESTING.
+            List<IPfcNode> results = PfcAnalyst.GetPermissibleTargetsForLinkFrom(step5);
+            results.Sort((node1, node2) => Comparer<string>.Default.Compare(node1.Name, node2.Name));
+
+            string resultString = Highpoint.Sage.Utility.StringOperations.ToCommasAndAndedListOfNames(new List<IHasName>(results.ToArray()));
+            Console.WriteLine(resultString);
+            Assert.IsTrue(resultString.Equals("STEP2 and STEP5"), "Valid target steps should be STEP2 and STEP5, but they were " + resultString + ".");
+        }
+
+        private ProcedureFunctionChart getProcedureFunctionChartFromFile(string fileName)
+        {
+            var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var filePath = Path.Combine(directory, fileName);
+
+            ProcedureFunctionChart pfc = new ProcedureFunctionChart();
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
+            {
+                using (XmlReader tr = System.Xml.XmlReader.Create(fs))
+                    pfc.ReadXml(tr);
+            }
+
+            return pfc;
         }
 
         [TestMethod]
@@ -891,7 +995,7 @@ namespace SchedulerDemoMaterial {
             IModel model = new Model(testName);
 
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, testName);
-            ((ProcedureFunctionChart.PfcElementFactory)pfc.ElementFactory).SetRepeatable(Guid.Empty);
+            ((PfcElementFactory)pfc.ElementFactory).SetRepeatable(Guid.Empty);
 
             IPfcNode startStep = pfc.CreateStep("START", string.Empty, Guid.Empty);
             IPfcNode step1 = pfc.CreateStep("STEP1", string.Empty, Guid.Empty);
@@ -954,7 +1058,7 @@ namespace SchedulerDemoMaterial {
             IModel model = new Model(testName);
 
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, testName);
-            ((ProcedureFunctionChart.PfcElementFactory)pfc.ElementFactory).SetRepeatable(Guid.Empty);
+            ((PfcElementFactory)pfc.ElementFactory).SetRepeatable(Guid.Empty);
             Guid g = Guid.Empty;
             g = GuidOps.Increment(g);
             IPfcNode startStep = pfc.CreateStep("START", string.Empty, g = GuidOps.Increment(g));
@@ -974,7 +1078,7 @@ namespace SchedulerDemoMaterial {
             StringWriter sw = new StringWriter();
             foreach (IPfcNode node in pfc.Nodes) {
                 sw.Write(node.Name + " : " + node.GraphOrdinal);
-                if (node.ElementType.Equals(PfcElementType.Transition)) {
+                if (node.ElementType == PfcElementType.Transition) {
                     sw.WriteLine(" - from " + node.PredecessorNodes[0].Name + " to " + node.SuccessorNodes[0].Name + " )");
                 } else {
                     sw.WriteLine();

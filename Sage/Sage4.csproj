@@ -567,51 +567,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\BaseModelObject.cs" />
-    <Compile Include="Transport\TransportNetwork.cs" />
-    <Compile Include="Transport\TransportSystem.cs" />
-    <Compile Include="Transport\Equipment\ActorBase.cs" />
-    <Compile Include="Transport\Equipment\Conveyor.cs" />
-    <Compile Include="Transport\Equipment\Resources\LoaderResourceRequest.cs" />
-    <Compile Include="Transport\Equipment\Vehicle.cs" />
-    <Compile Include="Transport\Management\Assignments\AssignmentState.cs" />
-    <Compile Include="Transport\Management\Assignments\AssignmentStateMachine.cs" />
-    <Compile Include="Transport\Management\Assignments\BaseAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\BaseCalendarAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\BasePeriodicAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\BreakdownAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\GenericAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\IAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\ShuttleAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\MaintenanceAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\SendTruckToReceive.cs" />
-    <Compile Include="Transport\Management\Assignments\ShiftChangesAssignment.cs" />
-    <Compile Include="Transport\Management\Assignments\TakeBreaksAssignment.cs" />
-    <Compile Include="Transport\Management\Goals\BaseGoal.cs" />
-    <Compile Include="Transport\Management\Goals\FailureGoal.cs" />
-    <Compile Include="Transport\Management\Goals\GenericGoal.cs" />
-    <Compile Include="Transport\Management\Goals\GoalState.cs" />
-    <Compile Include="Transport\Management\Goals\GoalStateMachine.cs" />
-    <Compile Include="Transport\Management\Goals\IGoal.cs" />
-    <Compile Include="Transport\Management\Goals\IMiningGoal.cs" />
-    <Compile Include="Transport\Management\Goals\IPeriodicGoal.cs" />
-    <Compile Include="Transport\Management\Goals\IStochasticGoal.cs" />
-    <Compile Include="Transport\Management\Goals\MiningGoal.cs" />
-    <Compile Include="Transport\Management\Goals\PeriodicGoal.cs" />
-    <Compile Include="Transport\Management\Goals\ScheduledBreakGoal.cs" />
-    <Compile Include="Transport\Management\Goals\StochasticGoal.cs" />
-    <Compile Include="Transport\Management\Management_Interfaces.cs" />
-    <Compile Include="Transport\Policy.cs" />
-    <Compile Include="Transport\Management\Strategies\MultiActivityUniversalRecipeStrategy.cs" />
-    <Compile Include="Transport\Management\Strategies\SingleActivityUniversalRecipeStrategy.cs" />
-    <Compile Include="Transport\Cargo\Cargo_Interfaces.cs" />
-    <Compile Include="Transport\Management\Tasks\Task_Interfaces.cs" />
-    <Compile Include="Transport\BaseSegment.cs" />
-    <Compile Include="Transport\Navigator.cs" />
-    <Compile Include="Transport\BaseNode.cs" />
-    <Compile Include="Transport\TableDrivenTravelTimeService.cs" />
-    <Compile Include="Transport\TransportEndpoint.cs" />
-    <Compile Include="Transport\Interfaces.cs" />
-    <Compile Include="Transport\Equipment\Equipment_Interfaces.cs" />
     <Compile Include="Utility\Aspects.cs">
       <SubType>Code</SubType>
     </Compile>

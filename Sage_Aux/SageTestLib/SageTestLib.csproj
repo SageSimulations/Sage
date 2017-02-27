@@ -158,7 +158,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestPfcRepository.cs" />
-    <Compile Include="TestTransportNetwork.cs" />
     <Compile Include="TestCosts.cs" />
     <Compile Include="TestExtensions.cs" />
     <Compile Include="TestMaterialService.cs" />

@@ -22,7 +22,6 @@ namespace Highpoint.Sage.Graphs.PFC
         private bool? m_pfcIsValid = null;
         private Queue<QueueData> m_activePath;
         private ValidationToken m_root;
-        private IPfcNode m_activeNodeFrom = null;
         private bool[,] m_dependencies;
         private List<PfcValidationError> m_errorList = null;
         private int m_maxGraphOrdinal = 0;
@@ -35,12 +34,12 @@ namespace Highpoint.Sage.Graphs.PFC
             {
                 _PfcValidator validator = new _PfcValidator(pfc);
                 m_pfcIsValid = validator.PfcIsValid();
-                m_errorList = (List<PfcValidationError>) validator.Errors;
+                m_errorList = (List<PfcValidationError>)validator.Errors;
             }
             else
             {
                 m_errorList = new List<PfcValidationError>();
-                m_pfc = (IProcedureFunctionChart) pfc.Clone();
+                m_pfc = (IProcedureFunctionChart)pfc.Clone();
                 Reduce();
                 try
                 {
@@ -263,23 +262,24 @@ namespace Highpoint.Sage.Graphs.PFC
                     GetValidationData(node).NodeHasRun = true;
                 }
 
-            } while (m_activePath.Count() > 0);
+            } while (m_activePath.Any());
         }
 
         private bool ProcessSerialConvergence(IPfcNode node)
         {
-            if (!GetValidationData(node).NodeHasRun)
-            {
-                // Don't decrement alt-open-paths, since we'll propagate this leg.
-                return true;
-            }
-            else
+            if (GetValidationData(node).NodeHasRun)
             {
                 GetValidationData(node).ValidationToken.DecrementAlternatePathsOpen();
+
+                // TODO: Check that converging tokens have the same parent.
+
                 if (m_diagnostics)
                     Console.WriteLine("\tNot processing {0} further - we've already traversed.", node.Name);
                 return false;
             }
+
+            // if the node hasn't run, don't decrement alt-open-paths, since we'll propagate this leg.
+            return true;
         }
 
         private bool ProcessParallelConvergence(IPfcNode node)
@@ -289,13 +289,16 @@ namespace Highpoint.Sage.Graphs.PFC
             {
                 if (m_diagnostics)
                     Console.WriteLine("\tProcessing closure of {0}.", node.Name);
-                //GetValidationData(m_activeNodeFrom).ValidationToken.DecrementAlternatePathsOpen();
-                UpdateClosureToken(node);
+
+                // To test parallel convergence into a target node, find the divergence node, and then
+                // from that point, all parallel, and at least one of every set of serially divergent
+                // paths, must contain the target node. If not all of the serially-divergent paths does,
+                // then we will catch that in the serial convergence handler.
+                UpdateClosureToken(node as IPfcTransitionNode);
                 return true;
             }
             else
             {
-                //GetValidationData(m_activeNodeFrom).ValidationToken.DecrementAlternatePathsOpen();
                 if (m_diagnostics)
                     Console.WriteLine("\tNot processing {0} further - we'll encounter it again.", node.Name);
                 return false;
@@ -305,11 +308,15 @@ namespace Highpoint.Sage.Graphs.PFC
         private void ProcessParallelDivergence(IPfcNode node)
         {
             ValidationToken nodeVt = GetValidationData(node).ValidationToken;
-            foreach (IPfcNode succ in node.SuccessorNodes)
+            foreach (IPfcNode successor in node.SuccessorNodes)
             {
-                ValidationToken succVt = new ValidationToken(succ);
-                nodeVt.AddChild(succVt);
-                Enqueue(node, succ, succVt);
+                ValidationToken successorVtVt = new ValidationToken(successor);
+                nodeVt.AddChild(successorVtVt);
+
+                if (m_diagnostics)
+                    Console.WriteLine("\tCreated {0} as child for {1}.", successorVtVt.Name, nodeVt.Name);
+
+                Enqueue(node, successor, successorVtVt);
             }
             nodeVt.DecrementAlternatePathsOpen(); // I've been replaced by my childrens' collective path.
         }
@@ -317,10 +324,10 @@ namespace Highpoint.Sage.Graphs.PFC
         private void ProcessSerialDivergence(IPfcNode node)
         {
             ValidationToken nodeVt = GetValidationData(node).ValidationToken;
-            foreach (IPfcNode succ in node.SuccessorNodes)
+            foreach (IPfcNode successor in node.SuccessorNodes)
             {
                 nodeVt.IncrementAlternatePathsOpen();
-                Enqueue(node, succ, nodeVt);
+                Enqueue(node, successor, nodeVt);
             }
             nodeVt.DecrementAlternatePathsOpen();
             //added 1 per child, subtract 1 overall. Thus 1 split to 4 yields 4 alt.
@@ -349,6 +356,10 @@ namespace Highpoint.Sage.Graphs.PFC
                 Console.WriteLine("\tEnqueueing {0} with {1} ({2}).", node.Name, vt, vt.AlternatePathsOpen);
         }
 
+        /// <summary>
+        /// Dequeues and sets up for evaluation, the active path.
+        /// </summary>
+        /// <returns>IPfcNode.</returns>
         private IPfcNode Dequeue()
         {
             List<QueueData> tmp = new List<QueueData>(m_activePath);
@@ -358,21 +369,73 @@ namespace Highpoint.Sage.Graphs.PFC
             tmp.ForEach(n => m_activePath.Enqueue(n));
             QueueData qd = m_activePath.Dequeue();
             IPfcNode retval = qd.To;
-            m_activeNodeFrom = qd.From;
+
             return retval;
         }
 
-        private void UpdateClosureToken(IPfcNode closure)
+        private void UpdateClosureToken(IPfcTransitionNode closureTransition)
         {
 
-            ValidationToken replacementToken = ClosureToken(closure);
+            // Find the youngest common ancestor to all gazinta tokens.
+            IPfcNode yca = DivergenceNodeFor(closureTransition);
+
+            bool completeParallelConverge = AllParallelAndAtLeastOneOfEachSetOfSerialPathsContain(yca, closureTransition);
+
+            ValidationToken replacementToken =
+                completeParallelConverge ?                                                // Are all of the root node's outbound
+                                                                                          //    paths closed by the closure node?
+                GetValidationData(yca).ValidationToken :                                  // If so, its token is the closure token.
+                GetValidationData(closureTransition.PredecessorNodes[0]).ValidationToken; // If not, pick one of the gazinta tokens.
 
             replacementToken.IncrementAlternatePathsOpen();
-            GetValidationData(closure).ValidationToken = replacementToken;
+            GetValidationData(closureTransition).ValidationToken = replacementToken;
+
             if (m_diagnostics)
                 Console.WriteLine("\t\tAssigning {0} ({1}) to {2} on its closure.", replacementToken.Name,
-                    replacementToken.AlternatePathsOpen, closure.Name);
+                    replacementToken.AlternatePathsOpen, closureTransition.Name);
+        }
 
+        private bool AllParallelAndAtLeastOneOfEachSetOfSerialPathsContain(IPfcNode from, IPfcNode target)
+        {
+
+            NodeValidationData nvd = GetValidationData(from);
+            if (nvd.IsInPath == null)
+            {
+                if (!from.SuccessorNodes.Any())
+                {
+                    nvd.IsInPath = false;
+                }
+                else if (from == target)
+                {
+                    nvd.IsInPath = true;
+                }
+                else if (from.SuccessorNodes.Count == 1)
+                {
+                    return AllParallelAndAtLeastOneOfEachSetOfSerialPathsContain(from.SuccessorNodes[0], target);
+                }
+                else // It's a divergence.
+                {
+                    if (from is IPfcStepNode)
+                    { // serial divergence.
+                        bool retval = false;
+                        foreach (IPfcNode successorNode in from.SuccessorNodes)
+                        {
+                            retval |= AllParallelAndAtLeastOneOfEachSetOfSerialPathsContain(successorNode, target);
+                        }
+                        return retval;
+                    }
+                    else
+                    { // parallel divergence.
+                        bool retval = true;
+                        foreach (IPfcNode successorNode in from.SuccessorNodes)
+                        {
+                            retval &= AllParallelAndAtLeastOneOfEachSetOfSerialPathsContain(successorNode, target);
+                        }
+                        return retval;
+                    }
+                }
+            }
+            return nvd.IsInPath.Value;
         }
 
         #region Closure Token Mechanism
@@ -437,14 +500,6 @@ namespace Highpoint.Sage.Graphs.PFC
             return nvd.IsInPath.Value;
         }
 
-        private bool AllBackwardPathsContain(IPfcNode from, IPfcNode target)
-        {
-            m_pfc.Nodes.ForEach(n => GetValidationData(n).IsInPath = null);
-            Stack<IPfcNode> path = new Stack<IPfcNode>();
-            path.Push(from);
-            return AllBackwardPathsContain(from, target, path);
-        }
-
         /// <summary>
         /// Determines whether all backward paths from 'from' contain the node 'target.' If they do,
         /// and it is the first such encounter for a specific 'from' then it may be said that target
@@ -452,14 +507,13 @@ namespace Highpoint.Sage.Graphs.PFC
         /// </summary>
         /// <param name="from">From.</param>
         /// <param name="target">The target.</param>
-        /// <param name="path">The path.</param>
         /// <returns></returns>
-        private bool AllBackwardPathsContain(IPfcNode from, IPfcNode target, Stack<IPfcNode> path)
+        private bool AllBackwardPathsContain(IPfcNode from, IPfcNode target)
         {
             NodeValidationData nvd = GetValidationData(from);
             if (nvd.IsInPath == null)
             {
-                if (from.PredecessorNodes.Count() == 0)
+                if (!from.PredecessorNodes.Any())
                 {
                     nvd.IsInPath = false;
                 }
@@ -470,15 +524,14 @@ namespace Highpoint.Sage.Graphs.PFC
                 else
                 {
                     nvd.IsInPath = true;
-                    foreach (IPfcNode pred in from.PredecessorNodes)
+                    foreach (IPfcNode predecessorNode in from.PredecessorNodes)
                     {
-                        if (!AllBackwardPathsContain(pred, target, path))
+                        if (!AllBackwardPathsContain(predecessorNode, target))
                         {
                             nvd.IsInPath = false;
                             break;
                         }
                     }
-                    //GetValidationData(from).DivergenceNode = target;
                 }
             }
             return nvd.IsInPath.Value;
@@ -522,6 +575,7 @@ namespace Highpoint.Sage.Graphs.PFC
 
             foreach (IPfcNode possible in possibles)
             {
+                m_pfc.Nodes.ForEach(n => GetValidationData(n).IsInPath = null);
                 if (AllBackwardPathsContain(closure, possible))
                 {
                     return possible;
@@ -595,16 +649,18 @@ namespace Highpoint.Sage.Graphs.PFC
                     {
                         tokensWithOpenAlternates.Add(GetValidationData(node).ValidationToken);
                     }
-                    if (!nodeVd.NodeHasRun)
-                        unexecutedNodes.Add(node);
+                    if (!nodeVd.NodeHasRun) unexecutedNodes.Add(node);
+
                     if (node.ElementType == PfcElementType.Step && node.PredecessorNodes.Count() > 1)
                     {
                         ValidationToken vt = GetValidationData(node.PredecessorNodes[0]).ValidationToken;
                         if (!node.PredecessorNodes.TrueForAll(n => GetValidationData(n).ValidationToken.Equals(vt)))
                         {
-                            inconsistentSerialConvergences.Add((IPfcStepNode) node);
+                            inconsistentSerialConvergences.Add((IPfcStepNode)node);
                         }
                     }
+
+                    if (nodeVt.AnyChildLive) tokensWithLiveChildren.Add(nodeVt);
                 }
             }
 
@@ -1140,14 +1196,14 @@ namespace Highpoint.Sage.Graphs.PFC
 
         private Comparison<IPfcNode> m_nodeByName =
             new Comparison<IPfcNode>(
-                delegate(IPfcNode n1, IPfcNode n2)
+                delegate (IPfcNode n1, IPfcNode n2)
                 {
                     return Comparer.Default.Compare(n1.GraphOrdinal, n2.GraphOrdinal);
                 });
 
         private Comparison<IPfcStepNode> m_stepNodeByName =
             new Comparison<IPfcStepNode>(
-                delegate(IPfcStepNode n1, IPfcStepNode n2)
+                delegate (IPfcStepNode n1, IPfcStepNode n2)
                 {
                     return Comparer.Default.Compare(n1.GraphOrdinal, n2.GraphOrdinal);
                 });
@@ -1244,7 +1300,7 @@ namespace Highpoint.Sage.Graphs.PFC
                 // Next special case rule, create & abstract IValidityRule & use the following, and the reduction rule applicator
                 // below it as the first two overall IValidityRules. (Remember bool bIsDestructive as a parameter of the rule.)
                 bool bHasStartStep = false;
-                graph.ForEach(delegate(ProxyNode node) { if (node.Predecessors.Count == 0) bHasStartStep = true; });
+                graph.ForEach(delegate (ProxyNode node) { if (node.Predecessors.Count == 0) bHasStartStep = true; });
                 if (!bHasStartStep)
                 {
                     return false;
@@ -1819,7 +1875,7 @@ namespace Highpoint.Sage.Graphs.PFC
                 if (s_diagnostics)
                 {
                     SimplifyNames(graph);
-                    graph.ForEach(delegate(ProxyNode node) { Console.WriteLine(node.ToString()); });
+                    graph.ForEach(delegate (ProxyNode node) { Console.WriteLine(node.ToString()); });
                 }
 
                 ResetProxies();
@@ -1861,8 +1917,8 @@ namespace Highpoint.Sage.Graphs.PFC
                 Console.WriteLine("{0} <-- {1}", newName, pn.Name);
                 pn.SetName(newName);
 
-                c2 = (char) (c2 == 'Z' ? 'A' : c2 + 1);
-                c1 = (char) (c2 == 'A' ? c1 + 1 : c1);
+                c2 = (char)(c2 == 'Z' ? 'A' : c2 + 1);
+                c1 = (char)(c2 == 'A' ? c1 + 1 : c1);
 
             }
 

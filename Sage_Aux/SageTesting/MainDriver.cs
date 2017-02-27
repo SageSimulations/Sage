@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using Highpoint.Sage.Materials.Chemistry;
-using Highpoint.Sage.Transport;
 
 namespace Highpoint.Sage.Testing
 {
@@ -787,12 +786,12 @@ namespace Highpoint.Sage.Testing
 #endif
                     case 654:
                         Trace.WriteLine("Offset Parallelism tester");
-                        new SchedulerDemoMaterial.PfcAnalystTester().Test_OffSetParallelism();
+                        new PFCDemoMaterial.PfcAnalystTester().Test_OffSetParallelism();
                         break;
 
                     case 655:
                         Trace.WriteLine("PFC reduction tester");
-                        new SchedulerDemoMaterial.PfcAnalystTester().Test_ValidatorFromStoredPFC();
+                        new PFCDemoMaterial.PfcAnalystTester().Test_ValidatorFromStoredPFC();
                         break;
 
 #if NYRFPT
@@ -803,12 +802,12 @@ namespace Highpoint.Sage.Testing
 #endif
                     case 657:
                         Trace.WriteLine("PFC Path Analysis tester");
-                        new SchedulerDemoMaterial.PfcAnalystTester().Test_DeepNonLoopingPath();
+                        new PFCDemoMaterial.PfcAnalystTester().Test_DeepNonLoopingPath();
                         break;
 
                     case 658:
                         Trace.WriteLine("PFC Path Analysis tester");
-                        new SchedulerDemoMaterial.PfcAnalystTester().TestBroadestNonLoopbackPath();
+                        new PFCDemoMaterial.PfcAnalystTester().TestBroadestNonLoopbackPath();
                         break;
 
                     case 670:
@@ -863,9 +862,9 @@ namespace Highpoint.Sage.Testing
 
 
                     //////////////////////  TRANSPORT NETWORK ///////////////////
-                    case 1400:
-                        new TestTransportNetwork().TestTransportBasics();
-                        break;
+                    //case 1400:
+                    //  new TestTransportNetwork().TestTransportBasics();
+                    //  break;
 
                 }
 
