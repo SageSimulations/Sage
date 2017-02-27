@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ProcedureFunctionChart" targetNamespace="http://tempuri.org/ProcedureFunctionChart.xsd" elementFormDefault="qualified" xmlns="http://tempuri.org/ProcedureFunctionChart.xsd" xmlns:mstns="http://tempuri.org/ProcedureFunctionChart.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="Guid">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9A-Fa-f]^8-[0-9A-Fa-f]^4-[0-9A-Fa-f]^4-[0-9A-Fa-f]^4-[0-9A-Fa-f]^12" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="Condition">
+    <xs:sequence>
+      <xs:element name="Expression" type="xs:string" />
+      <xs:element name="Dialect" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Link">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Description" type="xs:string" />
+      <xs:element name="Guid" type="Guid" />
+      <xs:element name="PredGuid" type="Guid" />
+      <xs:element name="SuccGuid" type="Guid" />
+      <xs:element name="Priority" type="xs:short" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Step">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Description" type="xs:string" />
+      <xs:element name="Guid" type="Guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Transition">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Description" type="xs:string" />
+      <xs:element name="Guid" type="Guid" />
+      <xs:element name="Condition" type="Condition" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ProcedureFunctionChart">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Description" type="xs:string" />
+      <xs:element name="Guid" type="Guid" />
+      <xs:element name="RootStepGuid" type="Guid" />
+      <xs:element name="ElementFactoryType" type="xs:string" />
+      <xs:sequence>
+        <xs:element name="Step" type="Step" />
+      </xs:sequence>
+      <xs:sequence>
+        <xs:element name="Transition" type="Transition" />
+      </xs:sequence>
+      <xs:sequence>
+        <xs:element name="Link" type="Link" />
+      </xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+  <!--<xs:complexType name="ProcedureFunctionChart">
+    <xs:sequence>
+      <xs:element name="Value" type="xs:string"/>
+      <xs:element name="Dialect" type="xs:string"/>
+      <xs:element name="Locale" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="SfcExpression" type="CodeBinaryOperatorExpression" />
+  <xs:complexType name="CodeBinaryOperatorExpression">
+    <xs:sequence>
+      <xs:element name="LeftHandSide" type="CoreExpression" />
+      <xs:element name="Operator" type="CodeBinaryOperatorType" />
+      <xs:element name="RightHandSide" type="CoreExpression" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CodeLogicalOperatorExpression">
+    <xs:sequence>
+      <xs:element name="LeftHandSide" type="CoreExpression" />
+      <xs:element name="Operator" type="CodeLogicalOperatorType" />
+      <xs:element name="RightHandSide" type="CoreExpression" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CoreExpression">
+    <xs:choice>
+      <xs:element name="SimpleEx" type="SimpleExpression" />
+      <xs:element name="ComplexEx" type="ComplexExpression" />
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="SimpleExpression">
+    <xs:choice>
+      <xs:element name="SimpleEx" type="CodeFieldReferenceExpression" />
+      <xs:element name="ComplexEx" type="CodePrimitiveExpression" />
+      <xs:element name="PropRef" type="CodePropertyReference" />
+      <xs:element name="VarRefEx" type="CodeVariableReferenceExpression" />
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="ComplexExpression">
+    <xs:choice>
+      <xs:element name="BinOpEx" type="CodeBinaryOperatorExpression" />
+      <xs:element name="MethodEx" type="CodeMethodInvokeExpression" />
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="CodeFieldReferenceExpression">
+    <xs:sequence id="FieldRef">
+      <xs:element type="QualIdent" name="TargetObject" />
+      <xs:element type="Identifier" name="FieldName" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="QualIdent">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(([A-Za-z]+[A-Za-z0-9_]*).)*[A-Za-z]+[A-Za-z0-9_]" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Identifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z]+[A-Za-z0-9_]*" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="CodePrimitiveExpression">
+    <xs:choice>
+      <xs:element name="Char" type="xs:integer" />
+      <xs:element name="Byte" type="xs:byte" />
+      <xs:element name="Int16" type="xs:short" />
+      <xs:element name="Int32" type="xs:int" />
+      <xs:element name="Int64" type="xs:long" />
+      <xs:element name="Single" type="xs:float" />
+      <xs:element name="Double" type="xs:double" />
+      <xs:element name="Boolean" type="xs:boolean" />
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="CodePropertyReference">
+    -->
+  <!-- What if we treat field refs and prop refs the same? -->
+  <!--
+    <xs:sequence id="PropRef">
+      <xs:element type="QualIdent" name="TargetObject" />
+      <xs:element type="Identifier" name="FieldName" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="CodeVariableReferenceExpression">
+    <xs:restriction base="Identifier" />
+  </xs:simpleType>
+  <xs:complexType name="CodeMethodInvokeExpression">
+    <xs:sequence>
+      <xs:element name="Method" type="CodeMethodReferenceExpression" />
+      <xs:element name="Parameters" type="CoreArgumentCollection" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CodeMethodReferenceExpression">
+    <xs:sequence>
+      <xs:element name="TargetObject" type="QualIdent" />
+      <xs:element name="MethodName" type="Identifier" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CoreArgumentCollection">
+    <xs:sequence>
+      <xs:element name="Argument" type="CoreExpression" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="CodeLogicalOperatorType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="BooleanAnd" />
+      <xs:enumeration value="BooleanOr" />
+      <xs:enumeration value="GreaterThan" />
+      <xs:enumeration value="GreaterThanOrEqual" />
+      <xs:enumeration value="IdentityEquality" />
+      <xs:enumeration value="IdentityInequality" />
+      <xs:enumeration value="LessThan" />
+      <xs:enumeration value="LessThanOrEqual" />
+      <xs:enumeration value="ValueEquality" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CodeMathOperatorType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Add" />
+      <xs:enumeration value="BitwiseAnd" />
+      <xs:enumeration value="BitwiseOr" />
+      <xs:enumeration value="Divide" />
+      <xs:enumeration value="Modulus" />
+      <xs:enumeration value="Multiply" />
+      <xs:enumeration value="Subtract" />
+    </xs:restriction>
+  </xs:simpleType>
+  -->
+  <!--
+  <xs:simpleType name="CodeBinaryOperatorType" >
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base='CodeLogicalOperatorType'/>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base='CodeMathOperatorType'/>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  -->
+  <!--
+  <xs:simpleType name="CodeBinaryOperatorType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="BooleanAnd" />
+      <xs:enumeration value="BooleanOr" />
+      <xs:enumeration value="GreaterThan" />
+      <xs:enumeration value="GreaterThanOrEqual" />
+      <xs:enumeration value="IdentityEquality" />
+      <xs:enumeration value="IdentityInequality" />
+      <xs:enumeration value="LessThan" />
+      <xs:enumeration value="LessThanOrEqual" />
+      <xs:enumeration value="ValueEquality" />
+      <xs:enumeration value="Add" />
+      <xs:enumeration value="BitwiseAnd" />
+      <xs:enumeration value="BitwiseOr" />
+      <xs:enumeration value="Divide" />
+      <xs:enumeration value="Modulus" />
+      <xs:enumeration value="Multiply" />
+      <xs:enumeration value="Subtract" />
+    </xs:restriction>
+  </xs:simpleType>-->
+</xs:schema>

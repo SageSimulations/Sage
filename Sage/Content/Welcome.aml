@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="90a1d911-0315-4865-a414-58189cca1ecb" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <mediaLink><image placement="center" xlink:href="SageLogo"/></mediaLink>
+    <introduction>
+      <para>Welcome to the help file for Highpoint Software Systems' Sage Modeling and Simulation Library. 
+      Sage is an object oriented, open architecture .NET library, written in C# to enable architecting and 
+      designing solutions that incorporate subsystems with discrete event or agent-based simulation. 
+      </para>
+      <section>
+        <title>
+          Offline Copy
+        </title>
+
+        <content>
+          <para>You may download a copy of the help file here: <token>helpfile</token>. 
+          </para>
+          <para>Note: if the downloaded CHM file won't run, try right-clicking on it and selecting properties. You will see an "Unblock" button. Click on it, it should solve your problem.</para>
+        </content>
+      </section>
+    </introduction>
+
+    <section>
+      <title>How to Learn Sage</title>
+      <content>
+        <para>We assume that you are familiar with C#, including the concepts and practice of object oriented design, delegates and generics.</para>
+        
+        <para>Sage is a large library with a broad reach. In order to learn it most quickly, we recommend you start with the 
+        <link xlink:href="9bef5420-7560-47d9-98ce-0b5d5f46567a" /> and <link xlink:href="aba20266-8020-4e8c-96ad-f28e42c4db7b" /> pages.</para>
+      </content>
+     </section>
+     
+    <relatedTopics>
+      
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

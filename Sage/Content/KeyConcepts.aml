@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9bef5420-7560-47d9-98ce-0b5d5f46567a" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <mediaLink>
+      <image placement="center" xlink:href="SageLogo"/>
+    </mediaLink>
+    <introduction>
+      <para>
+        There is a great deal of breadth and depth to Sage, but here are the main concepts that you'll
+        need to get your head around, in order to get started.
+      </para>
+    </introduction>
+
+    <section>
+      <title>The Big Idea</title>
+      <content>
+        <para>
+          The big idea behind Sage is that it is an object oriented library containing primitives which, when
+          mixed and matched into the right architecture, can be used to create any simulation and modeling
+          infrastructure in the Discrete Event and Agent-Based space. A model consists of objects that request
+          callbacks into specific methods at specific times, in which they perform processing, maybe impact other
+          objects' states, and potentially submit requests for further callbacks at future times.
+        </para>
+        <para>
+          It's just software, so you can design headless servers, thick client gui-centric modeling and simulation
+          environments, thin- or web-client applications, modules that plug into ERP systems, essentially any
+          construct that you can build using Microsoft's .NET infrastructure.
+        </para>
+        <para>
+          We concentrate on the simulation infrastructure, and let you choose the GUI, database, 3D rendering,
+          systems integration or other technology you want to use - your system architects are (other than the
+          fact of its being .NET) utterly unconstrained in architecture or design by your choice of Sage.
+        </para>
+      </content>
+    </section>
+    <section>
+      <title>The Main Elements</title>
+      <content>
+        <para>
+          At its core, Sage has an <b>executive</b> that is responsible for serving events (executing callbacks)
+          into methods on objects. These callbacks are performed in time order, at the time requested when the
+          callback request was submitted. There are <b>two implementations</b> of the IExecutive interface. One implementation
+          was written for <b>features</b> - it can be paused and resumed, supports a sequential multithreading capability,
+          permits rescinding of as-yet unserviced callback requests, and many more advanced capabilities. It is still
+          very fast, but it was written to be good for applications that will have complex user and user interface
+          interactions, extensive local object state that must be maintained between calls, or dynamic in-process
+          rescheduling algorithms. The other implementation of the IExecutive interface was written for <b>raw speed</b>,
+          with single-threaded callback service drawn from a heap. It places more responsibilities on the designer for
+          object state management and scheduling strategies, but offers the reward of the fastest possible execution.
+        </para>
+        <para>
+          In addition to the Executive, there is an <b>IModel interface</b> that is designed to be the top level container
+          for the runtime state machine (initialize, run, pause, resume, stop, reset), Error and Warning services, Task
+          Processors, a catalog of model participant objects, a multi-channel random number generator, and a number of
+          other services.
+        </para>
+        <para>
+          The SimCore namespace has more detail on the executives and state machine function. 
+        </para>
+      </content>
+    </section>
+    <section>
+      <title>Resources</title>
+      <content>
+        <para>
+          Another important concept is that of Resources. A resource is an object that can be granted by a Resource Manager
+          to a requester to accomplish a task, and then either returned to the manager or discarded once the need for the
+          resource has passed. Any object can be a resource if it implements the IResource interface, and any object can
+          be a resource manager if it implements the IResourceManager interface. Resources have two orthogonal classifications.
+          Resources are <b>atomic, discrete or continuous</b>, and resources are <b>consumable or persistent</b>. 
+        </para>
+        <para>
+          Atomic resources are granted in units, and are usually represented as objects. If you choose to model individual
+          vehicles as objects, and have a resource manager that allocates them, then those vehicle resources would probably be
+          declared to be atomic. Discrete resources are allocated in integral quantites, and are usually represented as a quantity,
+          as opposed to a collection of objects. If you choose to model packing containers such as cardboard boxes as a number,
+          essentially "I currently have 38 of 12x16x24 boxes on hand." If a client needs 1.45 boxes, it's likely that the resource
+          manager will have to grant them two boxes. This is a discrete resource. Continuous resources are granted in real
+          quantities. For example, if you were modeling a manufacturing plant, you might choose to model solvent-on-hand as a
+          continuous resource. If a client requests 1.75 liters of solvent, that's precisely what you would probably want them
+          to receive.
+        </para>
+          Persistent resources are those that are expected to be returned to the pool after use - this would probably include
+          machine tools and personnel, pounds of steam pressure, or transport legs. Consumable resources are those not expected
+          to be returned to a pool, and might include items such as cardboard boxes, parts and ingredients, or power or health
+          ratings. This taxonomy is optional - it provides some support functions, but it is straightforward to implement a
+          type of resource that may or may not be returned to the pool, such as a vehicle in a military logistics model.
+        <para>
+        </para>
+        <para>
+          There are mechanisms for requesting resources that allow the requester to grade resources and thereby choose the
+          optimal fit for their needs. There are mechanisms for all-or-none granting, and for blocking a requester until the
+          request is granted, or returning with a negative grant, and allowing the requester to try a different strategy,
+          using a different request.
+        </para>
+      </content>
+    </section>
+    <section>
+      <title>Other Key Elements</title>
+      <content>
+        <para>
+          In addition to the key concepts above, there are numerous secondary concepts that are of significant use in architecting
+          a simulation subsystem. These include a transport system for modeling logistics and item movement, a library of
+          block-and-connector elements for "drag and drop, then wire together" models, several types of graph modeling and
+          analysis classes, equipment and materials namespaces for modeling chemical manufacturing processes, and mathematical
+          constructs for generating distributions, performing interpolations, and building histograms. Now that you know about these
+          elements, you'll know to go look for details if and when you need them.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>How to Learn Sage</title>
+      <content>
+        <para>We assume that you are familiar with C#, including the concepts and practice of object oriented design, delegates and generics.</para>
+
+        <para>
+          Sage is a large library with a broad reach. In order to learn it most quickly, we recommend you start with the
+          <link xlink:href="9bef5420-7560-47d9-98ce-0b5d5f46567a" /> and <link xlink:href="aba20266-8020-4e8c-96ad-f28e42c4db7b" /> pages.
+        </para>
+      </content>
+    </section>
+
+    <relatedTopics>
+      <link xlink:href="9bef5420-7560-47d9-98ce-0b5d5f46567a" />
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

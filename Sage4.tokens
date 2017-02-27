@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<content xml:space="preserve" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <item id="tutorial"><ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+    <ddue:linkText>Tutorial</ddue:linkText>
+    <ddue:linkUri>http://www.highpointsoftware.com/Tutorial/</ddue:linkUri>
+    <ddue:linkTarget>_blank</ddue:linkTarget>
+  </ddue:externalLink>
+  </item>
+  <item id="pfc_exec_article"><ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+    <ddue:linkText>PFC Execution white paper</ddue:linkText>
+    <ddue:linkUri>http://www.highpointsoftware.com/documents/PFCSimControl.pdf</ddue:linkUri>
+    <ddue:linkTarget>_blank</ddue:linkTarget>
+  </ddue:externalLink>
+  </item>
+  <item id="technote"><ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+    <ddue:linkText>Tech Note Index</ddue:linkText>
+    <ddue:linkUri>http://www.highpointsoftware.com/TechNotes/index.htm</ddue:linkUri>
+    <ddue:linkTarget>_blank</ddue:linkTarget>
+  </ddue:externalLink>
+  </item>
+  <item id="helpfile">
+    <ddue:externalLink xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5">
+      <ddue:linkText>Offline Sage Help File</ddue:linkText>
+      <ddue:linkUri>http://www.highpointsoftware.com/SageHelp/Sage4.chm</ddue:linkUri>
+      <ddue:linkTarget>_blank</ddue:linkTarget>
+    </ddue:externalLink>
+  </item>
+</content>

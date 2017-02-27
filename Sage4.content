@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Topics>
+  <Topic id="90a1d911-0315-4865-a414-58189cca1ecb" visible="True" isDefault="true" title="Welcome">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="Welcome" />
+    </HelpKeywords>
+  </Topic>
+  <Topic id="9bef5420-7560-47d9-98ce-0b5d5f46567a" visible="True" title="Key Concepts">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="Key Concepts" />
+    </HelpKeywords>
+  </Topic>
+  <Topic id="36B0B69A-5F9C-4030-A155-BEFA566B3752" visible="True" title="Learning Resources">
+    <HelpKeywords>
+      <HelpKeyword index="K" term="Learning Resources" />
+    </HelpKeywords>
+  </Topic>
+  <Topic id="DEADBEEF-5F9C-4030-A155-BEFA566B3752" visible="True" title="License">
+    <HelpKeywords>
+      <HelpKeyword index="L" term="License" />
+    </HelpKeywords>
+  </Topic>
+
+  <Topic id="53c8f54a-85fb-4857-8adc-0f137d6246a4" visible="True" noFile="true" isExpanded="true" title="Sage Libraries" apiParentMode="InsertAsChild">
+    <Topic id="aba20266-8020-4e8c-96ad-f28e42c4db7b" visible="True" title="Namespace Guide">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="Namespace Guide" />
+      </HelpKeywords>
+    </Topic>
+  </Topic>
+</Topics>

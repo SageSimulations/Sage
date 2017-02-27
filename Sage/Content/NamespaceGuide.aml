@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="aba20266-8020-4e8c-96ad-f28e42c4db7b" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>This is a guide to the top level namespaces in the Sage libraries.</para>
+      <para>We recommend that you start browsing this documentation by visiting the SimCore namespace, then the Utility
+      namespace, and probably Resources next. That should give you enough foundation to know where you want to go after that.</para>
+      <para>In any case, we also recommend that you visit our Tutorials content to get a better feel for the entire library 
+      and the approach to modeling and simulation that it enables.</para>
+    </introduction>
+
+    <section>
+      <title>Highpoint.Sage.SimCore</title>
+      <content>
+        <para>
+          This namespace contains the core classes needed for constructing models and running simulations. These classes include
+          executives (a.k.a. calendars,) models, state machines, metronomes, rate controllers, synchronizers and initialization
+          infrastructure.
+        </para>
+      </content>
+    </section>
+    
+    <section>
+      <title>Highpoint.Sage.Dependencies</title>
+      <content>
+        <para>
+          This namespace contains classes for calculating a dependency sequence - that is, with a number of items, each of which
+          may depend on some other items, calculates the sequence, if there is one, where each item is preceded in the sequence
+          by all items on which it depends.
+        </para>
+      </content>
+    </section>
+    
+    <section>
+      <title>Highpoint.Sage.Diagnostics</title>
+      <content>
+        <para>
+          This namespace contains DiagnosticAids, a helper class, and EventLogger, which logs all events fired by an executive.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Graphs</title>
+      <content>
+        <para>
+          This namespace contains the classes necessary to model two different types of graphs, the TaskGraph and the 
+          Procedure Function Chart (as defined in the ISA S88 standard for depicting procedural control in master and 
+          control recipes.) It contains subordinate namespaces for analysis of these graphs, including detecting cycles,
+          deadlocks, structure errors, finding critical paths, and more. It also contains a mechanism for executing a
+          Procedure/Sequential Function Chart in the simulation engive as a Batch Executive would. See this 
+          <token>pfc_exec_article</token> (http://www.highpointsoftware.com/documents/PFCSimControl.pdf) for details.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.ItemBased</title>
+      <content>
+        <para>
+          This namespace contains classes necessary to support a simulation control mechanism consisting of blocks with 
+          ports that are "wired together" with connectors. There are subordinate namespaces with classes that implement
+          servers and queues, splitters and joiners, sinks, sources, and data collection mechanisms. Such models are 
+          common in the modeling and simulation world.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Licensing</title>
+      <content>
+        <para>
+          This namespace contains the classes necessary to implement a very flexible licensing scheme.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Materials</title>
+      <content>
+        <para>
+          This namespace contains Vessels, Substances, Materials and Mixtures. It also contains classes necessary
+          to effect and track material requests and transfers. Subordinate namespaces contain classes for modeling 
+          endo- and exo-thermic chemical reactions. environmental emissions, thermodynamics of mixtures in vessels,
+          and calculating vapor pressures.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Mathematics</title>
+      <content>
+        <para>
+          This namespace contains classes for distributions, histograms, interpolation, and linear regressions, as well as
+          applying scaling operations to objects. It also includes some useful extension methods for statistical and other
+          computations.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Persistence</title>
+      <content>
+        <para>This namespace contains classes to support a persistence mechanism that builds on LINQ-to-XML.</para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Randoms</title>
+      <content>
+        <para>This namespace contains classes for the Random Server, a mechanism for issuing streams of independent
+        but repeatable random numbers from distinct Mersenne Twister RNGs. The server can be set to use a double
+        buffer, generating new random numbers into one buffer while serving them from the other, to take advantage
+        of multiple processors. 
+      </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Resources</title>
+      <content>
+        <para>This namespace contains classes that implement Sage's resource model. These classes include interfaces
+        and implementations for resources, resource managers (a.k.a. pools), resource requests, as well as tracking
+        and earmarking mechanisms.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Scheduling</title>
+      <content>
+        <para>This namespace contains classes that represent time periods constrained by start or finish times or 
+        duration (or any two of the three), milestones, and relationships between the milestones.
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Transport</title>
+      <content>
+        <para>
+          This namespace and one subordinate namespace contains classes for modeling an autonomous transport network
+          with carriers, cargo and routes. It is in a beta state, so see the sample code, and consider coordinating
+          with Highpoint if you want to use it in a project. 
+        </para>
+      </content>
+    </section>
+
+    <section>
+      <title>Highpoint.Sage.Utility</title>
+      <content>
+        <para>This namespace contains a wide range of utility classes. </para>
+      </content>
+    </section>
+  </developerConceptualDocument>
+</topic>

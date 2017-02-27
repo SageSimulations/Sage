@@ -1,0 +1,782 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CDC5CBDB-B488-45B2-BCED-008A3C351E0D}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Sage</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Highpoint.Sage</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>false</SignAssembly>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DocumentationFile>Sage.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1591</NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>
+    </DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;SUPPORT_DOTNET35 SUPPORT_WPF</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <DocumentationFile>Sage.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>1591</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Sage.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <BaseAddress>285212672</BaseAddress>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Sage.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>External\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\DefaultValueAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ExceptionHandler.cs" />
+    <Compile Include="Core\ExecController.cs" />
+    <Compile Include="Core\ExecFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Executive.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ExecutiveFastLight.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IExecutive.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IModelObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IModelService.cs" />
+    <Compile Include="Core\InitializationManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\InitializerArgAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IResettable.cs" />
+    <Compile Include="Core\Metronomes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Model.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ModelConfig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ModelError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ModelObjectDictionary.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\StateMachine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Synchronizers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dependencies\GraphSequencer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dependencies\IDependencyVertex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dependencies\ISequencer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\Tasks\TaskManagementService.cs" />
+    <Compile Include="Materials\Vessel.cs" />
+    <Compile Include="Graphs\CPMAnalyst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\CriticalPathAnalyst.cs" />
+    <Compile Include="Graphs\Dag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\DagCycleChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\DagDeadlockChecker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\DagStructureError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\Edge.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\EdgeFiringManagers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\EdgeReceiptManagers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\FlowNode.cs" />
+    <Compile Include="Graphs\PathLength.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\PertAnalyst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\PFC\Collections.cs" />
+    <Compile Include="Graphs\PFC\Execution\Actions\Sequencer.cs" />
+    <Compile Include="Graphs\PFC\Execution\Actions\SimpleDelay.cs" />
+    <Compile Include="Graphs\PFC\Execution\ExecutionEngine.cs" />
+    <Compile Include="Graphs\PFC\Execution\ExecutionContext.cs" />
+    <Compile Include="Graphs\PFC\Execution\PfcActor.cs" />
+    <Compile Include="Graphs\PFC\Execution\StateMachines.cs" />
+    <Compile Include="Graphs\PFC\Expressions.cs" />
+    <Compile Include="Graphs\PFC\Interfaces.cs" />
+    <Compile Include="Graphs\PFC\PfcLink.cs" />
+    <Compile Include="Graphs\PFC\PfcAnalyst.cs" />
+    <Compile Include="Graphs\PFC\PfcDiagnostics.cs" />
+    <Compile Include="Graphs\PFC\PfcElement.cs" />
+    <Compile Include="Graphs\PFC\PfcNode.cs" />
+    <Compile Include="Graphs\PFC\PfcPredicates.cs" />
+    <Compile Include="Graphs\PFC\PfcUnit.cs" />
+    <Compile Include="Graphs\PFC\PfcValidator.cs" />
+    <Compile Include="Graphs\PFC\ProcedureFunctionChart.cs" />
+    <Compile Include="Graphs\PFC\PfcStep.cs" />
+    <Compile Include="Graphs\PFC\PfcTransition.cs" />
+    <Compile Include="Graphs\Tasks\Task.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\Tasks\TaskException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\Tasks\TaskList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\Tasks\TaskProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\ValidationService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\Vertex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Graphs\VertexEarliestTimeThresholder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Connectors\Connectors.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Connectors\FixedRateChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Connectors\IChannel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Connectors\IRoute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Connectors\Nexus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\IServiceItem.cs" />
+    <Compile Include="ItemBased\Periodicities.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Ports.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Pulses.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Queues\DataCollectors\WaitingTime.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Queues\IQueue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Queues\ObjectQueue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Servers\BufferedServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Servers\IServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Servers\MultiChannelDelayServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Servers\ResourceServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Servers\ServerPlus.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Servers\SimpleServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SimplePortActivityLogger.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SimplePortOwner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SourcesAndSinks\ItemSink.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SourcesAndSinks\ItemSource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SplittersAndJoiners\BranchBlock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SplittersAndJoiners\Joiners.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\SplittersAndJoiners\Splitters.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ItemBased\Tags.cs" />
+    <Compile Include="ItemBased\Ticker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Chemistry\Constants.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Chemistry\Reaction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Chemistry\ReactionInstance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Chemistry\ReactionProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialTransferrer.cs" />
+    <Compile Include="Materials\Dispensary.cs" />
+    <Compile Include="Materials\Emissions\EmissionModels.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Emissions\EmissionsClassificationCatalog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Emissions\EmissionsClassifications.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Emissions\EmissionsService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Emissions\IEmissionRecord.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\IMaterial.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MassVolumeTracker.cs" />
+    <Compile Include="Materials\MaterialCatalog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialConduitManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialResourceItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialResourceRequest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialService.cs" />
+    <Compile Include="Materials\MaterialTransferRecord.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialTransfers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\MaterialType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Mixture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Substance.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\Thermodynamics\TemperatureController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\VaporPressure\IVaporPressureCoefficients.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\VaporPressure\VaporPressureCalculator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Materials\VaporPressure\VaporPressureCoefficientsImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Distributions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Extensions.cs" />
+    <Compile Include="Mathematics\Histogram1D_Base.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Histogram1D_DateTime.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Histogram1D_Double.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Histogram1D_TimeSpan.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\IHistogram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Interpolations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\LinearRegression.cs" />
+    <Compile Include="Mathematics\RMSErrorCalculator.cs" />
+    <Compile Include="Persistence\DynamicConstruction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Persistence\IDirtyable.cs" />
+    <Compile Include="Persistence\Persistence.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Presentation\Converters\Converters.cs" />
+    <Compile Include="Randoms\MersenneTwister.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Randoms\RandomServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\AccessControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\IResource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\IResourceManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\IResourceRequest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Resource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\ResourceExceptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\ResourceManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\ResourceManagerCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\ResourceRequest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\SelfManagingResource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Tracking.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\Activity.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\Cost.cs" />
+    <Compile Include="Scheduling\IHasTimePeriodAspects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\ITimePeriod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\Milestone.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\MilestoneRelationship.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\TimeAdjustmentMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\TimePeriod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\TimePeriodPart.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Scheduling\TimePeriodSorter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SmartPropertyBag\IHasWriteLock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SmartPropertyBag\SmartPropertyBag.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SmartPropertyBag\SPBInitializer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\BaseModelObject.cs" />
+    <Compile Include="Transport\TransportNetwork.cs" />
+    <Compile Include="Transport\TransportSystem.cs" />
+    <Compile Include="Transport\Equipment\ActorBase.cs" />
+    <Compile Include="Transport\Equipment\Conveyor.cs" />
+    <Compile Include="Transport\Equipment\Resources\LoaderResourceRequest.cs" />
+    <Compile Include="Transport\Equipment\Vehicle.cs" />
+    <Compile Include="Transport\Management\Assignments\AssignmentState.cs" />
+    <Compile Include="Transport\Management\Assignments\AssignmentStateMachine.cs" />
+    <Compile Include="Transport\Management\Assignments\BaseAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\BaseCalendarAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\BasePeriodicAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\BreakdownAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\GenericAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\IAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\ShuttleAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\MaintenanceAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\SendTruckToReceive.cs" />
+    <Compile Include="Transport\Management\Assignments\ShiftChangesAssignment.cs" />
+    <Compile Include="Transport\Management\Assignments\TakeBreaksAssignment.cs" />
+    <Compile Include="Transport\Management\Goals\BaseGoal.cs" />
+    <Compile Include="Transport\Management\Goals\FailureGoal.cs" />
+    <Compile Include="Transport\Management\Goals\GenericGoal.cs" />
+    <Compile Include="Transport\Management\Goals\GoalState.cs" />
+    <Compile Include="Transport\Management\Goals\GoalStateMachine.cs" />
+    <Compile Include="Transport\Management\Goals\IGoal.cs" />
+    <Compile Include="Transport\Management\Goals\IMiningGoal.cs" />
+    <Compile Include="Transport\Management\Goals\IPeriodicGoal.cs" />
+    <Compile Include="Transport\Management\Goals\IStochasticGoal.cs" />
+    <Compile Include="Transport\Management\Goals\MiningGoal.cs" />
+    <Compile Include="Transport\Management\Goals\PeriodicGoal.cs" />
+    <Compile Include="Transport\Management\Goals\ScheduledBreakGoal.cs" />
+    <Compile Include="Transport\Management\Goals\StochasticGoal.cs" />
+    <Compile Include="Transport\Management\Management_Interfaces.cs" />
+    <Compile Include="Transport\Policy.cs" />
+    <Compile Include="Transport\Management\Strategies\MultiActivityUniversalRecipeStrategy.cs" />
+    <Compile Include="Transport\Management\Strategies\SingleActivityUniversalRecipeStrategy.cs" />
+    <Compile Include="Transport\Cargo\Cargo_Interfaces.cs" />
+    <Compile Include="Transport\Management\Tasks\Task_Interfaces.cs" />
+    <Compile Include="Transport\BaseSegment.cs" />
+    <Compile Include="Transport\Navigator.cs" />
+    <Compile Include="Transport\BaseNode.cs" />
+    <Compile Include="Transport\TableDrivenTravelTimeService.cs" />
+    <Compile Include="Transport\TransportEndpoint.cs" />
+    <Compile Include="Transport\Interfaces.cs" />
+    <Compile Include="Transport\Equipment\Equipment_Interfaces.cs" />
+    <Compile Include="Utility\Aspects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\CompoundComparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\Crypto.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\DateTimeOperations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\DescriptionAttribute.cs" />
+    <Compile Include="Utility\DiagnosticAids.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\DictionaryOperations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\DirectoryOperations.cs" />
+    <Compile Include="Utility\DoubleTracker.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\Encoding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\EventedList.cs" />
+    <Compile Include="Utility\EventTimeHistorian.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\Exchange.cs" />
+    <Compile Include="Utility\ExchangeManager.cs" />
+    <Compile Include="Utility\Expressions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\Extensions.cs" />
+    <Compile Include="Utility\GraphSupport.cs" />
+    <Compile Include="Utility\GuidGenerator.cs" />
+    <Compile Include="Utility\GuidOperations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\HashtableOfLists.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\MouseUtilities.cs" />
+    <Compile Include="Utility\NameComparer.cs" />
+    <Compile Include="Utility\Heap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\ICloneable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\ExecutionContext.cs" />
+    <Compile Include="Utility\IHasSortKeys.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\Indexing.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\InitFailureException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\ITreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\LabelManager.cs" />
+    <Compile Include="Utility\LocalEventQueue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\Mementos\Memento.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\MissingParameterException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\MultiArrayListEnumeration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\NameValuePair.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\OverrideablePrimitives.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mathematics\Rationalizer.cs" />
+    <Compile Include="Mathematics\Scaling.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\SerialNumber.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\StringOperations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\SysInfoOperations.cs" />
+    <Compile Include="Utility\TimeBasedSelection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\TreeSupport.cs" />
+    <Compile Include="Utility\Tuples.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\TupleSpace.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\UniqueNameGenerator.cs" />
+    <Compile Include="Utility\UnitTestDetector.cs" />
+    <Compile Include="Utility\Visitors.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\WeakHashTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\WeakList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utility\XmlTransform.cs" />
+    <Compile Include="Utility\XmlConvert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Graphs\PFC\ProcedureFunctionChart.xsd">
+      <SubType>
+      </SubType>
+    </None>
+    <None Include="Graphs\PFC\ProcedureFunctionChart.xsx">
+      <DependentUpon>ProcedureFunctionChart.xsd</DependentUpon>
+    </None>
+    <None Include="Scheduling\Scheduling.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OtherHelpContent\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>REM copy $(TargetPath) D:\Desktop\NEO_PLM\Aspirin2\External</PostBuildEvent>
+  </PropertyGroup>
+</Project>
