@@ -1,5 +1,7 @@
 # Sage Simulation & Modeling Library
 
+`Support for Discrete Event, Agent-based and Block-and-Connector Flow Simulation.`
+
 -------------------
 by [Highpoint Software Systems, LLC](http://www.highpointsoftware.com/index.html)
 
@@ -9,7 +11,7 @@ Sage® is our third-generation object oriented simulation class library and fram
 
 **Sage® is:**
  * A Discrete Event Simulation Engine built from around 25,000 lines of C# code.
- * Open source, licensed under [Affero GPL v3](https://www.gnu.org/licenses/agpl-3.0.en.html). (Less restrictive terms are available.)
+ * Open source, licensed under [Affero GPL v3](./LICENSE). (Less restrictive terms are available.)
  * Proven through customers in pharma, military, mining, climate modeling, simulation tooling, and other industries.
 
 **Support includes:**
@@ -24,3 +26,13 @@ Sage® is our third-generation object oriented simulation class library and fram
 
 **Obtain the code:**
  * The code repository is [on GitHub](https://github.com/peterbosch/Sage).
+ 
+**Contact**
+
+--> [Email](support@highpointsoftware.com)
+
+**For more information:**
+
+Please visit Highpoint Software Systems' [website](http://www.highpointsoftware.com/index.html).
+
+![x](http://www.highpointsoftware.com/Images/logomedium.jpg "Highpoint Logo")
