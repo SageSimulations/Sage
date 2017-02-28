@@ -46,15 +46,14 @@ namespace Highpoint.Sage.Resources  {
 [User_3,Acq,1/1/0001 12:25:00 AM]
 [User_3,Rls,1/1/0001 12:30:00 AM]
 [User_4,Acq,1/1/0001 12:30:00 AM]
-[User_4,Rls,1/1/0001 12:35:00 AM]
-";
+[User_4,Rls,1/1/0001 12:35:00 AM]";
 			#endregion
 
 			m_resultString = "";
 			new PriRscReqTester(5).Start();
 			//Console.WriteLine(m_resultString);
 
-			System.Diagnostics.Debug.Assert(m_resultString.Equals(expected),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+			System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
 		
@@ -90,11 +89,11 @@ namespace Highpoint.Sage.Resources  {
 			m_prt.Start();
 			//Console.WriteLine(m_resultString);
 
-			System.Diagnostics.Debug.Assert(m_resultString.Equals(expected),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+			System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
+        private string StripCRLF(string structureString) => structureString.Replace("\r", "").Replace("\n", "");
 
-
-		[TestMethod]
+        [TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("First functional test of Resource Tester Infrastructural Class")]
 		public void TestPrioritizedResourceRequestWRemoval_1(){
 			#region Expected Result
@@ -126,7 +125,7 @@ namespace Highpoint.Sage.Resources  {
 			m_prt.Start();
 			//Console.WriteLine(m_resultString);
 
-			System.Diagnostics.Debug.Assert(m_resultString.Equals(expected),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+			System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
 		[TestMethod]
@@ -155,7 +154,7 @@ namespace Highpoint.Sage.Resources  {
 			m_resultString = "";
 			m_prt.Start();
 			//Console.WriteLine(m_resultString);
-            System.Diagnostics.Debug.Assert(m_resultString.Equals(expected), "TestPrioritizedResourceRequestWRemoval_2", "Results didn't match!");
+            System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)), "TestPrioritizedResourceRequestWRemoval_2", "Results didn't match!");
 		}
 
 		private void Model_Starting(IModel theModel) {

@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Utility
                 "This test manipulates a tree that holds elements that have no knowledge of their participation in a tree.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            System.Diagnostics.Debug.Assert(sb.ToString().Equals(REQUIRED_ITERATIONSTRING1),
+            System.Diagnostics.Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)),
                 "Expected \"" + REQUIRED_ITERATIONSTRING1 + "\", but got \"" + sb.ToString() + "\" instead.");
         }
 
@@ -112,7 +112,7 @@ namespace Highpoint.Sage.Utility
                 "This test manipulates a tree that holds elements that have no knowledge of their participation in a tree.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            System.Diagnostics.Debug.Assert(sb.ToString().Equals(REQUIRED_ITERATIONSTRING1),
+            System.Diagnostics.Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)),
                 "Expected \"" + REQUIRED_ITERATIONSTRING1 + "\", but got \"" + sb.ToString() + "\" instead.");
         }
 
@@ -160,7 +160,7 @@ namespace Highpoint.Sage.Utility
             Console.WriteLine("This test manipulates a tree that holds elements that derive from TreeNode.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            System.Diagnostics.Debug.Assert(sb.ToString().Equals(REQUIRED_ITERATIONSTRING1));
+            System.Diagnostics.Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)));
 
         }
 
@@ -209,7 +209,7 @@ namespace Highpoint.Sage.Utility
             Console.WriteLine("This test manipulates a tree that holds elements that implement ITreeNode.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            System.Diagnostics.Debug.Assert(sb.ToString().Equals(REQUIRED_ITERATIONSTRING1));
+            System.Diagnostics.Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)));
 
         }
 
@@ -243,8 +243,7 @@ Ethel
 Frank
 George
 Charlie
-Dingus
-";
+Dingus";
 
         #endregion
     
@@ -369,8 +368,10 @@ Dingus
             Console.WriteLine("This test manipulates a tree that holds elements that have no knowledge of their participation in a tree, but with tree restructuring.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            Assert.AreEqual(sb.ToString(), REQUIRED_ITERATIONSTRING2, "Expected \"" + REQUIRED_ITERATIONSTRING2 + "\", but got \"" + sb.ToString() + "\" instead.");
+            Assert.AreEqual(StripCRLF(sb.ToString()), StripCRLF(REQUIRED_ITERATIONSTRING2), "Expected \"" + REQUIRED_ITERATIONSTRING2 + "\", but got \"" + sb.ToString() + "\" instead.");
         }
+
+        private string StripCRLF(string structureString) =>  structureString.Replace("\r", "").Replace("\n", "");
 
         #region REQUIRED_ITERATIONSTRING2
         private static string REQUIRED_ITERATIONSTRING2 =

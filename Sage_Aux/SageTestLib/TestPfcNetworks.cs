@@ -611,12 +611,17 @@ namespace Highpoint.Sage.Graphs.PFC {
 
             string structureString = PfcDiagnostics.GetStructure(pfc);
             Console.WriteLine("After a " + testName + ", structure is \r\n" + structureString);
-            Assert.AreEqual(structureString, shouldBe, "Structure should have been\r\n" + shouldBe + "\r\nbut it was\r\n" + structureString + "\r\ninstead.");
+            Assert.AreEqual(StripCRLF(structureString), StripCRLF(shouldBe), "Structure should have been\r\n" + shouldBe + "\r\nbut it was\r\n" + structureString + "\r\ninstead.");
 
             if (m_testSerializationToo) {
                 _TestSerialization(pfc, shouldBe, testName);
             }
 
+        }
+
+        private string StripCRLF(string structureString)
+        {
+            return structureString.Replace("\r", "").Replace("\n", "");
         }
 
         private void _TestSimpleLink(PfcElementType inType, PfcElementType outType, string shouldBe) {
@@ -633,7 +638,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
             string structureString = PfcDiagnostics.GetStructure(pfc);
             Console.WriteLine("After a " + testName + ", structure is \r\n" + structureString);
-            Assert.AreEqual(structureString, shouldBe, "Structure should have been\r\n" + shouldBe + "\r\nbut it was\r\n" + structureString + "\r\ninstead.");
+            Assert.AreEqual(StripCRLF(structureString), StripCRLF(shouldBe), "Structure should have been\r\n" + shouldBe + "\r\nbut it was\r\n" + structureString + "\r\ninstead.");
 
             if (m_testSerializationToo) {
                 _TestSerialization(pfc, shouldBe, testName);
@@ -686,7 +691,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
             string structureString = PfcDiagnostics.GetStructure(pfc2);
             Console.WriteLine("After storing and reloading a " + testName + ", the reloaded structure is \r\n" + structureString);
-            Assert.AreEqual(structureString, shouldBe, "Structure should have been\r\n" + shouldBe + "\r\nbut it was\r\n" + structureString + "\r\ninstead.");
+            Assert.AreEqual(StripCRLF(structureString), StripCRLF(shouldBe), "Structure should have been\r\n" + shouldBe + "\r\nbut it was\r\n" + structureString + "\r\ninstead.");
 
         }
 
