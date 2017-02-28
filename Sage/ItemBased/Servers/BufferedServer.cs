@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.Mathematics;
 using Highpoint.Sage.ItemBased.Ports;
 using Highpoint.Sage.ItemBased.Queues;

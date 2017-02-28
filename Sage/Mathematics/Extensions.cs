@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using _Debug = System.Diagnostics.Debug;
 // ReSharper disable PossibleMultipleEnumeration // TODO: Must address this.
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -183,8 +184,8 @@ namespace Highpoint.Sage.Mathematics
         /// <param name="interpolate">if set to <c>true</c>, we interpolate between located items' values.</param>
         /// <returns></returns>
         public static double GetValueAtPercentile<T>(this List<T> srcItems, double percentile, Func<T, double> valueGetter, bool interpolate) {
-            System.Diagnostics.Debug.Assert(srcItems.Count > 0, "Percentile was requested from a population of zero items. Percentile source populations must have at least one member.");
-            System.Diagnostics.Debug.Assert(percentile >= 0.0 && percentile <= 100.0, string.Format("Percentile was requested as {0} - it must be a double on the interval [0.0 ... 100.0]", percentile));
+            _Debug.Assert(srcItems.Count > 0, "Percentile was requested from a population of zero items. Percentile source populations must have at least one member.");
+            _Debug.Assert(percentile >= 0.0 && percentile <= 100.0, string.Format("Percentile was requested as {0} - it must be a double on the interval [0.0 ... 100.0]", percentile));
             percentile = percentile / 100.0;
             if (srcItems.Count == 1) {
                 return valueGetter(srcItems[0]);
@@ -228,7 +229,7 @@ namespace Highpoint.Sage.Mathematics
         /// <returns>The percentile at which the target item falls.</returns>
         public static double GetPercentileForItem<T>(this List<T> srcItems, T targetItem, Func<T, double> valueGetter) {
             List<T> lclSrcItems = new List<T>(srcItems);
-            System.Diagnostics.Debug.Assert(lclSrcItems.Count > 0, "Percentile was requested from a population of zero items. Percentile source populations must have at least one member.");
+            _Debug.Assert(lclSrcItems.Count > 0, "Percentile was requested from a population of zero items. Percentile source populations must have at least one member.");
             lclSrcItems.Sort((t1, t2) => Comparer<double>.Default.Compare(valueGetter(t1), valueGetter(t2)));
             if (lclSrcItems.Contains(targetItem)) {
                 // Faster method.

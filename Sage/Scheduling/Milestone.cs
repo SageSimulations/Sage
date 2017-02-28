@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Utility;
 using System.Collections.Generic;
@@ -275,7 +275,7 @@ namespace Highpoint.Sage.Scheduling {
 			public static void Adjust(Milestone prospectiveMover, DateTime newValue){
 				if (prospectiveMover.m_dateTime.Equals(newValue)) return;
 				lock ( s_lock ) {
-					if ( _debug ) Trace.WriteLine("Attempting to coordinate correct movement of " + prospectiveMover.Name + " from " + prospectiveMover.DateTime + " to " + newValue + ".");
+					if ( _debug ) _Debug.WriteLine("Attempting to coordinate correct movement of " + prospectiveMover.Name + " from " + prospectiveMover.DateTime + " to " + newValue + ".");
 
 					// Change, and then enqueue the first milestone.
 					_oldValues.Add(prospectiveMover,prospectiveMover.DateTime);
@@ -300,27 +300,27 @@ namespace Highpoint.Sage.Scheduling {
 			private static void Propagate(){
 				while ( _changedMilestones.Count > 0 ) {
 					Milestone ms = (Milestone)_changedMilestones.Dequeue();
-					if ( _debug ) Trace.WriteLine("\tPerforming propagation of change to " + ms.Name);
+					if ( _debug ) _Debug.WriteLine("\tPerforming propagation of change to " + ms.Name);
 					
 #region Create a Hashtable of Lists - key is target Milestone, list contains relationships to that ms.
 					Hashtable htol = new Hashtable();
 					foreach ( MilestoneRelationship mr in ms.Relationships ) {
 						if ( !mr.Enabled ) continue;              // Only enabled relationships can effect change.
 						if ( mr.Dependent.Equals(ms) ) continue;  // Only relationships where we are the independent can effect change.
-						//if ( m_debug ) Trace.WriteLine("\tConsidering " + mr.ToString());
+						//if ( m_debug ) _Debug.WriteLine("\tConsidering " + mr.ToString());
 						if ( !htol.Contains(mr.Dependent) ) htol.Add(mr.Dependent,new ArrayList());
 						((ArrayList)htol[mr.Dependent]).Add(mr);  // We now have outbounds, grouped by destination milestone.
 					}
 #endregion
 
-					//if ( m_debug ) Trace.WriteLine("\tPerforming change assessments for relationships that depend on " + ms.Name);
+					//if ( m_debug ) _Debug.WriteLine("\tPerforming change assessments for relationships that depend on " + ms.Name);
 					
 					// For each 'other' milestone with which this milestone has a relationship, we will
 					// handle all of the relationships that this ms has with that one, as a group.
 					bool fullData = false;
 					foreach ( Milestone target in htol.Keys ) {
 						if ( _debug ) {
-							Trace.WriteLine("\t\tReconciling all relationships between " + ms.Name + " and " + target.Name);
+							_Debug.WriteLine("\t\tReconciling all relationships between " + ms.Name + " and " + target.Name);
 							// E : RCV Liquid1.Xfer-In.Start and E : RCV Liquid1.Xfer-In.End
 
 						}
@@ -330,7 +330,7 @@ namespace Highpoint.Sage.Scheduling {
 //							fullData = true;
 //						}
 						
-						if ( fullData ) foreach ( MilestoneRelationship mr2 in relationships ) Trace.WriteLine(mr2.ToString());
+						if ( fullData ) foreach ( MilestoneRelationship mr2 in relationships ) _Debug.WriteLine(mr2.ToString());
 						
 
 
@@ -341,28 +341,28 @@ namespace Highpoint.Sage.Scheduling {
 								recip.PushEnabled(false);
 								m_pushedDisablings.Push(recip);
 							}*/
-							if ( fullData ) if ( _debug ) Trace.WriteLine("\t\tAdjusting window to satisfy " + mr2);
+							if ( fullData ) if ( _debug ) _Debug.WriteLine("\t\tAdjusting window to satisfy " + mr2);
 							DateTime thisMinDt, thisMaxDt;
 							mr2.Reaction(ms.DateTime,out thisMinDt,out thisMaxDt);       // Get the relationship's acceptable window.
 							minDateTime = DateTimeOperations.Max(minDateTime,thisMinDt); // Narrow the range from below.
 							maxDateTime = DateTimeOperations.Min(maxDateTime,thisMaxDt); // Narrow the range from above.
-							if ( fullData ) if ( _debug ) Trace.WriteLine("\t\t\tThe window is now from " + minDateTime + " to " + maxDateTime + ".");
+							if ( fullData ) if ( _debug ) _Debug.WriteLine("\t\t\tThe window is now from " + minDateTime + " to " + maxDateTime + ".");
 						}
 
-						//if ( m_debug ) Trace.WriteLine("\t\tThe final window is from " + minDateTime + " to " + maxDateTime + ".");
+						//if ( m_debug ) _Debug.WriteLine("\t\tThe final window is from " + minDateTime + " to " + maxDateTime + ".");
 						if ( minDateTime <= maxDateTime ) {
 							DateTime newDateTime = GetClosestDateTime(minDateTime,maxDateTime,target.DateTime);
 							if ( !target.DateTime.Equals(newDateTime) ) {
-								if ( _debug ) Trace.WriteLine("\t\t\tWe will move " + target.Name + " from " + target.DateTime + " to " + newDateTime);
+								if ( _debug ) _Debug.WriteLine("\t\t\tWe will move " + target.Name + " from " + target.DateTime + " to " + newDateTime);
 								if ( !_changedMilestones.Contains(target) ) _changedMilestones.Enqueue(target);
 								if ( !_oldValues.Contains(target) ) _oldValues.Add(target,target.m_dateTime);
-								if ( fullData ) if ( _debug ) Trace.WriteLine("\t\t\tThere are now " + _changedMilestones.Count + " milestones with changes to process.");
+								if ( fullData ) if ( _debug ) _Debug.WriteLine("\t\t\tThere are now " + _changedMilestones.Count + " milestones with changes to process.");
 								target.m_dateTime = newDateTime;
 							} else {
-								if ( _debug ) Trace.WriteLine("\t\t\t" + target.Name + " stays put.");
+								if ( _debug ) _Debug.WriteLine("\t\t\t" + target.Name + " stays put.");
 							}
 //						} else {
-//							if ( m_debug ) Trace.WriteLine("\t\t\tThis is an unachievable window.");
+//							if ( m_debug ) _Debug.WriteLine("\t\t\tThis is an unachievable window.");
 //							throw new ApplicationException("Can't find a new datetime value for " + target.ToString());
 						}
 

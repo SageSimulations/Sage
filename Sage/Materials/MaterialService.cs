@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Materials.Chemistry;
@@ -698,7 +698,7 @@ namespace Highpoint.Sage.Materials {
             }
             if (rscQueue.Count == 0) {
                 if (s_diagnostics)
-                    Trace.WriteLine("No resources were requested.");
+                    _Debug.WriteLine("No resources were requested.");
             } else {
                 foreach (ReservationPair rp in rscQueue) {
                     if (!( rp.ResourceRequest is MaterialResourceRequest )) {
@@ -759,12 +759,12 @@ namespace Highpoint.Sage.Materials {
                 TimeSpan duration = TimeSpan.FromMinutes(double.IsNaN(minutes) ? 0 : minutes);
                 #region Diagnostics
                 if (s_diagnostics) {
-                    Trace.WriteLine(Name + " is transferring out " + charge + " over " + duration + ", ");
-                    Trace.WriteLine("\t and adding a MaterialTransfer to xferTable under key " + acqKey.MyPort.Connector.GetHashCode());
+                    _Debug.WriteLine(Name + " is transferring out " + charge + " over " + duration + ", ");
+                    _Debug.WriteLine("\t and adding a MaterialTransfer to xferTable under key " + acqKey.MyPort.Connector.GetHashCode());
                 }
                 #endregion
                 if (xferTable.Contains(acqKey.MyPort.Connector)) {
-                    //Trace.WriteLine("Removing acquisition key for " + acqKey.m_amrr[0].MaterialType.Name);
+                    //_Debug.WriteLine("Removing acquisition key for " + acqKey.m_amrr[0].MaterialType.Name);
                     xferTable.Remove(acqKey.MyPort.Connector);
                 }
                 xferTable.Add(acqKey.MyPort.Connector, NewMaterialTransfer(charge, duration));
@@ -789,7 +789,7 @@ namespace Highpoint.Sage.Materials {
                 MaterialTransfer mt = (MaterialTransfer)xferTable[acqKey.MyPort.Connector];
                 #region Diagnostics
                 if (s_diagnostics)
-                    Trace.WriteLine(Name + " is transferring in " + mt.Mixture + " over " + mt.DestinationDuration);
+                    _Debug.WriteLine(Name + " is transferring in " + mt.Mixture + " over " + mt.DestinationDuration);
                 #endregion
                 foreach (MaterialResourceRequest mrr in acqKey.Amrr) {
                     MaterialResourceItem mri = GetCompartment(mrr.MaterialType, mrr.MaterialSpecs);

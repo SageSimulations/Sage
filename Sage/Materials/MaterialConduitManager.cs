@@ -52,16 +52,16 @@ namespace Highpoint.Sage.Materials.Chemistry {
 		    MaterialResourceRequest resourceRequest = irr as MaterialResourceRequest;
 		    if ( resourceRequest != null ) {
 				MaterialResourceRequest mrr = resourceRequest;
-				//Trace.WriteLine("I am taking care of a request for " + mrr.QuantityDesired + " kg of " + mrr.MaterialType.Name);
+				//_Debug.WriteLine("I am taking care of a request for " + mrr.QuantityDesired + " kg of " + mrr.MaterialType.Name);
 				IResourceManager rm = (IResourceManager)m_conduits[mrr.MaterialType];
 				if ( rm != null ) {
-					//Trace.WriteLine("There is a conduit specified for " + mrr.MaterialType.Name + ", and it is " + rm);
+					//_Debug.WriteLine("There is a conduit specified for " + mrr.MaterialType.Name + ", and it is " + rm);
 					HandleRequest(mrr,rm);
 				} else {
-					//Trace.WriteLine("There is no conduit specified for " + mrr.MaterialType.Name);
+					//_Debug.WriteLine("There is no conduit specified for " + mrr.MaterialType.Name);
 				}
 			} else {
-				//Trace.WriteLine("I am skipping handling of a request for " + irr.QuantityDesired + " units of something.");
+				//_Debug.WriteLine("I am skipping handling of a request for " + irr.QuantityDesired + " units of something.");
 			}
 		}
 
@@ -78,18 +78,18 @@ namespace Highpoint.Sage.Materials.Chemistry {
 		}
 
 		private void TransferIn(MaterialResourceRequest mrr, IResourceManager secondary, double quantity){
-			//Trace.WriteLine("Gotta transfer " + quantity + " kg in.");
+			//_Debug.WriteLine("Gotta transfer " + quantity + " kg in.");
 			IResourceRequest newMrr = new MaterialResourceRequest(mrr.MaterialType, quantity, MaterialResourceRequest.Direction.Deplete);
 			if ( secondary.Acquire(newMrr,false) ) {
-				//Trace.WriteLine("Successfully transferred.");
+				//_Debug.WriteLine("Successfully transferred.");
 			}
 		}
 
 		private void TransferOut(MaterialResourceRequest mrr, IResourceManager secondary, double quantity){
-			//Trace.WriteLine("Gotta transfer " + quantity + " kg out.");
+			//_Debug.WriteLine("Gotta transfer " + quantity + " kg out.");
 			IResourceRequest newMrr = new MaterialResourceRequest(mrr.MaterialType, quantity, MaterialResourceRequest.Direction.Deplete);
 			if ( secondary.Acquire(newMrr,false) ) {
-				//Trace.WriteLine("Successfully transferred.");
+				//_Debug.WriteLine("Successfully transferred.");
 			}
 		}
 

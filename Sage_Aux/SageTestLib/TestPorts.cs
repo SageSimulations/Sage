@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.ItemBased.Ports;
 using Highpoint.Sage.ItemBased.Connectors;
 using Highpoint.Sage.SimCore;
@@ -40,10 +40,10 @@ namespace Highpoint.Sage.ItemBased.Blocks {
             }
 
             m_blocks[0].In.Put("Random string");
-            Trace.WriteLine(m_blocks[m_nBlocks - 1].Out.Peek(null));
+            _Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Peek(null));
 
 
-            Trace.WriteLine(m_blocks[m_nBlocks - 1].Out.Take(null));
+            _Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Take(null));
         }
 
         [TestMethod]
@@ -51,9 +51,9 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
             SimpleProxyPortOwner sppo = new SimpleProxyPortOwner(m_model, "Proxy", Guid.NewGuid());
             sppo.In.Put("Random string");
-            Trace.WriteLine(sppo.Out.Peek(null));
+            _Debug.WriteLine(sppo.Out.Peek(null));
 
-            Trace.WriteLine(sppo.Out.Take(null));
+            _Debug.WriteLine(sppo.Out.Take(null));
         }
     }
 
@@ -409,11 +409,11 @@ namespace Highpoint.Sage.ItemBased.Blocks {
         }
 
         private bool OnDataArrived(object data,IInputPort ip){
-            Trace.Write(Name + " was just given data (" + data.ToString() + ")");
+            _Debug.Write(Name + " was just given data (" + data.ToString() + ")");
             if ( In.Peer != null ) {
-                Trace.WriteLine(" by " + ( (IHasName)In.Peer.Owner ).Name);
+                _Debug.WriteLine(" by " + ( (IHasName)In.Peer.Owner ).Name);
             } else {
-                Trace.WriteLine(" by some non-connected element.");
+                _Debug.WriteLine(" by some non-connected element.");
             }
 
             m_buffer = data;
@@ -427,19 +427,19 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         private object OnDataRequested(IOutputPort op, object selector) {
 
-            Trace.Write(Name + " was just asked for data by ");
+            _Debug.Write(Name + " was just asked for data by ");
             if ( Out.Peer != null ) {
-                Trace.WriteLine(((IHasName)Out.Peer.Owner).Name);
+                _Debug.WriteLine(((IHasName)Out.Peer.Owner).Name);
             } else {
-                Trace.WriteLine("some non-connected element.");
+                _Debug.WriteLine("some non-connected element.");
             }
             
             if ( m_in.Peer != null ) {
-                Trace.WriteLine("I will ask " + ( (IHasName)In.Peer.Owner ).Name + "...");
+                _Debug.WriteLine("I will ask " + ( (IHasName)In.Peer.Owner ).Name + "...");
                 return m_in.OwnerTake(null);
             } else {
                 string data = RandomString();
-                Trace.WriteLine("Since I have no predecessor, I'll make up some data. How about " + data + "...");
+                _Debug.WriteLine("Since I have no predecessor, I'll make up some data. How about " + data + "...");
                 return data;
             }
         }

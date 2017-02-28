@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -396,9 +396,9 @@ namespace Highpoint.Sage.SimCore {
 
                 if (s_diagnostics) {
                     Trace.Write("State machine in model \"" + m_model.Name + "\" servicing request to transition ");
-                    Trace.WriteLine("from \"" + State + "\" into \"" + toWhatState + "\".");
+                    _Debug.WriteLine("from \"" + State + "\" into \"" + toWhatState + "\".");
                     StackTrace st = new StackTrace();
-                    Trace.WriteLine(st.ToString());
+                    _Debug.WriteLine(st.ToString());
                 }
 
                 // TODO: Determine if this is a good policy - it prohibits self-transitions.
@@ -433,7 +433,7 @@ namespace Highpoint.Sage.SimCore {
                 }
 
                 if (s_diagnostics)
-                    Trace.WriteLine(mth.Dump());
+                    _Debug.WriteLine(mth.Dump());
                 IList failureReasons = mth.DoPrepare(m_model, userData);
                 if (failureReasons.Count != 0) {
                     mth.DoRollback(m_model, userData, failureReasons);
@@ -443,11 +443,11 @@ namespace Highpoint.Sage.SimCore {
                 mth.DoCommit(m_model, userData);
 
                 if (s_diagnostics)
-                    Trace.WriteLine("Exiting " + State);
+                    _Debug.WriteLine("Exiting " + State);
                 m_currentState = m_nextState;
                 TransitionCompletedSuccessfully?.Invoke(m_model, userData);
                 if (s_diagnostics)
-                    Trace.WriteLine("Entering " + State);
+                    _Debug.WriteLine("Entering " + State);
 
                 m_stateMethods[m_currentState]?.Invoke(m_model, userData);
 
@@ -461,7 +461,7 @@ namespace Highpoint.Sage.SimCore {
 
             } finally {
                 if (s_diagnostics)
-                    Trace.WriteLine("Coming to a rest in state " + State);
+                    _Debug.WriteLine("Coming to a rest in state " + State);
                 m_transitionInProgress = false;
                 m_nextState = m_currentState;
             }
@@ -547,9 +547,9 @@ namespace Highpoint.Sage.SimCore {
             }
 
             if (s_diagnostics) {
-                Trace.WriteLine("Initializing state machine table to the following states");
+                _Debug.WriteLine("Initializing state machine table to the following states");
                 foreach (object val in Enum.GetValues(state.GetType())) {
-                    Trace.WriteLine(m_stateTranslationTable[val] + ", " + val + " : " + val.GetType());
+                    _Debug.WriteLine(m_stateTranslationTable[val] + ", " + val + " : " + val.GetType());
                 }
             }
         }

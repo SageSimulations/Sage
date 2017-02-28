@@ -4,7 +4,7 @@
 #  Highpoint Software Systems is a Wisconsin Limited Liability Corporation.
 ###############################################################################*/
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 
 namespace Highpoint.Sage.Dependencies {

@@ -1,6 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Collections.Generic;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.PFC {
 
@@ -296,7 +297,7 @@ namespace Highpoint.Sage.Graphs.PFC {
         /// </summary>
         /// <param name="newPredecessor">The new predecessor link.</param>
         public void AddPredecessor(IPfcLinkElement newPredecessor) {
-            System.Diagnostics.Debug.Assert(newPredecessor.Successor != null );
+            _Debug.Assert(newPredecessor.Successor != null );
             m_predecessors.Add(newPredecessor);
             StructureDirty = true;
         }
@@ -363,7 +364,7 @@ namespace Highpoint.Sage.Graphs.PFC {
         /// </summary>
         /// <param name="newSuccessor">The new successor link.</param>
         public void AddSuccessor(IPfcLinkElement newSuccessor) {
-            System.Diagnostics.Debug.Assert(newSuccessor.Predecessor == this );
+            _Debug.Assert(newSuccessor.Predecessor == this );
             m_successors.Add(newSuccessor);
 
             if (!newSuccessor.Priority.HasValue) {

@@ -3,7 +3,7 @@
 #  Material previously published at http://builder.com.com/5100-6387_14-5025380.html
 ###############################################################################*/
 
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 
 namespace Highpoint.Sage.Dependencies {

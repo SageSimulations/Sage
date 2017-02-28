@@ -192,9 +192,9 @@ namespace Highpoint.Sage.Scheduling
                 }
 				m_adjustmentMode = value;
 
-//				Trace.WriteLine("In " + this.Name + " mode was just set to " + m_adjustmentMode.ToString() +".");
-//				Trace.WriteLine("Adjustment mode Relationships are ...");
-//				foreach ( MilestoneRelationship mr in m_adjustmentModeRelationships ) Trace.WriteLine("\t" + mr.ToString());
+//				_Debug.WriteLine("In " + this.Name + " mode was just set to " + m_adjustmentMode.ToString() +".");
+//				_Debug.WriteLine("Adjustment mode Relationships are ...");
+//				foreach ( MilestoneRelationship mr in m_adjustmentModeRelationships ) _Debug.WriteLine("\t" + mr.ToString());
 			}
 		}
 
@@ -318,8 +318,8 @@ namespace Highpoint.Sage.Scheduling
                 }
                 mr2.AddReciprocal(mr1);
                 mr1.AddReciprocal(mr2);
-                //			Trace.WriteLine("External relationship added to " + this.Name + " : \"" + mr1.ToString() + "\".");
-                //			Trace.WriteLine("\t+recip relationship added to " + this.Name + " : \"" + mr2.ToString() + "\".");
+                //			_Debug.WriteLine("External relationship added to " + this.Name + " : \"" + mr1.ToString() + "\".");
+                //			_Debug.WriteLine("\t+recip relationship added to " + this.Name + " : \"" + mr2.ToString() + "\".");
 
             } else {
                 throw new ApplicationException("Trying to add relationships to a TimePeriod that does not support reactive adjustment.");
@@ -382,7 +382,7 @@ namespace Highpoint.Sage.Scheduling
 				DateTime was = StartMilestone.DateTime;
 				if ( value.Equals(was) && StartMilestone.Active ) return;
 				try {
-					//Trace.WriteLine("Trying to move start of " + this.Name + " to " + value.ToString());
+					//_Debug.WriteLine("Trying to move start of " + this.Name + " to " + value.ToString());
 					StartMilestone.MoveTo(value);
 					if ( ChangeEvent!= null ) ChangeEvent(this,ChangeType.StartTime,null);
 				} catch ( MilestoneAdjustmentException mae ){

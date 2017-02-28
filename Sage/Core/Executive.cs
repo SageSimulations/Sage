@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Threading;
@@ -61,17 +61,17 @@ namespace Highpoint.Sage.SimCore {
                 Console.WriteLine(e);
             }
             if (nvc == null) {
-                Trace.WriteLine(s_cannot_Find_Sage_Section);
+                _Debug.WriteLine(s_cannot_Find_Sage_Section);
                 // Leave at default values.
             } else {
                 string workerThreads = nvc["WorkerThreads"];
                 if (workerThreads == null || ( !int.TryParse(workerThreads, out desiredMaxWorkerThreads) )) {
-                    Trace.WriteLine(s_cannot_Find_Workerthread_Directive);
+                    _Debug.WriteLine(s_cannot_Find_Workerthread_Directive);
                 } // else wt has been set to the desired value.
 
                 string ignoreCausalityViolations = nvc["IgnoreCausalityViolations"];
                 if (ignoreCausalityViolations == null || !bool.TryParse(ignoreCausalityViolations, out _ignoreCausalityViolations)) {
-                    Trace.WriteLine(s_cannot_Find_Causality_Directive);
+                    _Debug.WriteLine(s_cannot_Find_Causality_Directive);
                 } // else micv has been set to the desired value.
             }
 
@@ -100,7 +100,7 @@ namespace Highpoint.Sage.SimCore {
                 } catch (System.Runtime.InteropServices.COMException ce) {
                     string msg = string.Format("Failed attempt to set CLR Threadpool Working Threads [{0},{1}] and IO Completion Threads [{2},{3}].\r\n{4}",
                         desiredMinWorkerThreads, desiredMaxWorkerThreads, desiredMinIocThreads, desiredMaxIocThreads, ce);
-                    Trace.WriteLine(msg);
+                    _Debug.WriteLine(msg);
                 }
             }
 
@@ -287,7 +287,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         m_numEventsInQueue++;
                         m_events.Add(ExecEvent.Get(eer, when, priority, userData, execEventType, m_nextReqHashCode, isDaemon), m_nextReqHashCode);
                         if (s_diagnostics) {
-                            Trace.WriteLine("Event requested for time " + when + ", to call back at " + eer.Target + "(" + eer.Target.GetHashCode() + ")." + eer.Method.Name);
+                            _Debug.WriteLine("Event requested for time " + when + ", to call back at " + eer.Target + "(" + eer.Target.GetHashCode() + ")." + eer.Method.Name);
                         }
                         return m_nextReqHashCode;
                     } else {
@@ -392,7 +392,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
                 #region Diagnostics
                 if (s_diagnostics) {
-                    Trace.WriteLine("Executive starting with the following events queued up...");
+                    _Debug.WriteLine("Executive starting with the following events queued up...");
                 }
                 #endregion Diagnostics
 
@@ -464,7 +464,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         if (currentEvent.IsDaemon) m_numDaemonEventsInQueue--;
                         m_numEventsInQueue--;
                         if (s_diagnostics)
-                            Trace.WriteLine(string.Format(_eventSvcMsg, currentEvent, currentEvent.Eer.Target, currentEvent.Eer.Target.GetHashCode(), currentEvent.Eer.Method.Name));
+                            _Debug.WriteLine(string.Format(_eventSvcMsg, currentEvent, currentEvent.Eer.Target, currentEvent.Eer.Target.GetHashCode(), currentEvent.Eer.Method.Name));
                         switch (currentEvent.m_eventType) {
                             case ExecEventType.Synchronous:
                                 currentEvent.Eer(this, currentEvent.m_userData);
@@ -486,7 +486,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     } catch (Exception e) {
                         m_terminationException = e;
                         // TODO: Re-throw this exception on the simulation executor's thread.
-                        //Trace.WriteLine("Exception thrown back into the executive : " + e);
+                        //_Debug.WriteLine("Exception thrown back into the executive : " + e);
                         //Trace.Flush();
                         m_stopRequested = true;
                     } finally {
@@ -510,7 +510,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 }
 
                 if (initialEventCount == m_eventCount) {
-                    Trace.WriteLine("Simulation completed without having executed a single event.");
+                    _Debug.WriteLine("Simulation completed without having executed a single event.");
                 }
 
                 if (m_stopRequested) {
@@ -534,13 +534,13 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         if (de.IsWaiting()) {
                             if (!de.HasAbortHandler) {
                                 if (!issuedError)
-                                    Trace.WriteLine("ERROR : MODEL FINISHED WITH SOME TASKS STILL WAITING TO COMPLETE!");
+                                    _Debug.WriteLine("ERROR : MODEL FINISHED WITH SOME TASKS STILL WAITING TO COMPLETE!");
                                 issuedError = true;
-                                Trace.WriteLine("\tWaiting Event : " + de.RootEvent.ToString());
-                                Trace.WriteLine("\tEvent initially called into " + ( (ExecEvent)de.RootEvent ).Eer.Target + ", on method " + ( (ExecEvent)de.RootEvent ).Eer.Method.Name);
-                                Trace.WriteLine("\tThe event was suspended at time " + de.TimeOfLastWait + ", and was never resumed.");
+                                _Debug.WriteLine("\tWaiting Event : " + de.RootEvent.ToString());
+                                _Debug.WriteLine("\tEvent initially called into " + ( (ExecEvent)de.RootEvent ).Eer.Target + ", on method " + ( (ExecEvent)de.RootEvent ).Eer.Method.Name);
+                                _Debug.WriteLine("\tThe event was suspended at time " + de.TimeOfLastWait + ", and was never resumed.");
                                 if (de.SuspendedStackTrace != null)
-                                    Trace.WriteLine("CALL STACK:\r\n" + de.SuspendedStackTrace);
+                                    _Debug.WriteLine("CALL STACK:\r\n" + de.SuspendedStackTrace);
                             }
                             de.Abort();
                         }
@@ -576,17 +576,17 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
         private void DumpEventQueue() {
             lock (m_events) {
-                Trace.WriteLine("Event Queue: (highest number served next)");
+                _Debug.WriteLine("Event Queue: (highest number served next)");
                 foreach (DictionaryEntry de in m_events) {
                     ExecEvent ee = (ExecEvent)de.Key;
                     if (ee.Eer.Target is DetachableEvent) {
                         ExecEventReceiver eer = ((ExecEvent)((DetachableEvent)ee.Eer.Target).RootEvent).Eer;
-                        Trace.WriteLine(de.Value + ").\t" + ee.m_eventType + " Event is waiting to be fired at time " + ee.m_when + " into " + eer.Target + "(" + eer.Target.GetHashCode() + "), " + eer.Method.Name);
+                        _Debug.WriteLine(de.Value + ").\t" + ee.m_eventType + " Event is waiting to be fired at time " + ee.m_when + " into " + eer.Target + "(" + eer.Target.GetHashCode() + "), " + eer.Method.Name);
                     } else {
-                        Trace.WriteLine(de.Value + ").\t" + ee.m_eventType + " Event is waiting to be fired at time " + ee.m_when + " into " + ee.Eer.Target + "(" + ee.Eer.Target.GetHashCode() + "), " + ee.Eer.Method.Name);
+                        _Debug.WriteLine(de.Value + ").\t" + ee.m_eventType + " Event is waiting to be fired at time " + ee.m_when + " into " + ee.Eer.Target + "(" + ee.Eer.Target.GetHashCode() + "), " + ee.Eer.Method.Name);
                     }
                 }
-                Trace.WriteLine("***********************************");
+                _Debug.WriteLine("***********************************");
             }
         }
 
@@ -854,11 +854,11 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
         private static readonly bool s_dumpVolatileClearing = false;
         public void ClearVolatiles(IDictionary dictionary){
-            if (s_dumpVolatileClearing) Trace.WriteLine("---------------------- C L E A R I N G   V O L A T I L E S --------------------------------");
+            if (s_dumpVolatileClearing) _Debug.WriteLine("---------------------- C L E A R I N G   V O L A T I L E S --------------------------------");
             ArrayList entriesToRemove = new ArrayList();
             foreach ( DictionaryEntry de in dictionary ) {
                 
-                if (s_dumpVolatileClearing) Trace.WriteLine("Checking key " + de.Key + " and value " + de.Value);
+                if (s_dumpVolatileClearing) _Debug.WriteLine("Checking key " + de.Key + " and value " + de.Value);
 
                 if ( de.Key.GetType().GetCustomAttributes(typeof(TaskGraphVolatileAttribute),true).Length > 0 ) {
                     entriesToRemove.Add(de.Key);
@@ -869,15 +869,15 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 }
             }
             foreach ( object key in entriesToRemove ) {
-                if (s_dumpVolatileClearing) Trace.WriteLine("Removing volatile listed under key " + key);
+                if (s_dumpVolatileClearing) _Debug.WriteLine("Removing volatile listed under key " + key);
                 dictionary.Remove(key);
             }
-            if (s_dumpVolatileClearing) Trace.WriteLine("---------------------- C L E A R E D  " + entriesToRemove.Count + "   V O L A T I L E S --------------------------------");
+            if (s_dumpVolatileClearing) _Debug.WriteLine("---------------------- C L E A R E D  " + entriesToRemove.Count + "   V O L A T I L E S --------------------------------");
 
             if (s_dumpVolatileClearing) {
-                Trace.WriteLine("Here's what's left:");
+                _Debug.WriteLine("Here's what's left:");
                 foreach ( DictionaryEntry de in dictionary ) {
-                    Trace.WriteLine(de.Key + "\t" + de.Value);
+                    _Debug.WriteLine(de.Key + "\t" + de.Value);
                 }
             }
         }
@@ -1003,7 +1003,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             // CurrentEventController property, and this DE should be used immediately, not held for later.
             Debug.Assert(Equals(m_exec.CurrentEventController),"Suspend called from someone else's thread!");
             lock ( m_lock ) {
-                //Trace.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is suspending." + GetHashCode());
+                //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is suspending." + GetHashCode());
                 if ( s_diagnostics ) m_suspendedStackTrace = new StackTrace();
 
                 m_exec.SetCurrentEventController(null);
@@ -1070,11 +1070,11 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             // This method is always called on the Executive's event service thread.
             lock ( m_lock ) {
 
-                //Trace.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is resuming." + GetHashCode());
+                //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is resuming." + GetHashCode());
 
                 if ( s_diagnostics ) m_suspendedStackTrace = null;
 
-                //Trace.WriteLine(DateTime.Now.Ticks + "Task Resume is Pulsing " + m_lock);Trace.Out.Flush();
+                //_Debug.WriteLine(DateTime.Now.Ticks + "Task Resume is Pulsing " + m_lock);Trace.Out.Flush();
                 m_exec.SetCurrentEventController(this);
                 Monitor.Pulse(m_lock);
                 Interlocked.Increment(ref m_isWaitingCount);
@@ -1088,18 +1088,18 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
             try {
                 m_exec.RunningDetachables.Remove(this);
-                //Trace.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is finishing." + GetHashCode());
+                //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is finishing." + GetHashCode());
                 lock (m_lock) {
                     m_currEvent.OnServiceCompleted();
                     Monitor.Pulse(m_lock);
                 }
-                //Trace.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is really finishing." + GetHashCode());
+                //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is really finishing." + GetHashCode());
                 m_currEvent.Eer.EndInvoke(iar);
             } catch (ThreadAbortException) {
-                //Trace.WriteLine(tae.Message); // Must explicitly catch the ThreadAbortException or it bubbles up.
+                //_Debug.WriteLine(tae.Message); // Must explicitly catch the ThreadAbortException or it bubbles up.
             } catch (Exception e) {
                 // TODO: Report this to an Executive Errors & Warnings collection.
-                Trace.WriteLine("Caught model error : " + e);
+                _Debug.WriteLine("Caught model error : " + e);
                 m_exec.Stop();
             }
         }
@@ -1332,7 +1332,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 // have no control over what kinds of objects we may be comparing. To avoid an
                 // invalid cast exception, we treat them both as objects.
                 if ( Equals(eventTarget,m_target) ) {
-                    //Trace.WriteLine("Sure would like to remove " + ee.ToString());
+                    //_Debug.WriteLine("Sure would like to remove " + ee.ToString());
                     int indexOfKey = events.IndexOfKey(ee);
                     events.RemoveAt(indexOfKey);
                     break;
@@ -1353,7 +1353,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 }
                     
                 if ( ((Delegate)eventTarget).Equals((Delegate)m_target) ) {
-                    //Trace.WriteLine("Sure would like to remove " + ee.ToString());
+                    //_Debug.WriteLine("Sure would like to remove " + ee.ToString());
                     int indexOfKey = events.IndexOfKey(ee);
                     events.RemoveAt(indexOfKey);
                     break;

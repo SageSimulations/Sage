@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using Highpoint.Sage.Mathematics;
 using Highpoint.Sage.SimCore;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.ItemBased.Queues.DataCollectors
 {
@@ -77,14 +77,14 @@ namespace Highpoint.Sage.ItemBased.Queues.DataCollectors
 
 		private void m_hostQueue_ObjectEnqueued(IQueue hostQueue, object serviceItem) {
 			m_occupants.Add(serviceItem,m_model.Executive.Now);
-			//Trace.WriteLine(m_model.Executive.Now + " : " + this.Name + " enqueueing " + serviceItem + ". It currently has " + hostQueue.Count + " occupants.");
+			//_Debug.WriteLine(m_model.Executive.Now + " : " + this.Name + " enqueueing " + serviceItem + ". It currently has " + hostQueue.Count + " occupants.");
 		}
 
 		private void m_hostQueue_ObjectDequeued(IQueue hostQueue, object serviceItem) {
 			DateTime entry = (DateTime)m_occupants[serviceItem];
 			m_occupants.Remove(serviceItem);
 			TimeSpan duration = m_model.Executive.Now-entry;
-			//Trace.WriteLine(m_model.Executive.Now + " : " + this.Name + " dequeueing " + serviceItem + " after " + duration + ". It currently has " + hostQueue.Count + " occupants.");
+			//_Debug.WriteLine(m_model.Executive.Now + " : " + this.Name + " dequeueing " + serviceItem + " after " + duration + ". It currently has " + hostQueue.Count + " occupants.");
 			m_data.Add(duration);
 			m_hist = null;
 		}

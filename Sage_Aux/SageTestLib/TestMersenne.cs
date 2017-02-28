@@ -3,6 +3,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Randoms {
 
@@ -57,16 +58,16 @@ namespace Highpoint.Sage.Randoms {
 			for (int i=0; i<1000; i++) {
 				int fromRNG = rc.Next();
 				int fromGold = (int)int32Gold[i];
-				//Console.WriteLine("Comparing RNG's {0} to KG's {1}.",fromRNG,fromGold);
-				System.Diagnostics.Debug.Assert(fromRNG==fromGold,String.Format("Failure to match known good at position {0}.",i));
+                //Console.WriteLine("Comparing RNG's {0} to KG's {1}.",fromRNG,fromGold);
+                _Debug.Assert(fromRNG==fromGold,String.Format("Failure to match known good at position {0}.",i));
 			}
 
 			for (int i=0; i<1000; i++) {
 				double fromRNG = rc.NextDouble();
 				fromRNG = Math.Round(fromRNG,8);
 				double fromGold = real32Gold[i];
-				//Console.WriteLine("Comparing RNG's {0} to KG's {1}.",fromRNG,fromGold);
-				System.Diagnostics.Debug.Assert(fromRNG==fromGold,String.Format("Failure to match known good at position {0}.",i));
+                //Console.WriteLine("Comparing RNG's {0} to KG's {1}.",fromRNG,fromGold);
+                _Debug.Assert(fromRNG==fromGold,String.Format("Failure to match known good at position {0}.",i));
 			}
 			rc.Dispose();
 		}
@@ -91,7 +92,7 @@ namespace Highpoint.Sage.Randoms {
                     } else {
                         Console.WriteLine("Validating that " + d + " is on the interval [" + min + ", " + max + "]");
                     }
-                    System.Diagnostics.Debug.Assert(( min == max && d == min ) || ( d >= min && d < max ), String.Format("{0} was not in the interval {1} to {2}.", d, min, max));
+                    _Debug.Assert(( min == max && d == min ) || ( d >= min && d < max ), String.Format("{0} was not in the interval {1} to {2}.", d, min, max));
                 }
             }
 

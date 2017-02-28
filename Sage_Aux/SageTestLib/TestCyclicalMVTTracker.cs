@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Materials;
 using Highpoint.Sage.Materials.Chemistry;
@@ -24,7 +24,7 @@ namespace SchedulerDemoMaterial {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
         /// <summary>
@@ -56,9 +56,9 @@ namespace SchedulerDemoMaterial {
 
 			cmvt.Process();
 
-			//Trace.WriteLine("Temperatures: " + cmvt.TemperatureHistory.ToString());
-			Trace.WriteLine("Masses      : " + cmvt.MassHistory.ToString());
-			Trace.WriteLine("Volumes     : " + cmvt.VolumeHistory.ToString());
+			//_Debug.WriteLine("Temperatures: " + cmvt.TemperatureHistory.ToString());
+			_Debug.WriteLine("Masses      : " + cmvt.MassHistory.ToString());
+			_Debug.WriteLine("Volumes     : " + cmvt.VolumeHistory.ToString());
 
 		}
 
@@ -83,12 +83,12 @@ namespace SchedulerDemoMaterial {
 
             cmvt.Process();
 
-            //Trace.WriteLine("Temperatures: " + cmvt.TemperatureHistory.ToString());
-            Trace.WriteLine("Masses      : " + cmvt.MassHistory.ToString());
-            Trace.WriteLine("Volumes     : " + cmvt.VolumeHistory.ToString());
+            //_Debug.WriteLine("Temperatures: " + cmvt.TemperatureHistory.ToString());
+            _Debug.WriteLine("Masses      : " + cmvt.MassHistory.ToString());
+            _Debug.WriteLine("Volumes     : " + cmvt.VolumeHistory.ToString());
 
-            System.Diagnostics.Debug.Assert(cmvt.MassHistory.ToString().Equals("[0/0/0/0]"));
-            System.Diagnostics.Debug.Assert(cmvt.VolumeHistory.ToString().Equals("[0/0/0/0]"));
+            _Debug.Assert(cmvt.MassHistory.ToString().Equals("[0/0/0/0]"));
+            _Debug.Assert(cmvt.VolumeHistory.ToString().Equals("[0/0/0/0]"));
         }
 
 		/// <summary>
@@ -147,7 +147,7 @@ namespace SchedulerDemoMaterial {
 			mcat.Add(new MaterialType(null, "Bromine", Guid.NewGuid(),3.1200,4.1800,MaterialState.Liquid));
 			mcat.Add(new MaterialType(null, "Sulfuric Acid", Guid.NewGuid(),1.8420,4.1800,MaterialState.Liquid));
 
-			Trace.WriteLine(" ... sample substances loaded.");
+			_Debug.WriteLine(" ... sample substances loaded.");
 		}    
     
 		/// <summary>

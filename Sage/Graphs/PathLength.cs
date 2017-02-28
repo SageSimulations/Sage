@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 
 namespace Highpoint.Sage.Graphs.Analysis {
@@ -32,14 +32,14 @@ namespace Highpoint.Sage.Graphs.Analysis {
         private static int _ShortestPathLength(Vertex from, Vertex to, ref ArrayList visitedNodes){
             if ( from == null || to == null ) return int.MaxValue;
 
-            if ( s_diagnostics ) Trace.WriteLine(String.Format("\t\tProbing outward from {0}, looking for {1}.", from, to));
+            if ( s_diagnostics ) _Debug.WriteLine(String.Format("\t\tProbing outward from {0}, looking for {1}.", from, to));
             if ( from == to ) {
-                if ( s_diagnostics ) Trace.WriteLine("Probe found {0}! Returning pathlength.",from.ToString());
+                if ( s_diagnostics ) _Debug.WriteLine("Probe found {0}! Returning pathlength.",from.ToString());
                 return 0;
             }
 
             if ( visitedNodes.Contains(from)) {
-                if ( s_diagnostics ) Trace.WriteLine("Located a cycle");
+                if ( s_diagnostics ) _Debug.WriteLine("Located a cycle");
                 return int.MaxValue;
             }
             visitedNodes.Add(from);
@@ -48,18 +48,18 @@ namespace Highpoint.Sage.Graphs.Analysis {
             
             if ( s_diagnostics ) {
                 /***************************************************************************************/
-                Trace.WriteLine(String.Format("\t\t{0} has {1} successor edges...",from,from.SuccessorEdges.Count));
-                Trace.Write("\t\t");
+                _Debug.WriteLine(String.Format("\t\t{0} has {1} successor edges...",from,from.SuccessorEdges.Count));
+                _Debug.Write("\t\t");
                 foreach ( Edge edge in from.SuccessorEdges ) {
-                    Trace.Write("\t"+edge);
+                    _Debug.Write("\t"+edge);
                 }
-                Trace.WriteLine("");
-                Trace.WriteLine(String.Format("\t\t{0} has {1} predecessor edges...",from,from.PredecessorEdges.Count));
-                Trace.Write("\t\t");
+                _Debug.WriteLine("");
+                _Debug.WriteLine(String.Format("\t\t{0} has {1} predecessor edges...",from,from.PredecessorEdges.Count));
+                _Debug.Write("\t\t");
                 foreach ( Edge edge in from.PredecessorEdges ) {
-                    Trace.Write("\t"+edge);
+                    _Debug.Write("\t"+edge);
                 }
-                Trace.WriteLine("");
+                _Debug.WriteLine("");
                 /****************************************************************************************/
             }
             foreach ( Edge edge in from.SuccessorEdges ) {

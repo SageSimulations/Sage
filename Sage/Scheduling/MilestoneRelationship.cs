@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Scheduling {
 
@@ -533,7 +533,7 @@ namespace Highpoint.Sage.Scheduling {
 }
 
 
-//Trace.WriteLine("Independent : " + m_independent.Name + " @ " + m_independent.DateTime.ToString());
-//Trace.WriteLine("Dependent   : " + m_dependent.Name   + " @ " +   m_dependent.DateTime.ToString());
-//Trace.WriteLine("Delta       : " + m_delta.ToString());
-//Trace.WriteLine(this.ToString());
+//_Debug.WriteLine("Independent : " + m_independent.Name + " @ " + m_independent.DateTime.ToString());
+//_Debug.WriteLine("Dependent   : " + m_dependent.Name   + " @ " +   m_dependent.DateTime.ToString());
+//_Debug.WriteLine("Delta       : " + m_delta.ToString());
+//_Debug.WriteLine(this.ToString());

@@ -1,19 +1,24 @@
 /* This source code licensed under the GNU Affero General Public License */
+
+#if NOT_PORTABLE
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
 
-namespace Highpoint.Sage.Utility {
+namespace Highpoint.Sage.Utility
+{
     /// <summary>
     /// Wrapper for some key System Info functions.
     /// </summary>
-    public static class SysInfoOperations {
+    public static class SysInfoOperations
+    {
         /// <summary>
         /// Gets the CPU IDs for the processors.
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetCpuid() {
+        public static List<string> GetCpuid()
+        {
 
             ManagementClass mc = new ManagementClass("Win32_Processor");
             ManagementObjectCollection moc = mc.GetInstances();
@@ -26,7 +31,8 @@ namespace Highpoint.Sage.Utility {
         /// </summary>
         /// <param name="strDriveLetter">[optional] Drive letter</param>
         /// <returns>[string] VolumeSerialNumber</returns>
-        public static string GetVolumeSerial(string strDriveLetter) {
+        public static string GetVolumeSerial(string strDriveLetter)
+        {
             if (string.IsNullOrEmpty(strDriveLetter))
                 strDriveLetter = "C";
             ManagementObject disk =
@@ -39,12 +45,14 @@ namespace Highpoint.Sage.Utility {
         /// Returns MAC Address from first Network Card in Computer
         /// </summary>
         /// <returns>[string] MAC Address</returns>
-        public static string GetMacAddress() {
+        public static string GetMacAddress()
+        {
             ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
             ManagementObjectCollection moc = mc.GetInstances();
             string macAddress = string.Empty;
-            foreach (var o in moc) {
-                var mo = (ManagementObject) o;
+            foreach (var o in moc)
+            {
+                var mo = (ManagementObject)o;
                 if (macAddress == string.Empty)  // only return MAC Address from first card
                 {
                     if ((bool)mo["IPEnabled"])
@@ -60,13 +68,15 @@ namespace Highpoint.Sage.Utility {
         /// Return processorId from first CPU in machine
         /// </summary>
         /// <returns>[string] ProcessorId</returns>
-        public static string GetCpuId() {
+        public static string GetCpuId()
+        {
             string cpuInfo = string.Empty;
             ManagementClass mc = new ManagementClass("Win32_Processor");
             ManagementObjectCollection moc = mc.GetInstances();
             foreach (ManagementBaseObject mo in moc)
             {
-                if (String.Empty.Equals(cpuInfo) ) {// only return cpuInfo from first CPU
+                if (String.Empty.Equals(cpuInfo))
+                {// only return cpuInfo from first CPU
                     cpuInfo = mo.Properties["ProcessorId"].Value.ToString();
                 }
             }
@@ -77,7 +87,8 @@ namespace Highpoint.Sage.Utility {
         /// Gets the CPU load percentages.
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetCpuLoads() {
+        public static List<string> GetCpuLoads()
+        {
 
             ManagementClass mc = new ManagementClass("Win32_Processor");
             ManagementObjectCollection moc = mc.GetInstances();
@@ -89,7 +100,8 @@ namespace Highpoint.Sage.Utility {
         /// Gets the CPU level 2 caches in KB.
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetCpul2CachesInKb() {
+        public static List<string> GetCpul2CachesInKb()
+        {
 
             ManagementClass mc = new ManagementClass("Win32_Processor");
             ManagementObjectCollection moc = mc.GetInstances();
@@ -98,3 +110,4 @@ namespace Highpoint.Sage.Utility {
         }
     }
 }
+#endif

@@ -3,7 +3,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Utility;

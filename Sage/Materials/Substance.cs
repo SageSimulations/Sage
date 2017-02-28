@@ -8,10 +8,10 @@ using Highpoint.Sage.Utility.Mementos;
 using K = Highpoint.Sage.Materials.Chemistry.Constants;
 using System.Collections.Generic;
 using System.Linq;
+using _Debug = System.Diagnostics.Debug;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 // ReSharper disable RedundantDefaultMemberInitializer
-
 
 namespace Highpoint.Sage.Materials.Chemistry {
 
@@ -283,7 +283,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
         /// <param name="emitted">The emitted.</param>
         /// <param name="original">The original.</param>
 		public static void ApplyMaterialSpecs(Substance emitted, Substance original){
-			System.Diagnostics.Debug.Assert(emitted.MaterialType.Equals(original.MaterialType));
+            _Debug.Assert(emitted.MaterialType.Equals(original.MaterialType));
 
 			ArrayList emittedSpecs = new ArrayList();
 			foreach ( DictionaryEntry de in original.GetMaterialSpecs() ) {
@@ -473,7 +473,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
             // TODO: Assert we are not removing more than is there.
             double mass = Math.Min(substance.Mass,m_mass);
             Substance s = Remove(mass);
-            // Trace.WriteLine("leaving " + m_mass + " kg.");
+            // _Debug.WriteLine("leaving " + m_mass + " kg.");
             m_ssh.ReportChange();
             MaterialChanged?.Invoke(this,MaterialChangeType.Contents);
             return s;

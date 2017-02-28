@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Linq;
 using Highpoint.Sage.Diagnostics;
@@ -96,7 +96,7 @@ namespace Highpoint.Sage.Resources {
         /// </summary>
         /// <param name="resource">The resource to be added.</param>
         public void Add(IResource resource){
-            if ( s_diagnostics ) Trace.WriteLine("Resource manager " + Name + " added resource " + resource.Name + ". It now holds " + (m_resources.Count+1) + " resources.");
+            if ( s_diagnostics ) _Debug.WriteLine("Resource manager " + Name + " added resource " + resource.Name + ". It now holds " + (m_resources.Count+1) + " resources.");
             m_resources.Add(resource);
             resource.Manager = this;
             ResourceAdded?.Invoke(this,resource);
@@ -108,20 +108,20 @@ namespace Highpoint.Sage.Resources {
         /// <param name="resource">The resource to remove from this pool.</param>
         public void Remove(IResource resource){
 			if ( s_diagnostics ) {
-				Trace.WriteLine(Name + " removed resource " + resource);
-				Trace.WriteLine("Before removal, there are " + m_resources.Count + " resources currently in  " + Name + ".");
-				foreach ( IResource rsc in m_resources ) Trace.WriteLine(rsc.Name + ", " + rsc.Guid + ", with hashcode " + rsc.GetHashCode() + "...");
-				Trace.WriteLine("You are asking to remove " + resource.Name + ", " + resource.Guid + ", with hashcode " + resource.GetHashCode() + "...");
-				Trace.WriteLine("The pool " + (m_resources.Contains(resource)?"contains":"does not contain") + " the resource you are asking to remove.");
+				_Debug.WriteLine(Name + " removed resource " + resource);
+				_Debug.WriteLine("Before removal, there are " + m_resources.Count + " resources currently in  " + Name + ".");
+				foreach ( IResource rsc in m_resources ) _Debug.WriteLine(rsc.Name + ", " + rsc.Guid + ", with hashcode " + rsc.GetHashCode() + "...");
+				_Debug.WriteLine("You are asking to remove " + resource.Name + ", " + resource.Guid + ", with hashcode " + resource.GetHashCode() + "...");
+				_Debug.WriteLine("The pool " + (m_resources.Contains(resource)?"contains":"does not contain") + " the resource you are asking to remove.");
 			}
 			m_resources.Remove(resource);
 			if ( s_diagnostics ) {
-				Trace.WriteLine("After removal, there are " + m_resources.Count + " resources left in  " + Name + ".");
-				Trace.WriteLine("The pool " + (m_resources.Contains(resource)?"contains":"does not contain") + " the resource you are asking to remove.");
+				_Debug.WriteLine("After removal, there are " + m_resources.Count + " resources left in  " + Name + ".");
+				_Debug.WriteLine("The pool " + (m_resources.Contains(resource)?"contains":"does not contain") + " the resource you are asking to remove.");
 			}
             resource.Manager = null;
 			if ( ResourceRemoved != null ) {
-				if ( s_diagnostics ) Trace.WriteLine("There are listeners to the removal event.");
+				if ( s_diagnostics ) _Debug.WriteLine("There are listeners to the removal event.");
 				ResourceRemoved(this,resource);
 			}
         }
@@ -130,7 +130,7 @@ namespace Highpoint.Sage.Resources {
 		/// Clears out the resources in this manager's pool.
 		/// </summary>
 		public void Clear(){
-			if ( s_diagnostics ) Trace.WriteLine(Name + " clearing its resource pool.");
+			if ( s_diagnostics ) _Debug.WriteLine(Name + " clearing its resource pool.");
 			while ( m_resources.Count > 0 ) {
 				Remove((IResource)m_resources[0]);
 			}
@@ -170,11 +170,11 @@ namespace Highpoint.Sage.Resources {
         /// <returns>true if the reservation was successful.</returns>
 		public bool Reserve(IResourceRequest resourceRequest, bool blockAwaitingAcquisition) {
             if ( s_diagnostics ) {
-                Trace.WriteLine(Name + " servicing request to reserve (" + (blockAwaitingAcquisition?"with":"without") + " block) " + resourceRequest.QuantityDesired + " units of " + resourceRequest);
+                _Debug.WriteLine(Name + " servicing request to reserve (" + (blockAwaitingAcquisition?"with":"without") + " block) " + resourceRequest.QuantityDesired + " units of " + resourceRequest);
             }
 
 			if ( resourceRequest.RequiredResource != null ) {
-				System.Diagnostics.Debug.Assert(false,GetType().FullName + " does not support explicit targeting of resources.");
+                _Debug.Assert(false,GetType().FullName + " does not support explicit targeting of resources.");
 			}
 
             if ( blockAwaitingAcquisition ) return ReserveWithWait(resourceRequest);
@@ -191,7 +191,7 @@ namespace Highpoint.Sage.Resources {
         /// <param name="resourceRequest">The resource request under which some resource was previously reserved.</param>
         public void Unreserve(IResourceRequest resourceRequest) {
             if ( s_diagnostics ) {
-                Trace.WriteLine(Name + " servicing request to unreserve " + resourceRequest.QuantityDesired + " units of " + resourceRequest);
+                _Debug.WriteLine(Name + " servicing request to unreserve " + resourceRequest.QuantityDesired + " units of " + resourceRequest);
             }
             if (resourceRequest.ResourceObtained != null) {
                 resourceRequest.ResourceObtained.Unreserve(resourceRequest);
@@ -216,11 +216,11 @@ namespace Highpoint.Sage.Resources {
         /// <returns>true if the acquisition was successful.</returns>
 		public bool Acquire(IResourceRequest resourceRequest, bool blockAwaitingAcquisition) {
 			if ( s_diagnostics ) {
-				Trace.WriteLine(Name + " servicing request to acquire (" + (blockAwaitingAcquisition?"with":"without") + " block) " + resourceRequest.QuantityDesired + " units of " + resourceRequest);
+				_Debug.WriteLine(Name + " servicing request to acquire (" + (blockAwaitingAcquisition?"with":"without") + " block) " + resourceRequest.QuantityDesired + " units of " + resourceRequest);
             }
 
 			if ( resourceRequest.RequiredResource != null ) {
-				System.Diagnostics.Debug.Assert(false,"Explicit targeting of resources not yet implemented.");
+                _Debug.Assert(false,"Explicit targeting of resources not yet implemented.");
 				// TODO: Explicit targeting of resources and keying of requests not yet implemented.
 			}
 
@@ -252,7 +252,7 @@ namespace Highpoint.Sage.Resources {
 				if ( s_diagnostics ) {
 					string fromWhom = resourceRequest.ToString();
 					if ( resourceRequest.ResourceObtained != null) fromWhom = resourceRequest.ResourceObtained.Name;
-					Trace.WriteLine(Name + " servicing request to release " + resourceRequest.QuantityDesired + " units of " + fromWhom);
+					_Debug.WriteLine(Name + " servicing request to release " + resourceRequest.QuantityDesired + " units of " + fromWhom);
 				}
                 IResource resourceReleased = resourceRequest.ResourceObtained;
                 resourceRequest.ResourceObtained?.Release(resourceRequest);
@@ -378,7 +378,7 @@ namespace Highpoint.Sage.Resources {
 //			}
 			if ( bestResource != null ) {
 				resourceRequest.ResourceObtainedFrom = this;
-                System.Diagnostics.Debug.Assert(resourceRequest.Status == RequestStatus.Free);
+                _Debug.Assert(resourceRequest.Status == RequestStatus.Free);
                 resourceRequest.Status = RequestStatus.Reserved;
 				return true;
 			} else {

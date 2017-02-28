@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Linq;
 using Highpoint.Sage.SimCore;
@@ -206,19 +206,19 @@ namespace Highpoint.Sage.Materials.Chemistry {
 
 
         public void OnMaterialChanged(IMaterial material, MaterialChangeType mct){
-			if ( m_diagnostics ) Trace.WriteLine("ReactionProcessor notified of change type " + mct + " to material " + material);
+			if ( m_diagnostics ) _Debug.WriteLine("ReactionProcessor notified of change type " + mct + " to material " + material);
             if ( mct == MaterialChangeType.Contents )
             {
                 Mixture tmpMixture = material as Mixture;
                 if ( tmpMixture != null ) {
                     Mixture mixture = tmpMixture;
                     ReactionInstance ri = null;
-                    if ( m_diagnostics ) Trace.WriteLine("Processing change type " + mct + " to mixture " + mixture.Name);
+                    if ( m_diagnostics ) _Debug.WriteLine("Processing change type " + mct + " to mixture " + mixture.Name);
 
                     // If multiple reactions could occur? Only the first happens, but then the next change allows the next reaction, etc.
                     foreach ( Reaction reaction in m_reactions ) {
                         if ( ri != null ) continue;
-                        if ( m_diagnostics ) Trace.WriteLine("Examining mixture for presence of reaction " + reaction.Name);
+                        if ( m_diagnostics ) _Debug.WriteLine("Examining mixture for presence of reaction " + reaction.Name);
                         ri = reaction.React(mixture);
                     }
                 }

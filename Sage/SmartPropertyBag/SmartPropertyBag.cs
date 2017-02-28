@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Specialized;
 using Highpoint.Sage.Utility.Mementos;
@@ -933,12 +933,12 @@ namespace Highpoint.Sage.SimCore {
 		///			if ( hde.IsLeaf ) {
 		///				Trace.Write(hde.Value.ToString());
 		///				if ( hde.Value is double ) {
-		///		 			Trace.WriteLine(" &lt;NOTE: this is a double.&gt;"); 
+		///		 			_Debug.WriteLine(" &lt;NOTE: this is a double.&gt;"); 
 		///				} else {
-		///					Trace.WriteLine("");
+		///					_Debug.WriteLine("");
 		///				}
 		///			} else {
-		///				Trace.WriteLine("");
+		///				_Debug.WriteLine("");
 		///				DumpEnumerable((IEnumerable)hde.Value,depth+1);
 		///			}
 		///		}
@@ -1305,37 +1305,37 @@ namespace Highpoint.Sage.SimCore {
 
 		private static bool DictionariesAreEqual(IDictionary dict1, IDictionary dict2){
 			if ( dict1 == null && dict2 == null ) {
-				//Trace.WriteLine("Both are null.");
+				//_Debug.WriteLine("Both are null.");
 				return true;
 			}
 			if ( dict1 == null || dict2 == null ) {
-				//Trace.WriteLine("One or the other is null.");
+				//_Debug.WriteLine("One or the other is null.");
 				return false;
 			}
 			if ( dict1.Count != dict2.Count ) {
 				if ( s_diagnostics ) {
-					Trace.WriteLine("Two dictionaries have a different item count.");
-					foreach ( DictionaryEntry de in dict1 ) Trace.WriteLine(de.Key + ", " + de.Value );
-					foreach ( DictionaryEntry de in dict2 ) Trace.WriteLine(de.Key + ", " + de.Value );
+					_Debug.WriteLine("Two dictionaries have a different item count.");
+					foreach ( DictionaryEntry de in dict1 ) _Debug.WriteLine(de.Key + ", " + de.Value );
+					foreach ( DictionaryEntry de in dict2 ) _Debug.WriteLine(de.Key + ", " + de.Value );
 				}
 				return false;
 			}
 			foreach ( DictionaryEntry de in dict1 ) {
-				//Trace.WriteLine("Comparing " + de.Key.ToString());
+				//_Debug.WriteLine("Comparing " + de.Key.ToString());
 				if ( !dict2.Contains(de.Key) ) return false;
 				object val1 = de.Value;
 				object val2 = dict2[de.Key];
 				if ( val1 == null && val2 == null ) continue;
 				if ( val1 == null || val2 == null ) return false;
-                //Trace.WriteLine("Both have it. One is " + val1.ToString() + ", and the other is " + val2.ToString());
+                //_Debug.WriteLine("Both have it. One is " + val1.ToString() + ", and the other is " + val2.ToString());
                 IDictionary d1 = val1 as IDictionary;
                 IDictionary d2 = val2 as IDictionary;
                 if ( d1 != null && d2 != null) {
-					//Trace.WriteLine("Performing dictionary comparison of " + val1 + " and " + val2 );
+					//_Debug.WriteLine("Performing dictionary comparison of " + val1 + " and " + val2 );
 					if ( !DictionariesAreEqual(d1, d2)) return false;
 				} else {
 					// it's an object.
-					//Trace.WriteLine("Comparing non-dictionary items " + val1.ToString() + ", and " + val2.ToString());
+					//_Debug.WriteLine("Comparing non-dictionary items " + val1.ToString() + ", and " + val2.ToString());
 					if ( !val1.Equals(val2) ) return false;
 				}
 			}
@@ -1410,7 +1410,7 @@ namespace Highpoint.Sage.SimCore {
 
                 foreach (DictionaryEntry de in dictEntries) {
 
-                    if ( s_diagnostics ) Trace.WriteLine("Reloading " + spb + " with " + de.Key + " = " + de.Value);
+                    if ( s_diagnostics ) _Debug.WriteLine("Reloading " + spb + " with " + de.Key + " = " + de.Value);
 					string key = (string)de.Key;
 					ISupportsMementos child = ((IMemento)de.Value).CreateTarget();
 					((IMemento)de.Value).Load(child);

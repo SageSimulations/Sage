@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
@@ -21,7 +21,7 @@ namespace Highpoint.Sage.Graphs {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -179,7 +179,7 @@ namespace Highpoint.Sage.Graphs {
 			for ( int i = 0 ; i < howManyChildren ; i++ ) {
 				Edge edge = new Edge(nameRoot+i);
 				if ( i == ((int)howManyChildren/2) ) randomInnerEdge = edge;
-				//Trace.WriteLine("Creating edge " + edge.Name);
+				//_Debug.WriteLine("Creating edge " + edge.Name);
 				m_edges.Add(edge);
 			}
 
@@ -191,22 +191,22 @@ namespace Highpoint.Sage.Graphs {
 
 				if ( edgeA == edgeB ) continue;
 
-				//Trace.WriteLine(String.Format("Considering a connection between {0} and {1}.",edgeA.Name,edgeB.Name));
+				//_Debug.WriteLine(String.Format("Considering a connection between {0} and {1}.",edgeA.Name,edgeB.Name));
 
 				int forward = Graphs.Analysis.PathLength.ShortestPathLength(edgeA,edgeB);
 				int backward = Graphs.Analysis.PathLength.ShortestPathLength(edgeB,edgeA);
 
-				//Trace.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
+				//_Debug.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
 
 				if ( (forward==int.MaxValue) && (backward==int.MaxValue) ) {
 					edgeA.AddSuccessor(edgeB);
-					//Trace.WriteLine(String.Format("{0} will follow {1}.",edgeB.Name,edgeA.Name));
+					//_Debug.WriteLine(String.Format("{0} will follow {1}.",edgeB.Name,edgeA.Name));
 				} else if ( (forward!=int.MaxValue) && (backward==int.MaxValue) ) {
 					edgeA.AddSuccessor(edgeB);
-					//Trace.WriteLine(String.Format("{0} will follow {1}.",edgeB.Name,edgeA.Name));
+					//_Debug.WriteLine(String.Format("{0} will follow {1}.",edgeB.Name,edgeA.Name));
 				}else if ( (forward==int.MaxValue) && (backward!=int.MaxValue) ) {
 					edgeB.AddSuccessor(edgeA);
-					//Trace.WriteLine(String.Format("{1} will follow {0}.",edgeB.Name,edgeA.Name));
+					//_Debug.WriteLine(String.Format("{1} will follow {0}.",edgeB.Name,edgeA.Name));
 				}else {
 					throw new ApplicationException("Cycle exists between " + edgeA.Name + " and " + edgeB.Name + ".");
 				}

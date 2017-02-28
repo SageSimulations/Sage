@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 
@@ -24,7 +24,7 @@ namespace Highpoint.Sage.Mathematics {
         }
         [TestCleanup]
         public void destroy() {
-            Trace.WriteLine("Done.");
+            _Debug.WriteLine("Done.");
         }
         private IModel m_model = null;
 
@@ -32,14 +32,14 @@ namespace Highpoint.Sage.Mathematics {
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a normal distribution")]
         public void TestDistributionNormal() {
             IDoubleDistribution dist = new NormalDistribution(m_model, "NormalDistribution", Guid.NewGuid(), 5, 1);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.0);
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.0);
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 5.0);
+            _Debug.Assert(dist.GetNext() == 5.0);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionNormal.csv");
 
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -48,12 +48,12 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 7.5, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
@@ -72,7 +72,7 @@ namespace Highpoint.Sage.Mathematics {
             ldi.SetData(new double[] { 1.0, 1.1 }, new double[] { 5.0, 5.0 });
 
             double five_point_zero = ldi.GetYValue(123.0);
-            System.Diagnostics.Debug.Assert(five_point_zero == 5.0);
+            _Debug.Assert(five_point_zero == 5.0);
 
         }
 
@@ -81,13 +81,13 @@ namespace Highpoint.Sage.Mathematics {
             double[] heights = new double[] { 2.0, 4.0, 3.0, 6.0, 4.0 }; // Note - one less than in intervals.
 
             IDoubleDistribution dist = new EmpiricalDistribution(m_model, "EmpiricalDistributionFromHistogram", Guid.NewGuid(), binBounds, heights);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 10.5);
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 10.5);
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 10.5);
+            _Debug.Assert(dist.GetNext() == 10.5);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionEmpiricalFromHistogram.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -95,15 +95,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 4, 14, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
             tw.Flush();
@@ -124,12 +124,12 @@ namespace Highpoint.Sage.Mathematics {
         public void TestUniversalDistribution() {
             double delta = 0.002;
             UniversalDistribution ud = new UniversalDistribution(m_model, "UniversalDistribution", Guid.NewGuid(), new testCdf());
-            System.Diagnostics.Debug.Assert(ud.GetValueWithCumulativeProbability(0.50) == 5.0);
+            _Debug.Assert(ud.GetValueWithCumulativeProbability(0.50) == 5.0);
             ud.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(ud.GetNext() == 5.0);
+            _Debug.Assert(ud.GetNext() == 5.0);
             ud.SetCDFInterval(0.0, 1.0);
 
-            Trace.WriteLine("Generating raw data with delta = " + delta + ".");
+            _Debug.WriteLine("Generating raw data with delta = " + delta + ".");
             int DATASETSIZE = 1500000;
             int fives = 0;
             int sevens = 0;
@@ -146,20 +146,20 @@ namespace Highpoint.Sage.Mathematics {
             }
             double ratio = (double)( (double)fives / ( (double)fives + (double)sevens ) );
             Console.WriteLine("{0} fives, {1} sevens, and {2} others. Ratio of {3}.", fives, sevens, others, ratio);
-            System.Diagnostics.Debug.Assert(others == 0 && ratio > ( 0.7 - delta ) && ratio < ( 0.7 + delta ), "Failed custom CDF.");
+            _Debug.Assert(others == 0 && ratio > ( 0.7 - delta ) && ratio < ( 0.7 + delta ), "Failed custom CDF.");
         }
 
         [TestMethod]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a triangular distribution")]
         public void TestDistributionTriangular() {
             IDoubleDistribution dist = new TriangularDistribution(m_model, "TriangularDistribution", Guid.NewGuid(), 2.0, 5.0, 9.0);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.2583426132260591);
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.2583426132260591);
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 5.2583426132260591);
+            _Debug.Assert(dist.GetNext() == 5.2583426132260591);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionTriangular.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -167,15 +167,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 1.0, 10.0, 450, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
             tw.Flush();
@@ -190,13 +190,13 @@ namespace Highpoint.Sage.Mathematics {
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a uniform distribution")]
         public void TestDistributionUniform() {
             IDoubleDistribution dist = new UniformDistribution(m_model, "UniformDistribution", Guid.NewGuid(), 3.5, 7.0);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.25);
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.25);
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 5.25);
+            _Debug.Assert(dist.GetNext() == 5.25);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionUniform.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -204,15 +204,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 7.5, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
             tw.Flush();
@@ -227,13 +227,13 @@ namespace Highpoint.Sage.Mathematics {
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a exponential distribution")]
         public void TestDistributionExponential() {
             IDoubleDistribution dist = new ExponentialDistribution(m_model, "ExponentialDistribution", Guid.NewGuid(), 3.0, 3.0);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.0794415416798362, "Failure in TestDistributionExponential()");
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 5.0794415416798362, "Failure in TestDistributionExponential()");
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 5.0794415416798362);
+            _Debug.Assert(dist.GetNext() == 5.0794415416798362);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionExponential.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -241,15 +241,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 30.0, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
 
@@ -269,11 +269,11 @@ namespace Highpoint.Sage.Mathematics {
             IDoubleDistribution dist = new ExponentialDistribution(m_model, "ExponentialDistribution", Guid.NewGuid(), 3.0, 3.0);
             ITimeSpanDistribution tsd = new TimeSpanDistribution(m_model, "TSD:" + dist.Name, Guid.NewGuid(), dist, TimeSpanDistribution.Units.Minutes);
             tsd.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(tsd.GetNext().Equals(TimeSpan.FromMinutes(5.0794415416798362)));
+            _Debug.Assert(tsd.GetNext().Equals(TimeSpan.FromMinutes(5.0794415416798362)));
             tsd.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\TimeSpanDistributionExponential.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -281,15 +281,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 120.0, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
 
@@ -307,13 +307,13 @@ namespace Highpoint.Sage.Mathematics {
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a weibull distribution")]
         public void TestDistributionWeibull() {
             IDoubleDistribution dist = new WeibullDistribution(m_model, "WeibullDistribution", Guid.NewGuid(), 2, 0, 2.0);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 1.6651092223153954);
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 1.6651092223153954);
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 1.6651092223153954);
+            _Debug.Assert(dist.GetNext() == 1.6651092223153954);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionWeibull.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -321,15 +321,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 7.5, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
             tw.Flush();
@@ -344,13 +344,13 @@ namespace Highpoint.Sage.Mathematics {
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a cauchy distribution")]
         public void TestDistributionCauchy() {
             IDoubleDistribution dist = new CauchyDistribution(m_model, "CauchyDistribution", Guid.NewGuid(), 3.0, 3.0);
-            System.Diagnostics.Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 3.0);
+            _Debug.Assert(dist.GetValueWithCumulativeProbability(0.50) == 3.0);
             dist.SetCDFInterval(0.5, 0.5);
-            System.Diagnostics.Debug.Assert(dist.GetNext() == 3.0);
+            _Debug.Assert(dist.GetNext() == 3.0);
             dist.SetCDFInterval(0.0, 1.0);
 
             System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionCauchy.csv");
-            Trace.WriteLine("Generating raw data.");
+            _Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
             for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -358,15 +358,15 @@ namespace Highpoint.Sage.Mathematics {
                 //tw.WriteLine(rawData[x]);
             }
 
-            Trace.WriteLine("Performing histogram analysis.");
+            _Debug.WriteLine("Performing histogram analysis.");
             Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 7.5, 100, "distribution");
             hist.LabelProvider = new LabelProvider(( (Histogram1D_Double)hist ).DefaultLabelProvider);
             hist.Recalculate();
 
-            Trace.WriteLine("Writing data dump file.");
+            _Debug.WriteLine("Writing data dump file.");
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                 tw.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
             tw.Flush();
@@ -389,7 +389,7 @@ namespace Highpoint.Sage.Mathematics {
             dist.SetCDFInterval(0.0, 1.0);
 
                 System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionPoisson.csv");
-                Trace.WriteLine("Generating raw data.");
+                _Debug.WriteLine("Generating raw data.");
                 const int DATASETSIZE = 1500000;
                 double[] rawData = new double[DATASETSIZE];
                 for (int x = 0 ; x < DATASETSIZE ; x++) {
@@ -397,7 +397,7 @@ namespace Highpoint.Sage.Mathematics {
                     //tw.WriteLine(rawData[x]);
                 }
 
-                Trace.WriteLine("Performing histogram analysis.");
+                _Debug.WriteLine("Performing histogram analysis.");
                 Histogram1D_Double hist = new Histogram1D_Double(rawData, 0, 25, 25, "distribution");
                 hist.LabelProvider = new LabelProvider(((Histogram1D_Double) hist).DefaultLabelProvider);
                 hist.Recalculate();
@@ -414,11 +414,11 @@ namespace Highpoint.Sage.Mathematics {
 
             if (m_visuallyVerify)
             {
-                Trace.WriteLine("Writing data dump file.");
+                _Debug.WriteLine("Writing data dump file.");
                 int[] bins = (int[]) hist.Bins;
                 for (int i = 0; i < bins.Length; i++)
                 {
-                    //Trace.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
+                    //_Debug.WriteLine(hist.GetLabel(new int[]{i}) + ", " + bins[i]);
                     tw.WriteLine(hist.GetLabel(new int[] {i}) + ", " + bins[i] + ", " + expected[i]);
                 }
                 tw.Flush();
@@ -474,7 +474,7 @@ namespace Highpoint.Sage.Mathematics {
 
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                Trace.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
+                _Debug.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
         }
 
@@ -489,7 +489,7 @@ namespace Highpoint.Sage.Mathematics {
 
             int[] bins = (int[])hist.Bins;
             for (int i = 0 ; i < bins.Length ; i++) {
-                Trace.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
+                _Debug.WriteLine(hist.GetLabel(new int[] { i }) + ", " + bins[i]);
             }
         }
     }

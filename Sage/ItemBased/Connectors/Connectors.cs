@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections.Generic;
 using System.Xml;
 using Highpoint.Sage.SimCore;
@@ -275,11 +275,11 @@ namespace Highpoint.Sage.ItemBased.Connectors {
         }
 
         internal void Detach(){
-//			Trace.WriteLine("Setting " + ((IHasIdentity)m_upstream.Owner).Name + "'s connector to null.");
-//			Trace.WriteLine("Setting " + m_upstream.Owner + "'s connector to null.");
+//			_Debug.WriteLine("Setting " + ((IHasIdentity)m_upstream.Owner).Name + "'s connector to null.");
+//			_Debug.WriteLine("Setting " + m_upstream.Owner + "'s connector to null.");
             if ( m_upstream != null ) m_upstream.Connector = null;
-//			Trace.WriteLine("Setting " + ((IHasIdentity)m_downstream.Owner).Name + "'s connector to null.");
-//			Trace.WriteLine("Setting " + m_downstream.Owner + "'s connector to null.");
+//			_Debug.WriteLine("Setting " + ((IHasIdentity)m_downstream.Owner).Name + "'s connector to null.");
+//			_Debug.WriteLine("Setting " + m_downstream.Owner + "'s connector to null.");
             if ( m_downstream != null ) m_downstream.Connector = null;
             m_upstream = null;
             m_downstream = null;

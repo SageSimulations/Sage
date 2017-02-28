@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Mathematics;
 using Highpoint.Sage.SimCore;
@@ -287,7 +287,7 @@ namespace Highpoint.Sage.Materials.Thermodynamics {
             if (mixture.Mass == 0.0) {
                 if (s_diagnostics) {
                     m_lastMessage = "Computing time to reach target temperature, but the mixture mass was zero, so the computed time is 0.0 seconds.";
-                    Trace.WriteLine(m_lastMessage);
+                    _Debug.WriteLine(m_lastMessage);
                 }
                 return TimeSpan.Zero;
             }
@@ -295,7 +295,7 @@ namespace Highpoint.Sage.Materials.Thermodynamics {
             if (mixture.Temperature == TCSetpoint) {
                 if (s_diagnostics) {
                     m_lastMessage = "Computing time to reach target temperature, but the mixture is already at the setpoint, so the computed time is 0.0 seconds.";
-                    Trace.WriteLine(m_lastMessage);
+                    _Debug.WriteLine(m_lastMessage);
                 }
                 return TimeSpan.Zero;
             }
@@ -394,7 +394,7 @@ namespace Highpoint.Sage.Materials.Thermodynamics {
                     + "\tUsing {6} to reach the target temperature will require {7}.",
                     TCSetpoint, ( ( pctFull * 100 ) ), kMix, mMix, tMix, cMix, technique, TimeSpan.FromSeconds(nSeconds), kRange);
 
-                Trace.WriteLine(m_lastMessage);
+                _Debug.WriteLine(m_lastMessage);
             }
             #endregion
 

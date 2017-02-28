@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
@@ -19,7 +19,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		public void Init() {}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -69,23 +69,23 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
             tg1.model.Start();
 
-			System.Diagnostics.Debug.Assert(tg1.ta.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,0,0,0)),"Task A did not start at 12AM 1/1/1");
-			System.Diagnostics.Debug.Assert(tg1.ta.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task A did not finish at 4AM 1/1/1");
+            _Debug.Assert(tg1.ta.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,0,0,0)),"Task A did not start at 12AM 1/1/1");
+            _Debug.Assert(tg1.ta.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task A did not finish at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.tb.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
-			System.Diagnostics.Debug.Assert(tg1.tb.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task B did not finish at 5AM 1/1/1");
+            _Debug.Assert(tg1.tb.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
+            _Debug.Assert(tg1.tb.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task B did not finish at 5AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.tc.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,0,0,0)),"Task C did not start at 12AM 1/1/1");
-			System.Diagnostics.Debug.Assert(tg1.tc.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,1,0,0)),"Task C did not finish at 1AM 1/1/1");
+            _Debug.Assert(tg1.tc.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,0,0,0)),"Task C did not start at 12AM 1/1/1");
+            _Debug.Assert(tg1.tc.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,1,0,0)),"Task C did not finish at 1AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.td.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,1,0,0)),"Task D did not start at 1AM 1/1/1");
-			System.Diagnostics.Debug.Assert(tg1.td.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,2,0,0)),"Task D did not start at 1AM 1/1/1");
+            _Debug.Assert(tg1.td.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,1,0,0)),"Task D did not start at 1AM 1/1/1");
+            _Debug.Assert(tg1.td.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,2,0,0)),"Task D did not start at 1AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.parent.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,0,0,0)),"Task parent did not start at 12AM 1/1/1");
-			System.Diagnostics.Debug.Assert(tg1.parent.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task parent did not finish at 5AM 1/1/1");
+            _Debug.Assert(tg1.parent.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,0,0,0)),"Task parent did not start at 12AM 1/1/1");
+            _Debug.Assert(tg1.parent.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task parent did not finish at 5AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.follow.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task follow did not start at 5AM 1/1/1");
-			System.Diagnostics.Debug.Assert(tg1.follow.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task follow did not finish at 5AM 1/1/1");
+            _Debug.Assert(tg1.follow.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task follow did not start at 5AM 1/1/1");
+            _Debug.Assert(tg1.follow.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task follow did not finish at 5AM 1/1/1");
 
         }
 
@@ -100,9 +100,9 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
             tg1.model.Start();
 
-			System.Diagnostics.Debug.Assert(tg1.tb.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
+            _Debug.Assert(tg1.tb.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.td.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task D did not start at 4AM 1/1/1");
+            _Debug.Assert(tg1.td.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task D did not start at 4AM 1/1/1");
 
         }
 
@@ -117,9 +117,9 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
             tg1.model.Start();
 
-			System.Diagnostics.Debug.Assert(tg1.ta.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task A did not finish at 4AM 1/1/1");
+            _Debug.Assert(tg1.ta.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task A did not finish at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.tc.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task C did not finish at 4AM 1/1/1");
+            _Debug.Assert(tg1.tc.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task C did not finish at 4AM 1/1/1");
 
 		}
 
@@ -137,22 +137,22 @@ namespace Highpoint.Sage.Graphs.Tasks {
 			VertexSynchronizer vs2 = new VertexSynchronizer(tg2.model.Executive,new Vertex[]{tg2.tb.PreVertex,tg2.tc.PreVertex},ExecEventType.Detachable);
 
 			tg1.model.Start();
-			Trace.WriteLine("Test 2");
+			_Debug.WriteLine("Test 2");
 			tg2.model.Start();
 
-			// Test graph 1
-			System.Diagnostics.Debug.Assert(tg1.tb.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
+            // Test graph 1
+            _Debug.Assert(tg1.tb.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.td.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task D did not start at 4AM 1/1/1");
+            _Debug.Assert(tg1.td.GetStartTime(tg1.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task D did not start at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg1.parent.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task parent did not finish at 5AM 1/1/1");
+            _Debug.Assert(tg1.parent.GetFinishTime(tg1.GraphContext).Equals(new DateTime(1,1,1,5,0,0)),"Task parent did not finish at 5AM 1/1/1");
 
-			// Test graph 2
-			System.Diagnostics.Debug.Assert(tg2.tb.GetStartTime(tg2.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
+            // Test graph 2
+            _Debug.Assert(tg2.tb.GetStartTime(tg2.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task B did not start at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg2.tc.GetStartTime(tg2.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task C did not start at 4AM 1/1/1");
+            _Debug.Assert(tg2.tc.GetStartTime(tg2.GraphContext).Equals(new DateTime(1,1,1,4,0,0)),"Task C did not start at 4AM 1/1/1");
 
-			System.Diagnostics.Debug.Assert(tg2.parent.GetFinishTime(tg2.GraphContext).Equals(new DateTime(1,1,1,6,0,0)),"Task parent did not finish at 6AM 1/1/1");
+            _Debug.Assert(tg2.parent.GetFinishTime(tg2.GraphContext).Equals(new DateTime(1,1,1,6,0,0)),"Task parent did not finish at 6AM 1/1/1");
 
 		}
 
@@ -170,7 +170,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 			VertexSynchronizer vs2 = new VertexSynchronizer(tg2.model.Executive,new Vertex[]{tg2.tc.PostVertex,tg2.ta.PostVertex},ExecEventType.Detachable);
 
             tg1.model.Start();
-			Trace.WriteLine("Test 2");
+			_Debug.WriteLine("Test 2");
 			tg2.model.Start();
 
 			// Test graph 1
@@ -231,7 +231,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
             ArrayList edges = new ArrayList();
             for ( int i = 0 ; i < howManyTasks ; i++ ) {
                 TestTask task = new TestTask(model,nameRoot+i);
-                Trace.WriteLine("Creating task " + task.Name);
+                _Debug.WriteLine("Creating task " + task.Name);
                 edges.Add(task);
             }
 
@@ -243,22 +243,22 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
                 if ( taskA == taskB ) continue;
 
-                Trace.WriteLine(String.Format("Considering a connection between {0} and {1}.",taskA.Name,taskB.Name));
+                _Debug.WriteLine(String.Format("Considering a connection between {0} and {1}.",taskA.Name,taskB.Name));
 
                 int forward = Graphs.Analysis.PathLength.ShortestPathLength(taskA,taskB);
                 int backward = Graphs.Analysis.PathLength.ShortestPathLength(taskB,taskA);
 
-                Trace.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
+                _Debug.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
 
                 if ( (forward==int.MaxValue) && (backward==int.MaxValue) ) {
                     taskA.AddSuccessor(taskB);
-                    Trace.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
+                    _Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
                 } else if ( (forward!=int.MaxValue) && (backward==int.MaxValue) ) {
                     taskA.AddSuccessor(taskB);
-                    Trace.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
+                    _Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
                 }else if ( (forward==int.MaxValue) && (backward!=int.MaxValue) ) {
                     taskB.AddSuccessor(taskA);
-                    Trace.WriteLine(String.Format("{1} will follow {0}.",taskB.Name,taskA.Name));
+                    _Debug.WriteLine(String.Format("{1} will follow {0}.",taskB.Name,taskA.Name));
                 }else {
                     throw new ApplicationException("Cycle exists between " + taskA.Name + " and " + taskB.Name + ".");
                 }
@@ -294,22 +294,22 @@ namespace Highpoint.Sage.Graphs.Tasks {
                 if ( m_delay.Equals(TimeSpan.Zero) ) {
                     SignalTaskCompletion(graphContext);
                 } else {
-                    Trace.WriteLine(Model.Executive.Now + " : " +  Name + " is commencing a sleep for " + m_delay + ".");
+                    _Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is commencing a sleep for " + m_delay + ".");
                     Model.Executive.RequestEvent(new ExecEventReceiver(DoneDelaying),Model.Executive.Now+m_delay,0.0,graphContext);
                 }
             }
 
             private void DoneDelaying(IExecutive exec, object graphContext){
                 SignalTaskCompletion((IDictionary)graphContext);
-				Trace.WriteLine(Model.Executive.Now + " : " +  Name + " is done.");
+				_Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is done.");
 			}
 
             private void OnTaskBeginning(IDictionary graphContext, Edge edge){
-                Trace.WriteLine(Model.Executive.Now + " : " +  Name + " is beginning.");
+                _Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is beginning.");
             }
 
             private void OnTaskCompleting(IDictionary graphContext, Edge edge){
-                Trace.WriteLine(Model.Executive.Now + " : " +  Name + " is completing.");
+                _Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is completing.");
             }
         }
     }

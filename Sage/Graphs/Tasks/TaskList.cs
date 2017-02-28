@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Persistence;
@@ -59,13 +59,13 @@ namespace Highpoint.Sage.Graphs.Tasks {
             }
 
             if ( predIndex == m_list.Count - 1 ) {
-				//Trace.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
+				//_Debug.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
                 AppendTask(subject);
             } else { // actual insertion...
                 Task pred = (Task)m_list[predIndex];
 				Task succ = (Task)m_list[predIndex+1];
                 m_list.Insert(predIndex+1,subject);
-				//Trace.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
+				//_Debug.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
 				m_hashtable.Add(subject.Guid,subject);
 				pred.RemoveSuccessor(succ);
 				pred.AddSuccessor(subject);
@@ -93,7 +93,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
             succ = (Task)m_list[succIndex];
             succ.AddPredecessor(subject);
             m_list.Insert(succIndex,subject);
-			//Trace.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
+			//_Debug.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
             m_hashtable.Add(subject.Guid,subject);
 
             m_masterTask.AddChildEdge(subject);    
@@ -103,12 +103,12 @@ namespace Highpoint.Sage.Graphs.Tasks {
             if ( m_list.Count > 0 ) {
                 Task predecessor = (Task)m_list[m_list.Count-1];
                 m_list.Add(subject);
-				//Trace.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
+				//_Debug.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
                 m_hashtable.Add(subject.Guid,subject);
 
                 subject.AddPredecessor(predecessor);
             } else {
-				//Trace.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
+				//_Debug.WriteLine("Appending task " + subject.Name + " with Guid " + subject.Guid + " under task list for task " + MasterTask.Name + " which currently has " + m_hashtable.Count + " entries.");
                 m_list.Add(subject);
                 m_hashtable.Add(subject.Guid,subject);
 
@@ -127,12 +127,12 @@ namespace Highpoint.Sage.Graphs.Tasks {
             if ( subjNdx < m_list.Count - 1 ) succ = (Task)m_list[subjNdx+1];
             if ( subjNdx > 0 ) pred = (Task)m_list[subjNdx-1];
 
-//			Trace.WriteLine("\r\n\r\n*************************************************************\r\nBefore RemoveTask\r\n");
-//			Trace.WriteLine(DiagnosticAids.GraphToString(m_masterTask));
-//			Trace.WriteLine("\r\n\r\n*************************************************************\r\nBefore RemoveChildEdge\r\n");
+//			_Debug.WriteLine("\r\n\r\n*************************************************************\r\nBefore RemoveTask\r\n");
+//			_Debug.WriteLine(DiagnosticAids.GraphToString(m_masterTask));
+//			_Debug.WriteLine("\r\n\r\n*************************************************************\r\nBefore RemoveChildEdge\r\n");
 			m_masterTask.RemoveChildEdge(subject);
-//			Trace.WriteLine("\r\n\r\n*************************************************************\r\nBefore The rest of the stuff...\r\n");
-//			Trace.WriteLine(DiagnosticAids.GraphToString(m_masterTask));
+//			_Debug.WriteLine("\r\n\r\n*************************************************************\r\nBefore The rest of the stuff...\r\n");
+//			_Debug.WriteLine(DiagnosticAids.GraphToString(m_masterTask));
             m_list.Remove(subject);
             m_hashtable.Remove(subject.Guid);
 
@@ -144,8 +144,8 @@ namespace Highpoint.Sage.Graphs.Tasks {
             if ( pred == null && succ != null ) MasterTask.AddCostart(succ);
 			// Was, until 1/25/2004 : if ( pred != null && succ == null ) MasterTask.AddCofinish(pred);
 			if ( pred != null && succ == null ) pred.AddCofinish(MasterTask);
-			//			Trace.WriteLine("\r\n\r\n*************************************************************\r\nAfter everything...\r\n");
-//			Trace.WriteLine(DiagnosticAids.GraphToString(m_masterTask));
+			//			_Debug.WriteLine("\r\n\r\n*************************************************************\r\nAfter everything...\r\n");
+//			_Debug.WriteLine(DiagnosticAids.GraphToString(m_masterTask));
             subject.SelfValidState = false;
 //			foreach ( Highpoint.Sage.Graphs.Edge childEdge in subject.ChildEdges ) {
 //				if ( childEdge is Task ) ((Task)childEdge).SelfValidState = false;

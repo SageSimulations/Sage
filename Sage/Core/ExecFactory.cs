@@ -11,7 +11,7 @@ using System.Reflection;
 using Highpoint.Sage.Licensing;
 #endif // LICENSING_ENABLED
 
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.SimCore {
 
@@ -108,7 +108,7 @@ namespace Highpoint.Sage.SimCore {
                 m_requiredType = "Highpoint.Sage.SimCore.Executive, Sage";
                 NameValueCollection nvc = (NameValueCollection)ConfigurationManager.GetSection("Sage");
                 if (nvc == null) {
-                    Trace.WriteLine("Warning - <Sage> section missing from config file for " + Process.GetCurrentProcess().ProcessName);
+                    _Debug.WriteLine("Warning - <Sage> section missing from config file for " + Process.GetCurrentProcess().ProcessName);
                 } else if (nvc["ExecutiveType"] != null) {
                     m_requiredType = nvc["ExecutiveType"];
                 }

@@ -617,7 +617,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
 		private void m_material_MaterialChanged(IMaterial material, MaterialChangeType type) {
 		    // ReSharper disable once RedundantJumpStatement (Used in diagnostics)
 			if ( type == MaterialChangeType.Temperature ) return;
-			//Trace.WriteLine(m_model.Executive.Now + " : mixture in " + this.Name + " is now " + m_material + ", after a change of " + type);
+			//_Debug.WriteLine(m_model.Executive.Now + " : mixture in " + this.Name + " is now " + m_material + ", after a change of " + type);
 		}
 
         private void OnResourceRequestAborting(IResourceRequest request, IExecutive exec, IDetachableEventController idec) {

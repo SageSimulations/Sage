@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections.Specialized;
 
 
@@ -18,7 +18,7 @@ namespace Highpoint.Sage.SimCore {
             m_nvc = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection(sectionName);
             if (m_nvc == null) {
                 // TODO: Add this to an Errors & Warnings collection instead of dumping it to Trace.
-                Trace.WriteLine(string.Format("Warning - <{0}> section missing from config file for {1}.", sectionName, Process.GetCurrentProcess().ProcessName));
+                _Debug.WriteLine(string.Format("Warning - <{0}> section missing from config file for {1}.", sectionName, Process.GetCurrentProcess().ProcessName));
             }
         }
 
@@ -27,7 +27,7 @@ namespace Highpoint.Sage.SimCore {
 			if ( m_nvc != null ) retval = m_nvc[key];
 			if ( retval == null ) {
 				// TODO: Add this to an Errors & Warnings collection instead of dumping it to Trace.
-				Trace.WriteLine("Application requested unfound parameter associated with key " + key + " in the app.config file.");
+				_Debug.WriteLine("Application requested unfound parameter associated with key " + key + " in the app.config file.");
 			}
 			return retval;
 		}

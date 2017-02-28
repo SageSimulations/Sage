@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.ItemBased.Channels {
 

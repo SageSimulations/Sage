@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using System.Collections;
+using _Debug = System.Diagnostics.Debug;
 // ReSharper disable UnusedParameter.Global
 
 namespace Highpoint.Sage.SimCore {
@@ -243,7 +244,7 @@ namespace Highpoint.Sage.SimCore {
 
         private bool m_renderPending;
         private void RunRendering() {
-            System.Diagnostics.Debug.Assert(Thread.CurrentThread.Equals(m_renderThread));
+            _Debug.Assert(Thread.CurrentThread.Equals(m_renderThread));
 
             while (true) {
                 if (m_executive.State.Equals(ExecState.Running)) {

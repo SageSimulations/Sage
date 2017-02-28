@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Xml;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Materials.Chemistry.Emissions;
@@ -84,7 +84,7 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		#endregion
 		

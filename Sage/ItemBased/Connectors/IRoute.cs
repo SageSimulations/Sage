@@ -2,7 +2,7 @@
 
 using Highpoint.Sage.ItemBased.Ports;
 
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.ItemBased.Channels {
 	public interface IRoute {

@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Linq;
 using Highpoint.Sage.SimCore;
@@ -97,7 +97,7 @@ namespace Highpoint.Sage.Resources {
 			m_target.AcquiredEvent  += m_target_AcquiredEvent;
 			m_target.ReleasedEvent  += m_target_ReleasedEvent;
 			m_record = new ArrayList();
-			if ( s_diagnostics ) Trace.WriteLine(m_model.Executive.Now + " : Created a Resource Tracker focused on " + m_target.Name + " (" + m_target.Guid + ").");
+			if ( s_diagnostics ) _Debug.WriteLine(m_model.Executive.Now + " : Created a Resource Tracker focused on " + m_target.Name + " (" + m_target.Guid + ").");
 		}
 
 		/// <summary>
@@ -188,18 +188,18 @@ namespace Highpoint.Sage.Resources {
 
         private void LogEvent(IResource resource, IResourceRequest irr, ResourceAction action)
         {
-            if (s_diagnostics) Trace.WriteLine(m_model.Executive.Now + " : Resource Tracker " + m_target.Name
+            if (s_diagnostics) _Debug.WriteLine(m_model.Executive.Now + " : Resource Tracker " + m_target.Name
                                    + " (" + m_target.Guid + ") logged " + action
                                    + " with " + irr.QuantityDesired + ".");
             ResourceEventRecord rer = new ResourceEventRecord(m_model.Executive.Now, resource, irr, action);
             if (m_rerFilter == null || m_rerFilter(rer))
             {
                 m_record.Add(rer);
-                if (s_diagnostics) Trace.WriteLine("\tLogged.");
+                if (s_diagnostics) _Debug.WriteLine("\tLogged.");
             }
             else
             {
-                if (s_diagnostics) Trace.WriteLine("\tFiltered out.");
+                if (s_diagnostics) _Debug.WriteLine("\tFiltered out.");
             }
         }
 

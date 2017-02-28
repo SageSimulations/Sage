@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Materials.Chemistry;
@@ -28,9 +28,9 @@ namespace Highpoint.Sage.Persistence {
 				new MyTestObject("Rufus",186.9,
 				null))))));
 
-			Trace.WriteLine("Setting " + mto.Child1.Child1.Name + "'s child2 to " + mto2.Name);
+			_Debug.WriteLine("Setting " + mto.Child1.Child1.Name + "'s child2 to " + mto2.Name);
 			mto.Child1.Child1.Child2 = mto2;
-			Trace.WriteLine("Setting " + mto.Child1.Name + "'s child2 to " + mto2.Name);
+			_Debug.WriteLine("Setting " + mto.Child1.Name + "'s child2 to " + mto2.Name);
 			mto.Child1.Child2 = mto2;
 
 			xsc.StoreObject("MTO",mto);
@@ -79,7 +79,7 @@ namespace Highpoint.Sage.Persistence {
             xsc.Load(Highpoint.Sage.Utility.DirectoryOperations.GetAppDataDir() + "water.xml");
 			IMaterial water = (IMaterial)xsc.LoadObject("Water");
 
-			Trace.WriteLine(water);
+			_Debug.WriteLine(water);
 
 		}
 

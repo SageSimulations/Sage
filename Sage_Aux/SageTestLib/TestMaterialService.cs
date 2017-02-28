@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
@@ -22,7 +22,7 @@ namespace Highpoint.Sage.Materials  {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -102,7 +102,7 @@ namespace Highpoint.Sage.Materials  {
             mcat["Methylene Chloride"].SetAntoinesCoefficients3(7.263, 1222.7, 238.4, PressureUnits.mmHg, TemperatureUnits.Celsius);
             mcat["Water"].SetAntoinesCoefficients3(8.040, 1715.1, 232.4, PressureUnits.mmHg, TemperatureUnits.Celsius);
 
-			Trace.WriteLine(" ... sample substances loaded.");
+			_Debug.WriteLine(" ... sample substances loaded.");
             return mcat;
 		}
 

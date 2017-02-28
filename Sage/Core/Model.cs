@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -268,7 +268,7 @@ namespace Highpoint.Sage.SimCore {
         /// </summary>
         /// <param name="resource">The resource.</param>
         public void OnNewResourceCreated(IResource resource){
-            if ( s_diagnostics ) Trace.WriteLine("Created " + resource.Name + ", which is of type " + resource.GetType().Name);
+            if ( s_diagnostics ) _Debug.WriteLine("Created " + resource.Name + ", which is of type " + resource.GetType().Name);
             if ( ResourceCreatedEvent != null ) ResourceCreatedEvent(resource);
         }
 
@@ -405,7 +405,7 @@ namespace Highpoint.Sage.SimCore {
             // then anything that causes an error will abort the model, and move
             // it back to the 'Idle' state.
             if ( !StateMachine.IsTransitioning ) {
-                if ( s_diagnostics ) Trace.WriteLine("Model.Abort() requested as a result of the addition of an error : " + theError);
+                if ( s_diagnostics ) _Debug.WriteLine("Model.Abort() requested as a result of the addition of an error : " + theError);
                 if ( !StateMachine.State.Equals(GetAbortEnum()) ) StateMachine.DoTransition(GetAbortEnum());
             }
             return true;
@@ -433,10 +433,10 @@ namespace Highpoint.Sage.SimCore {
             foreach (IModelError err in m_errors) {
                 if (err.Target is Task) {
                     if (s_diagnostics)
-                        Trace.WriteLine("Checking error " + err.Narrative + ", targeted to " + ( (Task)err.Target ).Name);
+                        _Debug.WriteLine("Checking error " + err.Narrative + ", targeted to " + ( (Task)err.Target ).Name);
                     if (err.AutoClear) {
                         if (s_diagnostics)
-                            Trace.WriteLine("Clearing error " + err.Name);
+                            _Debug.WriteLine("Clearing error " + err.Name);
                         keysToClear.Add(err.Target);
                     }
                 }
@@ -452,7 +452,7 @@ namespace Highpoint.Sage.SimCore {
         /// </summary>
         /// <param name="theError">The error to be removed from the model.</param>
         public void RemoveError(IModelError theError){
-            if ( s_diagnostics ) Trace.WriteLine("Removing error " + theError.Narrative);
+            if ( s_diagnostics ) _Debug.WriteLine("Removing error " + theError.Narrative);
             m_errors.Remove(theError.Target,theError);
             if ( ErrorCleared != null ) ErrorCleared(theError);
         }
@@ -492,15 +492,15 @@ namespace Highpoint.Sage.SimCore {
         }
 
         private void Model_ErrorHappened(IModelError modelError) {
-            Trace.WriteLine(Executive.Now + " : ERROR HAPPENED : " + modelError.Narrative);
+            _Debug.WriteLine(Executive.Now + " : ERROR HAPPENED : " + modelError.Narrative);
         }
 
         private void Model_WarningHappened(IModelWarning modelWarning) {
-            Trace.WriteLine(Executive.Now + " : WARNING HAPPENED : " + modelWarning.Narrative);
+            _Debug.WriteLine(Executive.Now + " : WARNING HAPPENED : " + modelWarning.Narrative);
         }
 
         private void Model_ErrorCleared(IModelError modelError) {
-            Trace.WriteLine(Executive.Now + " : ERROR CLEARED : " + modelError.Narrative);
+            _Debug.WriteLine(Executive.Now + " : ERROR CLEARED : " + modelError.Narrative);
         }
         
         #endregion
@@ -555,7 +555,7 @@ namespace Highpoint.Sage.SimCore {
         /// Starts the model.
         /// </summary>
         public virtual void Start() {
-            if ( s_diagnostics ) Trace.WriteLine("Model.Start() requested.");
+            if ( s_diagnostics ) _Debug.WriteLine("Model.Start() requested.");
             IsRunning = true;
             IsReady = false;
             IsPaused = false;
@@ -568,7 +568,7 @@ namespace Highpoint.Sage.SimCore {
         /// </summary>
         public virtual void Pause()
         {
-            if (s_diagnostics) Trace.WriteLine("Model.Pause() requested.");
+            if (s_diagnostics) _Debug.WriteLine("Model.Pause() requested.");
             if (IsRunning)
             {
                 IsRunning = true;
@@ -584,7 +584,7 @@ namespace Highpoint.Sage.SimCore {
         /// </summary>
         public virtual void Resume()
         {
-            if (s_diagnostics) Trace.WriteLine("Model.Resume() requested.");
+            if (s_diagnostics) _Debug.WriteLine("Model.Resume() requested.");
             if (IsPaused)
             {
                 IsRunning = true;
@@ -600,7 +600,7 @@ namespace Highpoint.Sage.SimCore {
         /// Aborts the model.
         /// </summary>
         public virtual void Abort(){
-            if ( s_diagnostics ) Trace.WriteLine("Model.Abort() requested.");
+            if ( s_diagnostics ) _Debug.WriteLine("Model.Abort() requested.");
             Exec.Stop();
             m_stateMachine.DoTransition(GetAbortEnum());
             if (!IsReady)
@@ -613,7 +613,7 @@ namespace Highpoint.Sage.SimCore {
         }
 
         public virtual void Reset() {
-            if (s_diagnostics) Trace.WriteLine("Model.Reset() requested.");
+            if (s_diagnostics) _Debug.WriteLine("Model.Reset() requested.");
             if (IsCompleted)
             {
                 IsRunning = false;

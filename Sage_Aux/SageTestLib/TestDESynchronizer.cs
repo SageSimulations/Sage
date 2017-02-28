@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Highpoint.Sage.SimCore {
@@ -24,7 +24,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -43,27 +43,27 @@ namespace Highpoint.Sage.SimCore {
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
-				Trace.WriteLine("Primary requesting event service for " + when + ", at priority " + priority);
+				_Debug.WriteLine("Primary requesting event service for " + when + ", at priority " + priority);
 				object userData = null;
 				if ( m_random.Next(5) < 2 ) {
 					ISynchChannel isc = m_des.GetSynchChannel(priority);
 					userData = isc;
-					Trace.WriteLine("Creating synchronized event for time " + when);
+					_Debug.WriteLine("Creating synchronized event for time " + when);
 					_synchronized ++;
 				}
 				exec.RequestEvent(new ExecEventReceiver(MyExecEventReceiver),when,priority,userData,ExecEventType.Detachable);
 				_submitted ++;
 			}
 
-			System.Diagnostics.Debug.Assert(_submitted > 0,"There are no events submitted");
-			System.Diagnostics.Debug.Assert(_synchronized > 0,"There are no events synchronized");
-			System.Diagnostics.Debug.Assert(_secondary == 0,"There cannot be secondary events submitted yet");
+            _Debug.Assert(_submitted > 0,"There are no events submitted");
+            _Debug.Assert(_synchronized > 0,"There are no events synchronized");
+            _Debug.Assert(_secondary == 0,"There cannot be secondary events submitted yet");
 
 			exec.Start();
 
-			System.Diagnostics.Debug.Assert(_submitted == 0,"Not all submitted events had been fired");
-			System.Diagnostics.Debug.Assert(_synchronized == 0,"Not all synchronized events had been fired");
-			System.Diagnostics.Debug.Assert(_secondary > 0,"There has not been a secondary events submitted");
+            _Debug.Assert(_submitted == 0,"Not all submitted events had been fired");
+            _Debug.Assert(_synchronized == 0,"Not all synchronized events had been fired");
+            _Debug.Assert(_secondary > 0,"There has not been a secondary events submitted");
 		}
 
 		private void MyExecEventReceiver(IExecutive exec, object userData){
@@ -76,25 +76,25 @@ namespace Highpoint.Sage.SimCore {
 		private void DoUnsynchronized(IExecutive exec, object userData){
 			if ( m_random.NextDouble() > .15 ) {
 				DateTime when = new DateTime(exec.Now.Ticks + m_random.Next());
-				Trace.WriteLine("Secondary requesting event service for " + when + ".");
+				_Debug.WriteLine("Secondary requesting event service for " + when + ".");
 				exec.RequestEvent(new ExecEventReceiver(MyExecEventReceiver),when,m_random.NextDouble(),null,ExecEventType.Detachable);
 				_submitted ++;
 				_secondary++;
 			}
-			Trace.WriteLine("Running event at time " + exec.Now + ", and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
+			_Debug.WriteLine("Running event at time " + exec.Now + ", and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
 			_submitted --;
 		}
 		private void DoSynchronized(IExecutive exec, ISynchChannel isc){
-			Trace.WriteLine("Pausing synchronized event at time " + exec.Now + ", and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
+			_Debug.WriteLine("Pausing synchronized event at time " + exec.Now + ", and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
 			isc.Synchronize();
 			if ( _synchtime == new DateTime() ) {
 				_synchtime = exec.Now;
 			} else {
-				System.Diagnostics.Debug.Assert(_synchtime.Equals(exec.Now),"Synchronized event did not fire at the synchronization time");
+                _Debug.Assert(_synchtime.Equals(exec.Now),"Synchronized event did not fire at the synchronization time");
 			}
 			_synchronized --;
 			_submitted --;
-			Trace.WriteLine("Running synchronized event at time " + exec.Now + ", sequence number " + isc.Sequencer + " and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
+			_Debug.WriteLine("Running synchronized event at time " + exec.Now + ", sequence number " + isc.Sequencer + " and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
 		}
 	}
 }

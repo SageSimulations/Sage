@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.ItemBased.Connectors;
@@ -324,7 +324,7 @@ namespace Highpoint.Sage.ItemBased.Queues {
 			if ( data != null ) {
 				Queue queue = (Queue)m_selStrategy.GetNext(null);
 				IOutputPort outPort = (IOutputPort)queue.Input.Peer;
-				//Trace.WriteLine("Arbitrarily putting data to " + queue.ToString());
+				//_Debug.WriteLine("Arbitrarily putting data to " + queue.ToString());
 				return ((SimpleOutputPort)outPort).OwnerPut(data); // Cast is okay - it's my port.
 			} else {
 				return false;

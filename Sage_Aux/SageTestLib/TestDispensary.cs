@@ -2,7 +2,7 @@
 
 using System;
 using Highpoint.Sage.Materials.Chemistry;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Randoms;
@@ -34,7 +34,7 @@ namespace Highpoint.Sage.Materials {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 
         [TestMethod]

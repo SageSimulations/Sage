@@ -413,7 +413,7 @@ namespace Highpoint.Sage.Resources {
 				}
 			}
 //			if ( rscQueue.Count == 0 ) {
-//				Trace.WriteLine("No resources were requested.");
+//				_Debug.WriteLine("No resources were requested.");
 //			}
 			#endregion
 

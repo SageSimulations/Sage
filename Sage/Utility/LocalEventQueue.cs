@@ -6,6 +6,7 @@
 
 using System;
 using Highpoint.Sage.SimCore;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Utility
 {
@@ -105,7 +106,7 @@ namespace Highpoint.Sage.Utility
         /// <param name="what">The specified object.</param>
         /// <param name="when">The specified time.</param>
 		public void Enqueue(object what, DateTime when){
-			System.Diagnostics.Debug.Assert(!when.Equals(DateTime.MinValue));
+            _Debug.Assert(!when.Equals(DateTime.MinValue));
 
 			int ndxEmpty = m_tail;
 			EventData empty = m_circQueue[ndxEmpty];
@@ -175,8 +176,8 @@ namespace Highpoint.Sage.Utility
         /// <param name="exec">The exec.</param>
         /// <param name="userData">The user data provided as a callback from the Executive.</param>
 		private void Dequeue(IExecutive exec, object userData) {
-			System.Diagnostics.Debug.Assert(m_head!=m_tail);
-			System.Diagnostics.Debug.Assert(m_circQueue[m_head].When.Equals(exec.Now));
+            _Debug.Assert(m_head!=m_tail);
+            _Debug.Assert(m_circQueue[m_head].When.Equals(exec.Now));
 
 			// Note: We want to leave the event data at the head of the list until it is actually serviced,
 			// ...so once we have dequeued the event, we wipe out the head of the queue.
@@ -274,7 +275,7 @@ namespace Highpoint.Sage.Utility
 		/// <param name="i">The index, n, of the completion time.</param>
 		/// <returns>the completion time of the nth event</returns>
 		public DateTime GetCompletionTime(int i){
-			System.Diagnostics.Debug.Assert(i>=0);
+            _Debug.Assert(i>=0);
 #if USING_CANNED_HEAP
 				THIS IS NOT PROVEN OUT.
 				EventData ed = (EventData)m_heap.Peek();

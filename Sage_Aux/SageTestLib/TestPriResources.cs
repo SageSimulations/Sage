@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 
@@ -20,7 +20,7 @@ namespace Highpoint.Sage.Resources  {
 		public void Init() {}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -51,9 +51,9 @@ namespace Highpoint.Sage.Resources  {
 
 			m_resultString = "";
 			new PriRscReqTester(5).Start();
-			//Console.WriteLine(m_resultString);
+            //Console.WriteLine(m_resultString);
 
-			System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
 		
@@ -87,9 +87,9 @@ namespace Highpoint.Sage.Resources  {
 			}
 			m_resultString = "";
 			m_prt.Start();
-			//Console.WriteLine(m_resultString);
+            //Console.WriteLine(m_resultString);
 
-			System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
         private string StripCRLF(string structureString) => structureString.Replace("\r", "").Replace("\n", "");
 
@@ -123,9 +123,9 @@ namespace Highpoint.Sage.Resources  {
 			m_prt.Model.Starting+=new ModelEvent(Model_Starting);
 			m_resultString = "";
 			m_prt.Start();
-			//Console.WriteLine(m_resultString);
+            //Console.WriteLine(m_resultString);
 
-			System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
 		[TestMethod]
@@ -153,8 +153,8 @@ namespace Highpoint.Sage.Resources  {
 			m_prt.Model.Starting+=new ModelEvent(Model_Starting);
 			m_resultString = "";
 			m_prt.Start();
-			//Console.WriteLine(m_resultString);
-            System.Diagnostics.Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)), "TestPrioritizedResourceRequestWRemoval_2", "Results didn't match!");
+            //Console.WriteLine(m_resultString);
+            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)), "TestPrioritizedResourceRequestWRemoval_2", "Results didn't match!");
 		}
 
 		private void Model_Starting(IModel theModel) {

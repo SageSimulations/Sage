@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Persistence;
@@ -181,7 +181,7 @@ namespace Highpoint.Sage.Materials.Chemistry
                     if ( howMuch > 0 && rp.IsCatalyst ) howMuch = double.MaxValue;
                     fwdScale = Math.Min(fwdScale, howMuch / rp.Mass);
                     if ( s_diagnostics )
-                        Trace.WriteLine("target contains " + howMuch + " of reactant " + rp.MaterialType.Name + " so fwdScale is " + fwdScale);
+                        _Debug.WriteLine("target contains " + howMuch + " of reactant " + rp.MaterialType.Name + " so fwdScale is " + fwdScale);
 
                 }
                 if ( fwdScale == double.MaxValue ) fwdScale = 0.0;
@@ -195,7 +195,7 @@ namespace Highpoint.Sage.Materials.Chemistry
                     if ( howMuch > 0 && rp.IsCatalyst ) howMuch = double.MaxValue;
                     revScale = Math.Min(revScale, howMuch / rp.Mass);
                     if ( s_diagnostics )
-                        Trace.WriteLine("target contains " + howMuch + " of product " + rp.MaterialType.Name + " so revScale is " + revScale);
+                        _Debug.WriteLine("target contains " + howMuch + " of product " + rp.MaterialType.Name + " so revScale is " + revScale);
                 }
 
                 if ( revScale == double.MaxValue )
@@ -206,12 +206,12 @@ namespace Highpoint.Sage.Materials.Chemistry
 
             // If we're going to undo and then redo the same thing, the reaction didn't happen.
 			if (( fwdScale == 0.0 && revScale == 0.0 ) || ( Math.Abs(fwdScale-revScale) < 0.000001 )) {
-				if ( s_diagnostics ) Trace.WriteLine("Reaction " + Name + " won't happen in mixture " + target);
+				if ( s_diagnostics ) _Debug.WriteLine("Reaction " + Name + " won't happen in mixture " + target);
 				return null;
 			}
             
-			if ( s_diagnostics ) Trace.WriteLine("Mixture is " + target);
-			if ( s_diagnostics ) Trace.WriteLine("Reaction " + Name + " is happening. " + ToString());
+			if ( s_diagnostics ) _Debug.WriteLine("Mixture is " + target);
+			if ( s_diagnostics ) _Debug.WriteLine("Reaction " + Name + " is happening. " + ToString());
 
             ReactionGoingToHappenEvent?.Invoke(this,target);
             target.ReactionGoingToHappen(this);
@@ -220,12 +220,12 @@ namespace Highpoint.Sage.Materials.Chemistry
             target.SuspendChangeEvents();
 
 			if ( s_diagnostics ) {
-			    Trace.WriteLine(revScale > 0.0 ? "Performing reverse reaction..." : "Reverse reaction won't happen.");
+			    _Debug.WriteLine(revScale > 0.0 ? "Performing reverse reaction..." : "Reverse reaction won't happen.");
 			}
             if ( revScale > 0.0 ) React(target,m_products,m_reactants,revScale);
 
 			if ( s_diagnostics ) {
-			    Trace.WriteLine(fwdScale > 0.0 ? "Performing forward reaction..." : "Forward reaction won't happen.");
+			    _Debug.WriteLine(fwdScale > 0.0 ? "Performing forward reaction..." : "Forward reaction won't happen.");
 			}
 			if ( fwdScale > 0.0 ) React(target,m_reactants,m_products,fwdScale*m_rxPct);
 
@@ -254,12 +254,12 @@ namespace Highpoint.Sage.Materials.Chemistry
         protected void React(Mixture mix, ArrayList from, ArrayList to, double scale ){
 
             foreach ( ReactionParticipant rp in from ) {
-                if ( s_diagnostics ) Trace.WriteLine("Eliminating " + (rp.Mass*scale) + " of " + rp.MaterialType.Name + " from mixture.");
+                if ( s_diagnostics ) _Debug.WriteLine("Eliminating " + (rp.Mass*scale) + " of " + rp.MaterialType.Name + " from mixture.");
                 mix.RemoveMaterial(rp.MaterialType,rp.Mass*scale);
             }
 
             foreach ( ReactionParticipant rp in to ) {
-                if ( s_diagnostics ) Trace.WriteLine("Adding " + (rp.Mass*scale) + " of " + rp.MaterialType.Name + " to mixture.");
+                if ( s_diagnostics ) _Debug.WriteLine("Adding " + (rp.Mass*scale) + " of " + rp.MaterialType.Name + " to mixture.");
                 mix.AddMaterial(rp.MaterialType.CreateMass(rp.Mass*scale,mix.Temperature));
             }
         }

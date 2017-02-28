@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Xml;
 using System.Collections;
 using System.Reflection;
@@ -284,7 +284,7 @@ namespace Highpoint.Sage.Persistence
                 try {
                     ((IXmlPersistable)obj).SerializeTo(this);
                 } catch ( InvalidCastException ice ) {
-                    Trace.WriteLine(ice.Message);
+                    _Debug.WriteLine(ice.Message);
                     throw new ApplicationException("Attempt to serialize an object of type " + obj.GetType() + " failed. It does not implement IXmlPersistable.");
                 }
                 PopNode();
@@ -395,16 +395,16 @@ namespace Highpoint.Sage.Persistence
         }
 
         private XmlNode CreateEmptyNode(string name, Type type, object oid){
-            //Trace.WriteLine("Creating a node of type " + type.ToString() + " to store " + name );
+            //_Debug.WriteLine("Creating a node of type " + type.ToString() + " to store " + name );
 
             XmlNode node;
             try {
                 node = m_rootDoc.CreateNode(XmlNodeType.Element, name, null);
             } catch ( XmlException xmlex ) {
-                Trace.WriteLine(xmlex.Message);
+                _Debug.WriteLine(xmlex.Message);
                 throw;
             }
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
 
             XmlAttribute attr;
             if ( oid != null ) { // Primitives won't have an oid.
@@ -439,19 +439,19 @@ namespace Highpoint.Sage.Persistence
             XmlNode node = root.CreateNode(XmlNodeType.Element, name, null);
             XmlAttribute attr = root.CreateAttribute(s_null_Label);
             attr.InnerText = "true";
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
             node.Attributes.Append(attr);
             return node;
         }
 
         private static bool NodeIsNull(XmlNode node){
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
             XmlAttribute nullness = node.Attributes[s_null_Label];
                 return nullness != null && nullness.InnerText.Equals("true");
         }
 
         private static bool NodeIsRef(XmlNode node){
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
             XmlAttribute refness = node.Attributes[s_isref_Label];
             return refness != null && refness.InnerText.Equals("true");
         }
@@ -465,7 +465,7 @@ namespace Highpoint.Sage.Persistence
         /// <returns></returns>
         private Type GetTypeFromNode(XmlNode node)
         {
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
 
             if (UseCatalog)
             {
@@ -485,7 +485,7 @@ namespace Highpoint.Sage.Persistence
         }
 
         private static Assembly GetAssemblyFromNode(XmlNode node){
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
             XmlAttribute assyAttr = node.Attributes[s_assy_Label];
             if ( assyAttr == null ) return null;
             string assyName = assyAttr.InnerText;
@@ -501,7 +501,7 @@ namespace Highpoint.Sage.Persistence
             m_typeCatalog.AppendChild(typeNode);
             XmlAttribute attr = m_rootDoc.CreateAttribute(s_type_Label);
             attr.InnerText = type.FullName;
-            Trace.Assert(typeNode.Attributes != null, "typeNode.Attributes != null");
+            _Debug.Assert(typeNode.Attributes != null, "typeNode.Attributes != null");
             typeNode.Attributes.Append(attr);
             attr = m_rootDoc.CreateAttribute(s_assy_Label);
             attr.InnerText = type.Assembly.FullName;
@@ -513,18 +513,18 @@ namespace Highpoint.Sage.Persistence
             m_typesByIndex.Clear();
             m_indexesByType.Clear();
             Type type = null;
-            Trace.Assert(m_typeCatalog?.ChildNodes != null, "m_typeCatalog?.ChildNodes != null");
+            _Debug.Assert(m_typeCatalog?.ChildNodes != null, "m_typeCatalog?.ChildNodes != null");
             foreach ( XmlNode typeNode in m_typeCatalog?.ChildNodes ) {
                 string typeKey = typeNode.Name;
                 
                 Assembly assy = GetAssemblyFromNode(typeNode);
-                Trace.Assert(typeNode.Attributes != null, "typeNode.Attributes != null");
+                _Debug.Assert(typeNode.Attributes != null, "typeNode.Attributes != null");
                 XmlAttribute typeAttr = typeNode.Attributes[s_type_Label];
                 if ( typeAttr != null && assy != null ) type = assy.GetType(typeAttr.InnerText);
 
 
                 m_typesByIndex.Add(typeKey,type);
-                Trace.Assert(type != null, "type != null");
+                _Debug.Assert(type != null, "type != null");
                 m_indexesByType.Add(type,typeKey);
             }
         }
@@ -544,7 +544,7 @@ namespace Highpoint.Sage.Persistence
             //node.InnerText = refid.ToString();
             XmlAttribute attr = m_rootDoc.CreateAttribute(s_isref_Label);
             attr.InnerText = "true";
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
             node.Attributes.Append(attr);
             attr = m_rootDoc.CreateAttribute(s_ref_Id_Label);
             attr.InnerText = refid.ToString();
@@ -570,7 +570,7 @@ namespace Highpoint.Sage.Persistence
         // ReSharper disable once UnusedParameter.Local
         private object GetOidForType(object obj){return "_"+(m_typeNum++);}
         private object GetOidFromNode(XmlNode node){
-            Trace.Assert(node.Attributes != null, "node.Attributes != null");
+            _Debug.Assert(node.Attributes != null, "node.Attributes != null");
             XmlAttribute attr = node.Attributes[s_ref_Id_Label];
             if ( attr == null ) return null;
             return node.Attributes[s_ref_Id_Label].InnerText;
@@ -594,7 +594,7 @@ namespace Highpoint.Sage.Persistence
 
             public object LoadObject(object key) {
                 XmlNode node = m_xmlsc.CurrentNode.SelectSingleNode(key.ToString());
-                Trace.Assert(node != null, "node != null");
+                _Debug.Assert(node != null, "node != null");
                 return ObjectFromString(node.InnerText);
             }
             public void Reset() {}
@@ -840,7 +840,7 @@ namespace Highpoint.Sage.Persistence
                 m_xmlsc.PushNode(node);
                 Type elementType = (Type)m_xmlsc.LoadObject("ElementType");
                 int[] lengths;
-                Trace.Assert(node != null, "node != null");
+                _Debug.Assert(node != null, "node != null");
                 if ( node.SelectSingleNode("Lengths") != null ) {
                     lengths = (int[])m_xmlsc.LoadObject("Lengths");
                 } else {

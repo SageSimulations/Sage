@@ -2,7 +2,7 @@
 
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore; // For executive.
 
@@ -53,11 +53,11 @@ namespace Highpoint.Sage.Graphs {
 		private void FireTheVertex(IDictionary graphContext){
 			if ( m_model.Executive.Now < m_earliest ) {
 				TimeSpan ts = (m_earliest-m_model.Executive.Now);
-				// Trace.WriteLine(m_model.Executive.Now + " : " + "Will fire vertex " + m_vertex.Name + " after a delay of " + string.Format("{0:d2}:{1:d2}:{2:d2}",ts.Hours,ts.Minutes,ts.Seconds));
+				// _Debug.WriteLine(m_model.Executive.Now + " : " + "Will fire vertex " + m_vertex.Name + " after a delay of " + string.Format("{0:d2}:{1:d2}:{2:d2}",ts.Hours,ts.Minutes,ts.Seconds));
 				ExecEventType eet = m_model.Executive.CurrentEventType;
 				m_model.Executive.RequestEvent(new ExecEventReceiver(_FireTheVertex),m_earliest,0,graphContext,eet);
 			} else {
-				// Trace.WriteLine(m_model.Executive.Now + " : " + "Firing vertex " + m_vertex.Name);
+				// _Debug.WriteLine(m_model.Executive.Now + " : " + "Firing vertex " + m_vertex.Name);
 				m_vertexTrigger(graphContext);
 			}
 		}

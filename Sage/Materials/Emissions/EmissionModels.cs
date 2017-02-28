@@ -4,7 +4,7 @@ using System.Collections;
 using K = Highpoint.Sage.Materials.Chemistry.Emissions.EmissionModel.Constants;
 using PN = Highpoint.Sage.Materials.Chemistry.Emissions.EmissionModel.ParamNames;
 using VPC = Highpoint.Sage.Materials.Chemistry.VaporPressure.VaporPressureCalculator;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable RedundantAssignment
@@ -364,18 +364,18 @@ namespace Highpoint.Sage.Materials.Chemistry.Emissions {
 				string modelName = subject.Keys[0];
 				string opStepName = (string)parameters["SomOpStepName"];
 				parameters.Remove("SomOpStepName");
-				Trace.WriteLine("\r\n> > > > > > > >  " + opStepName + " [" + modelName + "]");
-				Trace.WriteLine("Initial : " + initial.Volume + " liters ( " + initial.Volume/K.LitersPerGallon + " Gallons ) , " + initial.Mass + " kg ( " + (initial.Mass/K.KgPerPound) + " lbm ).");
+				_Debug.WriteLine("\r\n> > > > > > > >  " + opStepName + " [" + modelName + "]");
+				_Debug.WriteLine("Initial : " + initial.Volume + " liters ( " + initial.Volume/K.LitersPerGallon + " Gallons ) , " + initial.Mass + " kg ( " + (initial.Mass/K.KgPerPound) + " lbm ).");
 				foreach ( Substance s in initial.Constituents ) {
-					Trace.WriteLine("\t\t" + s.MaterialType + " : " + s.Volume + " liters ( " + s.Volume/K.LitersPerGallon + " Gallons ) , " + s.Mass + " kg ( " + (s.Mass/K.KgPerPound) + " lbm ).");
+					_Debug.WriteLine("\t\t" + s.MaterialType + " : " + s.Volume + " liters ( " + s.Volume/K.LitersPerGallon + " Gallons ) , " + s.Mass + " kg ( " + (s.Mass/K.KgPerPound) + " lbm ).");
 				}
-				Trace.WriteLine("Final   : " + final.Volume + " liters ( " + final.Volume/K.LitersPerGallon + " Gallons ) , " + final.Mass + " kg ( " + (final.Mass/K.KgPerPound) + " lbm ).");
+				_Debug.WriteLine("Final   : " + final.Volume + " liters ( " + final.Volume/K.LitersPerGallon + " Gallons ) , " + final.Mass + " kg ( " + (final.Mass/K.KgPerPound) + " lbm ).");
 				foreach ( Substance s in final.Constituents ) {
-					Trace.WriteLine("\t\t" + s.MaterialType + " : " + s.Volume + " liters ( " + s.Volume/K.LitersPerGallon + " Gallons ) , " + s.Mass + " kg ( " + (s.Mass/K.KgPerPound) + " lbm ).");
+					_Debug.WriteLine("\t\t" + s.MaterialType + " : " + s.Volume + " liters ( " + s.Volume/K.LitersPerGallon + " Gallons ) , " + s.Mass + " kg ( " + (s.Mass/K.KgPerPound) + " lbm ).");
 				}
-				Trace.WriteLine("Emission: " + emission.Volume + " liters ( " + emission.Volume/K.LitersPerGallon + " Gallons ) , " + emission.Mass + " kg ( " + (emission.Mass/K.KgPerPound) + " lbm ).");
+				_Debug.WriteLine("Emission: " + emission.Volume + " liters ( " + emission.Volume/K.LitersPerGallon + " Gallons ) , " + emission.Mass + " kg ( " + (emission.Mass/K.KgPerPound) + " lbm ).");
 				foreach ( Substance s in emission.Constituents ) {
-					Trace.WriteLine("\t\t" + s.MaterialType + " : " + s.Volume + " liters ( " + s.Volume/K.LitersPerGallon + " Gallons ) , " + s.Mass + " kg ( " + (s.Mass/K.KgPerPound) + " lbm ).");
+					_Debug.WriteLine("\t\t" + s.MaterialType + " : " + s.Volume + " liters ( " + s.Volume/K.LitersPerGallon + " Gallons ) , " + s.Mass + " kg ( " + (s.Mass/K.KgPerPound) + " lbm ).");
 				}
 
 				int longestKey = 0;
@@ -387,7 +387,7 @@ namespace Highpoint.Sage.Materials.Chemistry.Emissions {
 					sb.Append(label);
 					for ( int i = label.Length ; i < longestKey+3 ; i++ ) sb.Append(" ");
 					sb.Append(": " + de.Value + " ( " + Convert(de) + " ) ");
-					Trace.WriteLine(sb.ToString());
+					_Debug.WriteLine(sb.ToString());
 				}
 			}
 		}

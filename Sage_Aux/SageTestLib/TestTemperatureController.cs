@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Thermodynamics;
@@ -23,13 +23,13 @@ namespace Highpoint.Sage.Thermodynamics {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST Delta method")]
 		public void TestTCConstDeltaTargetingUp(){
-			Trace.WriteLine("\r\nTesting temperature drive up from constant delta.");
+			_Debug.WriteLine("\r\nTesting temperature drive up from constant delta.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(70.0,20.0,34.0,60.0,5.0,01.0,CONST_DLTA,true);
 
@@ -39,7 +39,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST Delta method")]
 		public void TestTCConstDeltaTargetingUp2(){
-			Trace.WriteLine("\r\nTesting temperature drive up from constant delta.");
+			_Debug.WriteLine("\r\nTesting temperature drive up from constant delta.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(60.0,25.0,34.0,65.0,5.0,01.0,CONST_DLTA,true);
 
@@ -49,7 +49,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST TSRC method")]
 		public void TestTCConstTSrcTargetingUp(){
-			Trace.WriteLine("\r\nTesting temperature drive up from constant TSrc.");
+			_Debug.WriteLine("\r\nTesting temperature drive up from constant TSrc.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(70.0,20.0,34.0,60.0,5.0,01.0,CONST_TSRC,true);
 
@@ -60,7 +60,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using CONST TSRC and src==setpoint")]
         [ExpectedException(typeof(Highpoint.Sage.Materials.Thermodynamics.TemperatureController.IncalculableTimeToSetpointException))]
 		public void TestTCConstTSrcTargetingLevel(){
-			Trace.WriteLine("\r\nTesting temperature drive up from constant TSrc.");
+			_Debug.WriteLine("\r\nTesting temperature drive up from constant TSrc.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(60.0,20.0,34.0,60.0,5.0,01.0,CONST_TSRC,true);
 
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST RampRate method")]
 		public void TestTCConstTRampRateTargetingUp(){
-			Trace.WriteLine("\r\nTesting temperature drive up from constant RampRate.");
+			_Debug.WriteLine("\r\nTesting temperature drive up from constant RampRate.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(70.0,20.0,34.0,60.0,5.0,01.0,CONST_RAMP,true);
 
@@ -80,7 +80,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 17 degreesC to 35 degrees C using the CONST RampRate method")]
 		public void TestTCConstTRampRateKlendathu(){
-			Trace.WriteLine("\r\nTesting temperature drive up from constant RampRate.");
+			_Debug.WriteLine("\r\nTesting temperature drive up from constant RampRate.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(17.0,17.0,34.0,35.0,5.0,00.0,CONST_RAMP,true);
 
@@ -90,7 +90,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 50 degrees C using the CONST Delta method")]
 		public void TestTCConstDeltaTargetingDown(){
-			Trace.WriteLine("\r\nTesting temperature drive down from constant delta.");
+			_Debug.WriteLine("\r\nTesting temperature drive down from constant delta.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(20.0,70.0,34.0,50.0,5.0,01.0,CONST_DLTA,true);
 
@@ -100,7 +100,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 50 degrees C using the CONST TSRC method")]
 		public void TestTCConstTSrcTargetingDown(){
-			Trace.WriteLine("\r\nTesting temperature drive down from constant TSrc.");
+			_Debug.WriteLine("\r\nTesting temperature drive down from constant TSrc.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(20.0,70.0,34.0,50.0,5.0,01.0,CONST_TSRC,true);
 
@@ -110,7 +110,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 50 degrees C using the CONST RampRate method")]
 		public void TestTCConstTRampRateTargetingDown(){
-			Trace.WriteLine("\r\nTesting temperature drive down from constant RampRate.");
+			_Debug.WriteLine("\r\nTesting temperature drive down from constant RampRate.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(20.0,70.0,34.0,50.0,5.0,01.0,CONST_RAMP,true);
 
@@ -120,7 +120,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 60 degrees C due to ambient 34 degreesC using the CONST Delta method")]
 		public void TestTCDriftDown(){
-			Trace.WriteLine("\r\nTesting temperature downdrift due to ambient.");
+			_Debug.WriteLine("\r\nTesting temperature downdrift due to ambient.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(90.0,70.0,34.0,60.0,5.0,01.0,CONST_DLTA,false);
 
@@ -130,7 +130,7 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 34 degreesC to 44 degrees C due to ambient 70 degreesC using the CONST Delta method")]
 		public void TestTCDriftUp(){
-			Trace.WriteLine("\r\nTesting temperature updrift due to ambient.");
+			_Debug.WriteLine("\r\nTesting temperature updrift due to ambient.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(90.0,34.0,70.0,44.0,5.0,01.0,CONST_DLTA,false);
 
@@ -140,87 +140,87 @@ namespace Highpoint.Sage.Thermodynamics {
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 34 degreesC for a longer period of time then to reach 60 degrees C using the CONST Delta method")]
 		public void TestOverShootWhileOff(){
-			Trace.WriteLine("\r\nTesting what happens when temperature overshoots the setpoint.");
+			_Debug.WriteLine("\r\nTesting what happens when temperature overshoots the setpoint.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(90.0,34.0,70.0,60.0,5.0,01.0,CONST_DLTA,false);
             
 			TimeSpan ts = tj.TempCtrl.TimeNeededToReachTargetTemp();
-			Trace.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
+			_Debug.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
 			ts += TimeSpan.FromSeconds(ts.TotalSeconds*.25);
-			Trace.WriteLine(ts);
+			_Debug.WriteLine(ts);
 
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 			tj.TempCtrl.ImposeEffectsOfDuration(ts);
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 
-			System.Diagnostics.Debug.Assert(false == tj.MixTempWithinTolerance, "");
+            _Debug.Assert(false == tj.MixTempWithinTolerance, "");
 
 		}
 
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 34 degreesC for a longer period of time then to reach 30 degrees C using the CONST Delta method")]
 		public void TestUnderShootWhileOff(){
-			Trace.WriteLine("\r\nTesting what happens when temperature undershoots the setpoint.");
+			_Debug.WriteLine("\r\nTesting what happens when temperature undershoots the setpoint.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(20.0,34.0,20.0,30.0,5.0,01.0,CONST_DLTA,false);
             
 			TimeSpan ts = tj.TempCtrl.TimeNeededToReachTargetTemp();
-			Trace.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
+            _Debug.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
 			ts += TimeSpan.FromSeconds(ts.TotalSeconds*.75);
-			Trace.WriteLine(ts);
+			_Debug.WriteLine(ts);
 
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 			tj.TempCtrl.ImposeEffectsOfDuration(ts);
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 
-			System.Diagnostics.Debug.Assert(false == tj.MixTempWithinTolerance, "");
+            _Debug.Assert(false == tj.MixTempWithinTolerance, "");
 
 		}
 
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 34 degreesC for a longer period of time then to reach 60 degrees C using the CONST Delta method")]
 		public void TestOverShootWhileOn(){
-			Trace.WriteLine("\r\nTesting what happens when temperature overshoots the setpoint.");
+			_Debug.WriteLine("\r\nTesting what happens when temperature overshoots the setpoint.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(90.0,34.0,70.0,60.0,5.0,01.0,CONST_DLTA,true);
             
 			TimeSpan ts = tj.TempCtrl.TimeNeededToReachTargetTemp();
-			Trace.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
+            _Debug.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
 			ts += TimeSpan.FromSeconds(ts.TotalSeconds*.25);
-			Trace.WriteLine(ts);
+			_Debug.WriteLine(ts);
 
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 			tj.TempCtrl.ImposeEffectsOfDuration(ts);
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 
-			System.Diagnostics.Debug.Assert(true == tj.MixTempWithinTolerance, "");
+            _Debug.Assert(true == tj.MixTempWithinTolerance, "");
 
 		}
 
 		[TestMethod]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 34 degreesC for a longer period of time then to reach 30 degrees C using the CONST Delta method")]
 		public void TestUnderShootWhileOn(){
-			Trace.WriteLine("\r\nTesting what happens when temperature undershoots the setpoint.");
+			_Debug.WriteLine("\r\nTesting what happens when temperature undershoots the setpoint.");
 			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
 			TCTestJig tj = new TCTestJig(20.0,34.0,20.0,30.0,5.0,01.0,CONST_DLTA,true);
             
 			TimeSpan ts = tj.TempCtrl.TimeNeededToReachTargetTemp();
-			Trace.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
+            _Debug.Write("We need " + ts + " to reach setpoint. We will drive the system for ");
 			ts += TimeSpan.FromSeconds(ts.TotalSeconds*.25);
-			Trace.WriteLine(ts);
+			_Debug.WriteLine(ts);
 
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 			tj.TempCtrl.ImposeEffectsOfDuration(ts);
-			Trace.WriteLine(tj.Mixture.ToString());
+			_Debug.WriteLine(tj.Mixture.ToString());
 
-			System.Diagnostics.Debug.Assert(true == tj.MixTempWithinTolerance, "");
+            _Debug.Assert(true == tj.MixTempWithinTolerance, "");
 
 		}
 
         [TestMethod]
         [Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 34 degreesC for a longer period of time then to reach 30 degrees C using the CONST Delta method")]
         public void TestReplicateFailAfterTurningOffTCEnabled() {
-            Trace.WriteLine("\r\nTesting what happens when temperature control is turned off, but ambient cannot drive achievement of the setpoint.");
+            _Debug.WriteLine("\r\nTesting what happens when temperature control is turned off, but ambient cannot drive achievement of the setpoint.");
 
             TCTestJig tj;
             TimeSpan ts;
@@ -246,7 +246,7 @@ namespace Highpoint.Sage.Thermodynamics {
                 }
             }
 
-            System.Diagnostics.Debug.Assert(!fail);
+            _Debug.Assert(!fail);
 
         }
 
@@ -258,20 +258,20 @@ namespace Highpoint.Sage.Thermodynamics {
 
 			TimeSpan ts = tj.TempCtrl.TimeNeededToReachTargetTemp();
 
-			Trace.WriteLine("Mixture temp   = " + tj.Mixture.Temperature);
-			Trace.WriteLine("Setpoint temp  = " + tj.TempCtrl.TCSetpoint);
-			Trace.WriteLine("Source temp    = " + tj.TempCtrl.TCSrcTemperature);
-			Trace.WriteLine("Ambient temp   = " + tj.TempCtrl.AmbientTemperature);
-			Trace.WriteLine("TCSys Delta T  = " + tj.TempCtrl.TCSrcDelta);
-			Trace.WriteLine("RampRate       = " + (tj.TempCtrl.TCTemperatureRampRate.DegreesKelvin/tj.TempCtrl.TCTemperatureRampRate.PerTimePeriod.TotalMinutes) + " degrees per minute.");
-			Trace.WriteLine("TCSys Mode     = " + tj.TempCtrl.TCMode);
-			Trace.WriteLine("TCSys is " + (tj.TempCtrl.TCEnabled?"enabled.":"disabled."));
+			_Debug.WriteLine("Mixture temp   = " + tj.Mixture.Temperature);
+			_Debug.WriteLine("Setpoint temp  = " + tj.TempCtrl.TCSetpoint);
+			_Debug.WriteLine("Source temp    = " + tj.TempCtrl.TCSrcTemperature);
+			_Debug.WriteLine("Ambient temp   = " + tj.TempCtrl.AmbientTemperature);
+			_Debug.WriteLine("TCSys Delta T  = " + tj.TempCtrl.TCSrcDelta);
+			_Debug.WriteLine("RampRate       = " + (tj.TempCtrl.TCTemperatureRampRate.DegreesKelvin/tj.TempCtrl.TCTemperatureRampRate.PerTimePeriod.TotalMinutes) + " degrees per minute.");
+			_Debug.WriteLine("TCSys Mode     = " + tj.TempCtrl.TCMode);
+			_Debug.WriteLine("TCSys is " + (tj.TempCtrl.TCEnabled?"enabled.":"disabled."));
 			string driveString = tj.TempCtrl.TCEnabled?"be driven to":"drift to";
-			Trace.WriteLine("Time needed for mixture to " + driveString + " a target temperature of " + tj.TempCtrl.TCSetpoint + " is " + ts);
+			_Debug.WriteLine("Time needed for mixture to " + driveString + " a target temperature of " + tj.TempCtrl.TCSetpoint + " is " + ts);
 
-			Trace.WriteLine("At time 00:00:00, " + tj.Mixture);
+			_Debug.WriteLine("At time 00:00:00, " + tj.Mixture);
 			tj.TempCtrl.ImposeEffectsOfDuration(ts);
-			Trace.WriteLine("At time " + ts + ", " + tj.Mixture);
+			_Debug.WriteLine("At time " + ts + ", " + tj.Mixture);
             
 			if ( !tj.TempCtrl.TCEnabled ) {
                 Assert.IsTrue(tj.MixTempWithinTolerance, "In tolerance at the specified time.");
@@ -280,7 +280,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			if ( tj.TempCtrl.TCEnabled ) {
 
 			    tj.TempCtrl.ImposeEffectsOfDuration(ts);
-			    Trace.WriteLine("At twice the time " + ts + ", " + tj.Mixture);
+			    _Debug.WriteLine("At twice the time " + ts + ", " + tj.Mixture);
             
                 Assert.IsTrue(tj.MixTempWithinTolerance, "Still in tolerance at twice the specified time (Temperature Control is enabled.)");
             }

@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,7 +21,7 @@ namespace Highpoint.Sage.Scheduling.Cost {
         }
         [TestCleanup]
         public void destroy() {
-            Trace.WriteLine("Done.");
+            _Debug.WriteLine("Done.");
         }
 
         private Thing alice, bob, charlie, dave, edna, frank, george, harry;

@@ -2,7 +2,7 @@
 
 namespace Highpoint.Sage.SimCore {
 	using System;
-	using Trace = System.Diagnostics.Debug;
+	using _Debug = System.Diagnostics.Debug;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	/// <summary>
@@ -17,7 +17,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]
@@ -26,7 +26,7 @@ namespace Highpoint.Sage.SimCore {
 			Evaluator eval = EvaluatorFactory.CreateEvaluator("double x = y + z;","x",new string[]{"y","z"});
 
 
-			System.Diagnostics.Debug.Assert(((double)eval(3.0,4.0)) == 7.0,"Evaluator did not return the proper value.");
+            _Debug.Assert(((double)eval(3.0,4.0)) == 7.0,"Evaluator did not return the proper value.");
 			Console.WriteLine(eval(3.0,4.0));
 		}
 	}

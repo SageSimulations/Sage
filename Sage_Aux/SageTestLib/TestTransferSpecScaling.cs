@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using Highpoint.Sage.Mathematics.Scaling;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Highpoint.Sage.Materials.Chemistry
@@ -18,16 +18,16 @@ namespace Highpoint.Sage.Materials.Chemistry
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]public void TestNonScaledByMassTransfer(){
             TSTestJig tj = new TSTestJig(100,100);
-            Trace.WriteLine(tj.Mixture);
+            _Debug.WriteLine(tj.Mixture);
             MaterialTransferSpecByMass msbm = new MaterialTransferSpecByMass(tj.H2O_Type,50,TimeSpan.FromMinutes(50));
             IMaterial effluent = msbm.GetExtract(tj.Mixture);
-            Trace.WriteLine(effluent);
-            Trace.WriteLine(tj.Mixture);
+            _Debug.WriteLine(effluent);
+            _Debug.WriteLine(tj.Mixture);
         }
 
         [TestMethod]
@@ -54,30 +54,30 @@ namespace Highpoint.Sage.Materials.Chemistry
         }
 
         private void LinearScalingAdapterTest(double scale, double massLinearity, double durationLinearity, double expectedWaterMass, TimeSpan expectedDuration){
-            Trace.WriteLine("We define a spec to test the removal of 50 kg of water from a mixture of 100 kg Water, 100 kg NaNO2.");
+            _Debug.WriteLine("We define a spec to test the removal of 50 kg of water from a mixture of 100 kg Water, 100 kg NaNO2.");
             TSTestJig tj = new TSTestJig(100,100);
             MaterialTransferSpecByMass msbm = new MaterialTransferSpecByMass(tj.H2O_Type,50,TimeSpan.FromMinutes(50));
             if ( !massLinearity.Equals(double.NaN) ) {
-                Trace.WriteLine("We provide the spec with a mass scaling adapter with linearity = " + massLinearity.ToString("F2"));
+                _Debug.WriteLine("We provide the spec with a mass scaling adapter with linearity = " + massLinearity.ToString("F2"));
                 msbm.SetMassScalingAdapter(new DoubleLinearScalingAdapter(msbm.Mass,massLinearity));
             } else {
-                Trace.WriteLine("The spec will have no mass scaling.");
+                _Debug.WriteLine("The spec will have no mass scaling.");
             }
             if ( !durationLinearity.Equals(double.NaN) ) {
-                Trace.WriteLine("We provide the spec with a duration scaling adapter with linearity = " + durationLinearity.ToString("F2"));
+                _Debug.WriteLine("We provide the spec with a duration scaling adapter with linearity = " + durationLinearity.ToString("F2"));
                 msbm.SetDurationScalingAdapter(new TimeSpanLinearScalingAdapter(msbm.Duration,durationLinearity));
             } else {
-                Trace.WriteLine("The spec will have no duration scaling.");
+                _Debug.WriteLine("The spec will have no duration scaling.");
             }
-            Trace.WriteLine("We now scale the request by " + scale.ToString("F2"));
+            _Debug.WriteLine("We now scale the request by " + scale.ToString("F2"));
             msbm.Rescale(scale);
             IMaterial effluent = msbm.GetExtract(tj.Mixture);
-            Trace.WriteLine("In the end, we obtained... " + effluent + " in " + msbm.Duration);
-            Trace.WriteLine("... leaving " + tj.Mixture + "");
-            Trace.WriteLine("We expected " + expectedWaterMass + " kg of water in " + expectedDuration + "\r\n\r\n");
+            _Debug.WriteLine("In the end, we obtained... " + effluent + " in " + msbm.Duration);
+            _Debug.WriteLine("... leaving " + tj.Mixture + "");
+            _Debug.WriteLine("We expected " + expectedWaterMass + " kg of water in " + expectedDuration + "\r\n\r\n");
 
-            System.Diagnostics.Debug.Assert(true == effluent.Mass.Equals(expectedWaterMass), "Water mass is not the expected one.");
-            System.Diagnostics.Debug.Assert(true == TimeSpan.FromTicks(Math.Abs(msbm.Duration.Ticks-expectedDuration.Ticks)) < TimeSpan.FromMilliseconds(50), "Duration is bigger then the expeced one.");
+            _Debug.Assert(true == effluent.Mass.Equals(expectedWaterMass), "Water mass is not the expected one.");
+            _Debug.Assert(true == TimeSpan.FromTicks(Math.Abs(msbm.Duration.Ticks-expectedDuration.Ticks)) < TimeSpan.FromMilliseconds(50), "Duration is bigger then the expeced one.");
         }
 
         internal class TSTestJig {

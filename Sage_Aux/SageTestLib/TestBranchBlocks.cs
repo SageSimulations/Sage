@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.ItemBased.Ports;
@@ -22,7 +22,7 @@ namespace Highpoint.Sage.ItemBased {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -45,8 +45,8 @@ namespace Highpoint.Sage.ItemBased {
 			model.RandomServer = rs;
 			for ( m_itemNumber = 0 ; m_itemNumber < m_expected.Length ; m_itemNumber++ ) {
 				ss2cbb.Input.Put(new object());
-				Trace.Write(lastResult + ",");
-				System.Diagnostics.Debug.Assert(lastResult == m_expected[m_itemNumber],"Unexpected choice.");
+				_Debug.Write(lastResult + ",");
+                _Debug.Assert(lastResult == m_expected[m_itemNumber],"Unexpected choice.");
 			}
 		}
 
@@ -61,8 +61,8 @@ namespace Highpoint.Sage.ItemBased {
 			model.RandomServer = rs;
 			for ( m_itemNumber = 0 ; m_itemNumber < m_expected.Length ; m_itemNumber++ ) {
 				d2cbb.Input.Put(new object());
-				Trace.Write(lastResult + ",");
-				System.Diagnostics.Debug.Assert(lastResult == m_expected[m_itemNumber],"Unexpected choice.");
+				_Debug.Write(lastResult + ",");
+                _Debug.Assert(lastResult == m_expected[m_itemNumber],"Unexpected choice.");
 			}
 		}
 

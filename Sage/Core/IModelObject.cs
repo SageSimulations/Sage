@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 #pragma warning disable 1587
 
 /// <summary>

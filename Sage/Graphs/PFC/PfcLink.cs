@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.PFC {
 
@@ -137,7 +137,7 @@ namespace Highpoint.Sage.Graphs.PFC {
                     }
                 }
 
-                System.Diagnostics.Debug.Assert(false, string.Format("Unable to determine the aggregate link type of {0}.",ToString()));
+                _Debug.Assert(false, string.Format("Unable to determine the aggregate link type of {0}.",ToString()));
 
                 return AggregateLinkType.Unknown;
             }

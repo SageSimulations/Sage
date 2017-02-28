@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.PFC {
 
@@ -153,7 +154,7 @@ namespace Highpoint.Sage.Graphs.PFC {
         /// <value>The empty list.</value>
         public static PfcNodeList EmptyList { 
             get {
-                System.Diagnostics.Debug.Assert(_emptyList.Count == 0);
+                _Debug.Assert(_emptyList.Count == 0);
                 return _emptyList;
             }
         }

@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Utility;
 
@@ -77,7 +77,7 @@ namespace SageTestLib {
 
         [TestCleanup]
         public void destroy() {
-            Trace.WriteLine("Done.");
+            _Debug.WriteLine("Done.");
         } 
         #endregion
 
@@ -89,7 +89,7 @@ namespace SageTestLib {
             string addee = "String 1";
             m_uut.Add(addee);
 
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItem String 1 | m_uut_AddedItem String 1 | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItem String 1 | m_uut_AddedItem String 1 | m_uut_ContentsChanged | "));
             Console.WriteLine(m_responses);
         }
         
@@ -101,9 +101,9 @@ namespace SageTestLib {
             string[] addee = new string[] { "String 2", "String 3" };
             m_uut.AddRange(addee);
 
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | "));
-            System.Diagnostics.Debug.Assert(m_uut[0].Equals("String 2"));
-            System.Diagnostics.Debug.Assert(m_uut[1].Equals("String 3"));
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_uut[0].Equals("String 2"));
+            _Debug.Assert(m_uut[1].Equals("String 3"));
             Console.WriteLine(m_responses);
         }
         
@@ -115,9 +115,9 @@ namespace SageTestLib {
             m_uut.AddRange(new string[] { "Bob", "Mary", "Sue" });
             m_uut.Remove("Mary");
 
-            System.Diagnostics.Debug.Assert(m_uut[0].Equals("Bob"));
-            System.Diagnostics.Debug.Assert(m_uut[1].Equals("Sue"));
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToRemoveItem Mary | m_uut_RemovedItem Mary | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_uut[0].Equals("Bob"));
+            _Debug.Assert(m_uut[1].Equals("Sue"));
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToRemoveItem Mary | m_uut_RemovedItem Mary | m_uut_ContentsChanged | "));
             Console.WriteLine(m_responses);
         }
 
@@ -129,8 +129,8 @@ namespace SageTestLib {
             m_uut.AddRange(new string[] { "Bob", "Mary", "Sue" });
             m_uut.RemoveAll(delegate(string s) { return s.Length.Equals(3); });
 
-            System.Diagnostics.Debug.Assert(m_uut[0].Equals("Mary"));
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToRemoveItems System.Predicate`1[System.String] | m_uut_RemovedItems System.Predicate`1[System.String] | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_uut[0].Equals("Mary"));
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToRemoveItems System.Predicate`1[System.String] | m_uut_RemovedItems System.Predicate`1[System.String] | m_uut_ContentsChanged | "));
             Console.WriteLine(m_responses);
         }
 
@@ -142,9 +142,9 @@ namespace SageTestLib {
             m_uut.AddRange(new string[] { "Bob", "Mary", "Sue" });
             m_uut.RemoveAt(1);
 
-            System.Diagnostics.Debug.Assert(m_uut[0].Equals("Bob"));
-            System.Diagnostics.Debug.Assert(m_uut[1].Equals("Sue"));
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToRemoveItem Mary | m_uut_RemovedItem Mary | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_uut[0].Equals("Bob"));
+            _Debug.Assert(m_uut[1].Equals("Sue"));
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToRemoveItem Mary | m_uut_RemovedItem Mary | m_uut_ContentsChanged | "));
             Console.WriteLine(m_responses);
         }
 
@@ -156,8 +156,8 @@ namespace SageTestLib {
             m_uut.AddRange(new string[] { "Bob", "Mary", "Sue" });
             m_uut.Clear();
 
-            System.Diagnostics.Debug.Assert(m_uut.Count == 0);
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_uut.Count == 0);
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_ContentsChanged | "));
             Console.WriteLine(m_responses);
         }
 
@@ -204,13 +204,13 @@ namespace SageTestLib {
 
             m_uut.InsertRange(1, new string[] { "Paul", "Randy", "Sara" });
 
-            System.Diagnostics.Debug.Assert(m_uut[0].Equals("Bob"));
-            System.Diagnostics.Debug.Assert(m_uut[1].Equals("Paul"));
-            System.Diagnostics.Debug.Assert(m_uut[2].Equals("Randy"));
-            System.Diagnostics.Debug.Assert(m_uut[3].Equals("Sara"));
-            System.Diagnostics.Debug.Assert(m_uut[4].Equals("Mary"));
-            System.Diagnostics.Debug.Assert(m_uut[5].Equals("Tim"));
-            System.Diagnostics.Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | "));
+            _Debug.Assert(m_uut[0].Equals("Bob"));
+            _Debug.Assert(m_uut[1].Equals("Paul"));
+            _Debug.Assert(m_uut[2].Equals("Randy"));
+            _Debug.Assert(m_uut[3].Equals("Sara"));
+            _Debug.Assert(m_uut[4].Equals("Mary"));
+            _Debug.Assert(m_uut[5].Equals("Tim"));
+            _Debug.Assert(m_responses.Equals("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | "));
             Console.WriteLine(m_responses);
         }
         

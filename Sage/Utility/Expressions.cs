@@ -81,7 +81,7 @@ namespace Highpoint.Sage.SimCore {
     /// </code>
     /// ...and this eval could later be called with:
     /// <code>
-    /// Trace.WriteLine(eval(3.0,4.0,5.0));
+    /// _Debug.WriteLine(eval(3.0,4.0,5.0));
     /// </code>
     /// which would result in 3.8 being written to the Trace.
     /// </summary>

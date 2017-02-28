@@ -2,7 +2,7 @@
 
 namespace Highpoint.Sage.Utility {
 	using System;
-	using Trace = System.Diagnostics.Debug;
+	using _Debug = System.Diagnostics.Debug;
 	using System.Collections;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 	using Highpoint.Sage.SimCore;
@@ -41,7 +41,7 @@ namespace Highpoint.Sage.Utility {
 		public void Init() {}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]
@@ -166,15 +166,15 @@ namespace Highpoint.Sage.Utility {
 					}
 				}
 				resultString += "};";
-				Trace.WriteLine(resultString);
+				_Debug.WriteLine(resultString);
 				//System.Windows.Forms.Clipboard.SetDataObject(resultString);
 			} else {
 				string msg = "Incorrect number of elements in \"Expected\" results.";
-					if (expected.Length!=m_results.Count) System.Diagnostics.Debug.Assert(false,msg);
+					if (expected.Length!=m_results.Count) _Debug.Assert(false,msg);
 				for ( int i = 0 ; i < m_results.Count ; i++ ) {
 					if (!expected[i].Equals(m_results[i])) {
 						msg = "Argument mismatch in element " + i + " of the expected test results.";
-						System.Diagnostics.Debug.Assert(false,msg);
+                        _Debug.Assert(false,msg);
 					}
 				}
 			}

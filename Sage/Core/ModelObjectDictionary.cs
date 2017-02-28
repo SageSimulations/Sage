@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Collections;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.Utility;
 using System.Collections.Generic;
 
@@ -77,10 +77,10 @@ namespace Highpoint.Sage.SimCore {
             // TODO: Add this to an Errors & Warnings collection instead of dumping it to Trace.
             if (!_bDumpedBanner || imo.Guid.Equals(_dumpGuid)) {
                 _dumpGuid = imo.Guid;
-                Trace.WriteLine(s_banner_Message);
+                _Debug.WriteLine(s_banner_Message);
                 Exception e = new Exception();
                 System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(true);
-                Trace.WriteLine("ModelObjectDictionary just removed " + oldOne + ", under Guid "
+                _Debug.WriteLine("ModelObjectDictionary just removed " + oldOne + ", under Guid "
                     + keyForCurrentEntry + " to make way for " + newOne + " under Guid "
                     + ( (IHasIdentity)newEntryToReplaceIt ).Guid + ".\r\n"
                     + "\tThe offending code was at:" + st);
@@ -182,12 +182,12 @@ namespace Highpoint.Sage.SimCore {
         /// </summary>
         public object this[object key] {
             get {
-                System.Diagnostics.Debug.Assert(key is Guid);
+                _Debug.Assert(key is Guid);
                 return this[(Guid)key];
             }
             set {
-                System.Diagnostics.Debug.Assert(key is Guid);
-                System.Diagnostics.Debug.Assert(value is IModelObject);
+                _Debug.Assert(key is Guid);
+                _Debug.Assert(value is IModelObject);
                 this[(Guid)key] = (IModelObject)value;
             }
         }
@@ -215,7 +215,7 @@ namespace Highpoint.Sage.SimCore {
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:Highpoint.Sage.SimCore.ModelObjectDictionary"></see> object is read-only.-or- The <see cref="T:Highpoint.Sage.SimCore.ModelObjectDictionary"></see> has a fixed size. </exception>
         /// <exception cref="T:System.ArgumentNullException">key is null. </exception>
         public void Remove(object key) {
-            System.Diagnostics.Debug.Assert(key is Guid);
+            _Debug.Assert(key is Guid);
             Remove((Guid)key);
         }
 
@@ -240,7 +240,7 @@ namespace Highpoint.Sage.SimCore {
         /// </returns>
         /// <exception cref="T:System.ArgumentNullException">key is null. </exception>
         public bool Contains(object key) {
-            System.Diagnostics.Debug.Assert(key is Guid);
+            _Debug.Assert(key is Guid);
             return Contains((Guid)key);
         }
 
@@ -289,8 +289,8 @@ namespace Highpoint.Sage.SimCore {
         /// <exception cref="T:System.ArgumentNullException">key is null. </exception>
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:Highpoint.Sage.SimCore.ModelObjectDictionary"></see> is read-only.-or- The <see cref="T:Highpoint.Sage.SimCore.ModelObjectDictionary"></see> has a fixed size. </exception>
         public void Add(object key, object value) {
-            System.Diagnostics.Debug.Assert(key is Guid);
-            System.Diagnostics.Debug.Assert(value is IModelObject);
+            _Debug.Assert(key is Guid);
+            _Debug.Assert(value is IModelObject);
             Add((Guid)key, (IModelObject)value);
 
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using Highpoint.Sage.SimCore;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.Tasks
 {
@@ -91,9 +92,9 @@ namespace Highpoint.Sage.Graphs.Tasks
         public void AddTaskProcessor(TaskProcessor taskProcessor){
             // TODO: Add this to an Errors & Warnings collection instead of dumping it to Trace.
             if ( m_taskProcessors.Contains(taskProcessor.Guid) ) {
-                Trace.WriteLine("Model already contains task processor being added at:");
-                Trace.WriteLine((new StackTrace()).ToString());
-                Trace.WriteLine("...the request to add it will be ignored.");
+                _Debug.WriteLine("Model already contains task processor being added at:");
+                _Debug.WriteLine((new StackTrace()).ToString());
+                _Debug.WriteLine("...the request to add it will be ignored.");
                 return;
             }
             m_taskProcessors.Add(taskProcessor.Guid,taskProcessor);
@@ -160,10 +161,10 @@ namespace Highpoint.Sage.Graphs.Tasks
 
             if (s_diagnostics)
             {
-                Trace.WriteLine("Clearing orphaned errors:\r\nKnown Tasks:");
+                _Debug.WriteLine("Clearing orphaned errors:\r\nKnown Tasks:");
                 foreach (Task task in allTasks)
                 {
-                    Trace.WriteLine("\t" + task.Name);
+                    _Debug.WriteLine("\t" + task.Name);
                 }
             }
 
@@ -173,11 +174,11 @@ namespace Highpoint.Sage.Graphs.Tasks
                 if (err.Target is Task)
                 {
                     if (s_diagnostics)
-                        Trace.WriteLine("Checking error " + err.Narrative + ", targeted to " + ((Task)err.Target).Name);
+                        _Debug.WriteLine("Checking error " + err.Narrative + ", targeted to " + ((Task)err.Target).Name);
                     if (!allTasks.Contains(err.Target))
                     {
                         if (s_diagnostics)
-                            Trace.WriteLine("Clearing error " + err.Name);
+                            _Debug.WriteLine("Clearing error " + err.Name);
                         keysToClear.Add(err.Target);
                     }
                 }

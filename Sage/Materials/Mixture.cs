@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.Utility.Mementos;
 using Highpoint.Sage.Persistence;
@@ -180,7 +180,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
         // ReSharper disable once UnusedParameter.Global
         public ITransitionFailureReason Initialize(IModel model)
         {
-            if ( s_diagnostics ) Trace.WriteLine("Clearing mixture " + Name );
+            if ( s_diagnostics ) _Debug.WriteLine("Clearing mixture " + Name );
             Clear(); // Checks for writability, too.
             return null;
         }
@@ -681,7 +681,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
                 ArrayList materialsToRemove = new ArrayList();
                 foreach (Substance substance in m_constituentSubstances.Values) {
                     if (s_diagnostics)
-                        Trace.WriteLine("Adding " + substance.MaterialType.Name + " to the list of things to make go away.");
+                        _Debug.WriteLine("Adding " + substance.MaterialType.Name + " to the list of things to make go away.");
                     if (substance.Mass > 0)
                         materialsToRemove.Add(substance);
                 }
@@ -690,13 +690,13 @@ namespace Highpoint.Sage.Materials.Chemistry {
                     IMaterial removee = RemoveMaterial(substance.MaterialType, proportionOfTotal * substance.Mass);
                     if (removee == null) {
                         if (s_diagnostics) {
-                            Trace.WriteLine("My mass is " + Mass + " and the mass argument passed in was " + mass);
-                            Trace.WriteLine(( new StackTrace() ).ToString());
-                            Trace.WriteLine("Removee was null, trying to remove " + ( proportionOfTotal * substance.Mass ) + " kg of " + substance.MaterialType.Name + " from " + ToString());
+                            _Debug.WriteLine("My mass is " + Mass + " and the mass argument passed in was " + mass);
+                            _Debug.WriteLine(( new StackTrace() ).ToString());
+                            _Debug.WriteLine("Removee was null, trying to remove " + ( proportionOfTotal * substance.Mass ) + " kg of " + substance.MaterialType.Name + " from " + ToString());
                         }
                     } else {
                         if (s_diagnostics) {
-                            Trace.WriteLine("Removing " + removee + " leaving " + Mass);
+                            _Debug.WriteLine("Removing " + removee + " leaving " + Mass);
                         }
                         effluent.AddMaterial(removee);
 
@@ -825,7 +825,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
             get {
                 Update();
                 if (s_diagnostics)
-                    Trace.WriteLine("Snapshotting mixture " + Name + " which has " + m_constituentSubstances.Count + " substances in it.");
+                    _Debug.WriteLine("Snapshotting mixture " + Name + " which has " + m_constituentSubstances.Count + " substances in it.");
                 if ( !m_ssh.HasChanged && m_memento != null ) return m_memento;
                 m_memento = new MixtureMemento(this);
                 m_ssh.ReportSnapshot();

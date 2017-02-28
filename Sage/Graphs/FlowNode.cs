@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs {
 

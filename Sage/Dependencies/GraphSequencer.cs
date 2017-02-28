@@ -5,7 +5,7 @@
 ###############################################################################*/
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 
 namespace Highpoint.Sage.Dependencies {
@@ -77,21 +77,21 @@ namespace Highpoint.Sage.Dependencies {
             ArrayList lstVerts = new ArrayList();
             Hashtable htVerts = new Hashtable();
 
-            //Trace.WriteLine("Calculating Service Sequence.");
+            //_Debug.WriteLine("Calculating Service Sequence.");
             foreach (IDependencyVertex idv in m_vertices) {
                 VertexRecord v = new VertexRecord(idv);
 
                 if (s_diagnostics) {
-                    Trace.WriteLine("Parents of " + v.Underlying);
+                    _Debug.WriteLine("Parents of " + v.Underlying);
                     foreach (IDependencyVertex idv2 in v.Underlying.PredecessorList) {
-                        Trace.WriteLine("\t" + idv2);
+                        _Debug.WriteLine("\t" + idv2);
                     }
                 }
 
                 lstVerts.Add(v);
                 htVerts.Add(idv, v);
                 if (s_diagnostics)
-                    Trace.WriteLine(String.Format("New vertex, {0} with {1} dependents.", idv, idv.PredecessorList.Count));
+                    _Debug.WriteLine(String.Format("New vertex, {0} with {1} dependents.", idv, idv.PredecessorList.Count));
             }
 
             // Each underlying knows who it depends on - we need each vertex to
@@ -119,7 +119,7 @@ namespace Highpoint.Sage.Dependencies {
                     }
 
                     // Dumps the sort order as it progresses...
-                    //foreach ( Vertex v in lstVerts ) Trace.WriteLine(v.Underlying + " : " + v.Order);
+                    //foreach ( Vertex v in lstVerts ) _Debug.WriteLine(v.Underlying + " : " + v.Order);
 
                     // Move the least vertex to the ServiceOrder list.
                     VertexRecord next = (VertexRecord)lstVerts[0];
@@ -156,9 +156,9 @@ namespace Highpoint.Sage.Dependencies {
             #region Diagnostics
 
             if (s_diagnostics) {
-                Trace.WriteLine("Dependency Solver determines sequence to be:");
+                _Debug.WriteLine("Dependency Solver determines sequence to be:");
                 foreach (IDependencyVertex idv in m_serviceSequenceList) {
-                    Trace.WriteLine("\t" + idv);
+                    _Debug.WriteLine("\t" + idv);
                 }
             }
 
@@ -245,7 +245,7 @@ namespace Highpoint.Sage.Dependencies {
                 try {
                     return v1.Underlying.SortCriteria.CompareTo(v2.Underlying.SortCriteria);
                 } catch (Exception ex) {
-                    Trace.WriteLine(ex.Message);
+                    _Debug.WriteLine(ex.Message);
                     return 0;
                 }
             }

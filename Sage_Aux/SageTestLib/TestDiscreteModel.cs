@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Highpoint.Sage.SimCore {
@@ -22,7 +22,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -35,15 +35,15 @@ namespace Highpoint.Sage.SimCore {
 
 			model.Start();
 
-			System.Diagnostics.Debug.Assert(_dotick == 0,"Tick event did not fire 30 times");
+            _Debug.Assert(_dotick == 0,"Tick event did not fire 30 times");
 		}
 
 		private void sm_TickEvent(IExecutive exec, object userData) {
             Console.WriteLine(exec.Now.ToString() + ", " + _timelast.ToString() + ", " + _timedifference.ToString());
             if (_timelast > DateTime.MinValue) {
-                System.Diagnostics.Debug.Assert(_timelast + _timedifference == exec.Now, "Tick does not happen at correct time difference");
+                _Debug.Assert(_timelast + _timedifference == exec.Now, "Tick does not happen at correct time difference");
             }
-			Trace.WriteLine(exec.Now + " : Tick happened.");
+			_Debug.WriteLine(exec.Now + " : Tick happened.");
 			_dotick--;
 			_timelast = exec.Now;
 		}

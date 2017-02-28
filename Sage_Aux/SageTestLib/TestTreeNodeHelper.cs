@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -23,7 +23,7 @@ namespace Highpoint.Sage.Utility {
 
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		private string AdamsResult                     = "Joseph Adams 1654-1736\r\n\tJohn Adams Sr, 1690-1761\r\n\t\tJohn Adams, Jr 1735-1826\r\n\t\t\tAbigail Adams 1765-1813\r\n\t\t\tSusanna Adams 1768-1770\r\n\t\t\tCharles Adams b. 1770\r\n\t\t\tThomas Boylston Adams b. 1772\r\n\t\t\tJohn Quincy Adams 1767-1848\r\n\t\t\t\tGeorge Washington Adams b. 1801\r\n\t\t\t\tJohn Adams, III b. 1803\r\n\t\t\t\tCharles Francis Adams b. 1807\r\n\t\t\t\tLouisa Catherine Adams b. 1811\r\n";
@@ -62,7 +62,7 @@ namespace Highpoint.Sage.Utility {
 
 
 			string result = root.ToStringDeep();
-			System.Diagnostics.Debug.Assert(AdamsResult.Equals(result),"TestTreeNodeHelperBasics");
+            _Debug.Assert(AdamsResult.Equals(result),"TestTreeNodeHelperBasics");
 		}
 
         [TestMethod]
@@ -104,13 +104,13 @@ namespace Highpoint.Sage.Utility {
 			} catch (ArgumentException){
 				blewUp = true;
 			}
-			System.Diagnostics.Debug.Assert(blewUp,"TestReadOnlyTreeNodeHelperBasics");
+            _Debug.Assert(blewUp,"TestReadOnlyTreeNodeHelperBasics");
 
 
 			string result = jqaNode.GetRoot().ToStringDeep();
 
 			Console.WriteLine(result);
-			System.Diagnostics.Debug.Assert(AdamsResult.Equals(result),"TestReadOnlyTreeNodeHelperBasics");
+            _Debug.Assert(AdamsResult.Equals(result),"TestReadOnlyTreeNodeHelperBasics");
 		}
 
         [TestMethod]
@@ -148,7 +148,7 @@ namespace Highpoint.Sage.Utility {
 			string result = jqaNode.GetRoot().ToStringDeep();
 
 			Console.WriteLine(result);
-			System.Diagnostics.Debug.Assert(AdamsResultJQAChildrenSequenced.Equals(result),"TestTreeNodeHelperChildSequencing");
+            _Debug.Assert(AdamsResultJQAChildrenSequenced.Equals(result),"TestTreeNodeHelperChildSequencing");
 		}
     }
 

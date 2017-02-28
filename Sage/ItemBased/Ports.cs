@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Highpoint.Sage.ItemBased.Connectors;
 using Highpoint.Sage.Persistence;
 using Highpoint.Sage.SimCore;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections.ObjectModel;
 using Highpoint.Sage.Utility;
 
@@ -2193,7 +2193,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         
         public object Value {
             get {
-                if ( Diagnostics ) Trace.WriteLine(string.Format("Block {0}, port {1} being asked to give its value.", ((IHasIdentity)m_sip.Owner).Name, m_sip.Name));
+                if ( Diagnostics ) _Debug.WriteLine(string.Format("Block {0}, port {1} being asked to give its value.", ((IHasIdentity)m_sip.Owner).Name, m_sip.Name));
                 object retval;
                 switch (m_readSource) {
                     case DataReadSource.Buffer:
@@ -2319,7 +2319,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
 
         public object Buffer {
             get {
-                if (Diagnostics) Trace.WriteLine(string.Format("Block {0}, port {1} being asked to give its value - the buffer {2} valid.", ((IHasIdentity)m_sop.Owner).Name, m_sop.Name, BufferValid ? "is" : "is not"));
+                if (Diagnostics) _Debug.WriteLine(string.Format("Block {0}, port {1} being asked to give its value - the buffer {2} valid.", ((IHasIdentity)m_sop.Owner).Name, m_sop.Name, BufferValid ? "is" : "is not"));
                 if (!BufferValid) {
                     try {
                         object oldValue = m_buffer;
@@ -2346,7 +2346,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
                     }
                 }
                 object retval = m_buffer;
-                if (Diagnostics) Trace.WriteLine(string.Format("Block {0}, port {1} provided value {2}", ((IHasIdentity)m_sop.Owner).Name, m_sop.Name, retval));
+                if (Diagnostics) _Debug.WriteLine(string.Format("Block {0}, port {1} provided value {2}", ((IHasIdentity)m_sop.Owner).Name, m_sop.Name, retval));
                 switch (m_bufferPersistence) {
                     case BufferPersistence.None:
                     case BufferPersistence.UntilRead:

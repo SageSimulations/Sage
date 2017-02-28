@@ -2,7 +2,7 @@
 
 using System;
 using System.Reflection;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -354,7 +354,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             // no effect.
         }
 
@@ -563,7 +563,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -828,7 +828,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -1005,7 +1005,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -1176,7 +1176,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -1345,7 +1345,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            Trace.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -1538,7 +1538,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -1715,7 +1715,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -1898,7 +1898,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -2094,7 +2094,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <param name="low">The low bound (inclusive).</param>
         /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
         public void SetCDFInterval(double low, double high) {
-            System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
             m_low = low;
             m_high = high;
             m_constrained = ( m_low != 0.0 && m_high != 1.0 );
@@ -2292,7 +2292,7 @@ namespace Highpoint.Sage.Mathematics {
       /// <param name="low">The low bound (inclusive).</param>
       /// <param name="high">The high bound (exclusive, unless low and high are equal).</param>
       public void SetCDFInterval(double low, double high) {
-          System.Diagnostics.Debug.Assert(low >= 0 && high <= 1 && low <= high);
+            _Debug.Assert(low >= 0 && high <= 1 && low <= high);
           m_low = low;
           m_high = high;
           m_constrained = ( m_low != 0.0 && m_high != 1.0 );

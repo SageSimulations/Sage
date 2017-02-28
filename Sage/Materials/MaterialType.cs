@@ -8,7 +8,7 @@ using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 using Highpoint.Sage.Materials.Emissions;
 using Highpoint.Sage.Persistence;
 using Highpoint.Sage.SimCore;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Materials.Chemistry {
 

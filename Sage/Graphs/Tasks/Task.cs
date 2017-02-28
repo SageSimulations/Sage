@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Persistence;
@@ -135,7 +135,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		/// </summary>
 		/// <returns>The nominal duration for this task.</returns>
 		public virtual TimeSpan GetNominalDuration(){
-			//Trace.WriteLine(this.Name + " is being asked for nominal duration, and it is returning " + m_aggDelay + "/" + m_numDelays + ".");
+			//_Debug.WriteLine(this.Name + " is being asked for nominal duration, and it is returning " + m_aggDelay + "/" + m_numDelays + ".");
 			return m_numDelays==0?TimeSpan.Zero:TimeSpan.FromTicks(m_aggDelay.Ticks/m_numDelays); 
 		}
 
@@ -157,7 +157,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
         /// <param name="nominal">The nominal (average) duration.</param>
         /// <param name="pessimistic">The pessimistic (longest) duration.</param>
         public void SetDurationData(TimeSpan optimistic, TimeSpan nominal, TimeSpan pessimistic ) {
-			//Trace.WriteLine("Delays for " + this.Name + " are " + "[" + optimistic + "|" + nominal + "|" + pessimistic + "]");
+			//_Debug.WriteLine("Delays for " + this.Name + " are " + "[" + optimistic + "|" + nominal + "|" + pessimistic + "]");
             if ( optimistic <= nominal && nominal <= pessimistic ) {
                 m_minDelay  = optimistic;
                 m_maxDelay  = pessimistic;
@@ -171,7 +171,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
         /// Resets the duration data to TimeSpan.MaxValue for the minimum, MinValue for the maximum, and zero for aggregate.
         /// </summary>
         public void ResetDurationData(){
-			//Trace.WriteLine(this.Name + " is having its duration data reset.");
+			//_Debug.WriteLine(this.Name + " is having its duration data reset.");
 
             m_minDelay  = TimeSpan.MaxValue;
             m_maxDelay  = TimeSpan.MinValue;
@@ -187,12 +187,12 @@ namespace Highpoint.Sage.Graphs.Tasks {
         private bool     m_delaysExplicitlySet;
 
         private void UpdateDurationStats(TimeSpan duration){
-			//Trace.WriteLine(this.Name + " is updating duration stats for " + this.Name + ": Last execution took " + duration);
+			//_Debug.WriteLine(this.Name + " is updating duration stats for " + this.Name + ": Last execution took " + duration);
             if ( duration < m_minDelay ) m_minDelay = duration;
             if ( duration > m_maxDelay ) m_maxDelay = duration;
             m_aggDelay += duration;
             m_numDelays++;
-			//Trace.WriteLine("\t My aggregate delay is " + m_aggDelay + ", and the number of delays in that aggregate is " + m_numDelays);
+			//_Debug.WriteLine("\t My aggregate delay is " + m_aggDelay + ", and the number of delays in that aggregate is " + m_numDelays);
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
             }
         }
         private void OnEdgeFinishingEvent(IDictionary graphContext, Edge edge){
-			//Trace.WriteLine("Running OnEdgeFinishingEvent for " + this.Name + " at " + m_model.Executive.Now.ToString());
+			//_Debug.WriteLine("Running OnEdgeFinishingEvent for " + this.Name + " at " + m_model.Executive.Now.ToString());
 			if ( m_keepingTimingData ) {
                 if ( m_delaysExplicitlySet ) ResetDurationData();
                 DateTime startTime = (DateTime)graphContext[m_selfStartTimeKey];
@@ -330,7 +330,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
 			if ( graphContext.Contains(EecsKey) ) {
 				// TODO: Place this into an Errors & Warnings collection on the model.
-				Trace.WriteLine("ERROR : EECSKey was already in the graphContext for " + Name + "." + Environment.NewLine +
+				_Debug.WriteLine("ERROR : EECSKey was already in the graphContext for " + Name + "." + Environment.NewLine +
 					"It will be removed, but this is a problem that should be investigated and addressed.");
 				graphContext.Remove(EecsKey);
 			}
@@ -380,7 +380,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
         /// <param name="graphContext">The graph context.</param>
         protected void SignalTaskCompletion(IDictionary graphContext){
 
-			if ( s_diagnostics ) Trace.WriteLine(Name + " is completing - it's validity state is (VS=" + ValidityState + "/SVS=" + SelfValidState + "/UVS=" + AllUpstreamValid + "/CVS=" + AllChildrenValid + ")");
+			if ( s_diagnostics ) _Debug.WriteLine(Name + " is completing - it's validity state is (VS=" + ValidityState + "/SVS=" + SelfValidState + "/UVS=" + AllUpstreamValid + "/CVS=" + AllChildrenValid + ")");
             EdgeExecutionCompletionSignaler eecs = (EdgeExecutionCompletionSignaler)graphContext[EecsKey];
             if ( eecs != null ) {
                 graphContext.Remove(EecsKey);

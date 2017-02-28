@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -27,16 +27,16 @@ namespace Highpoint.Sage.SimCore {
         }
         [TestCleanup]
         public void destroy() {
-            Trace.WriteLine("Done.");
+            _Debug.WriteLine("Done.");
         }
 
         private static void CheckBatch(object userData) {
             IDictionary graphContext = userData as IDictionary;
-            System.Diagnostics.Debug.Assert(graphContext != null);
-            System.Diagnostics.Debug.Assert(graphContext["Batch"] != null);
-            System.Diagnostics.Debug.Assert(graphContext["Batch"].Equals((object)m_testCounter));
+            _Debug.Assert(graphContext != null);
+            _Debug.Assert(graphContext["Batch"] != null);
+            _Debug.Assert(graphContext["Batch"].Equals((object)m_testCounter));
             graphContext["Batch"] = ++m_testCounter;
-            System.Diagnostics.Debug.Assert(graphContext["Batch"].Equals((object)m_testCounter));
+            _Debug.Assert(graphContext["Batch"].Equals((object)m_testCounter));
         }
 
         /// <summary>
@@ -51,14 +51,14 @@ namespace Highpoint.Sage.SimCore {
             sm.TransitionHandler(States.Idle, States.Validated).Commit += new CommitTransitionEvent(CommitTransitiontoValid);
             sm.TransitionHandler(States.Idle, States.Validated).Rollback += new RollbackTransitionEvent(RollbackTransitiontoValid);
 #if DEBUG
-            Trace.WriteLine("Idle state is " + sm._TestGetStateNumber(States.Idle));
-            Trace.WriteLine("Validated state is " + sm._TestGetStateNumber(States.Validated));
-            Trace.WriteLine("Paused state is " + sm._TestGetStateNumber(States.Paused));
-            Trace.WriteLine("Running state is " + sm._TestGetStateNumber(States.Running));
-            Trace.WriteLine("Finished state is " + sm._TestGetStateNumber(States.Finished));
+            _Debug.WriteLine("Idle state is " + sm._TestGetStateNumber(States.Idle));
+            _Debug.WriteLine("Validated state is " + sm._TestGetStateNumber(States.Validated));
+            _Debug.WriteLine("Paused state is " + sm._TestGetStateNumber(States.Paused));
+            _Debug.WriteLine("Running state is " + sm._TestGetStateNumber(States.Running));
+            _Debug.WriteLine("Finished state is " + sm._TestGetStateNumber(States.Finished));
 
-            Trace.WriteLine("Idle to Validated is valid? " + sm.TransitionHandler(States.Idle, States.Validated).IsValidTransition);
-            Trace.WriteLine("Idle to Paused is valid? " + sm.TransitionHandler(States.Idle, States.Paused).IsValidTransition);
+            _Debug.WriteLine("Idle to Validated is valid? " + sm.TransitionHandler(States.Idle, States.Validated).IsValidTransition);
+            _Debug.WriteLine("Idle to Paused is valid? " + sm.TransitionHandler(States.Idle, States.Paused).IsValidTransition);
 #endif
             sm.DoTransition(States.Validated, m_batch);
 
@@ -78,14 +78,14 @@ namespace Highpoint.Sage.SimCore {
             //sm.TransitionHandler(States.Idle, States.Validated).Commit += new CommitTransitionEvent(CommitTransitiontoValid);
             //sm.TransitionHandler(States.Idle, States.Validated).Rollback += new RollbackTransitionEvent(RollbackTransitiontoValid);
 
-            //Trace.WriteLine("Idle state is " + sm._TestGetStateNumber(States.Idle));
-            //Trace.WriteLine("Validated state is " + sm._TestGetStateNumber(States.Validated));
-            //Trace.WriteLine("Paused state is " + sm._TestGetStateNumber(States.Paused));
-            //Trace.WriteLine("Running state is " + sm._TestGetStateNumber(States.Running));
-            //Trace.WriteLine("Finished state is " + sm._TestGetStateNumber(States.Finished));
+            //_Debug.WriteLine("Idle state is " + sm._TestGetStateNumber(States.Idle));
+            //_Debug.WriteLine("Validated state is " + sm._TestGetStateNumber(States.Validated));
+            //_Debug.WriteLine("Paused state is " + sm._TestGetStateNumber(States.Paused));
+            //_Debug.WriteLine("Running state is " + sm._TestGetStateNumber(States.Running));
+            //_Debug.WriteLine("Finished state is " + sm._TestGetStateNumber(States.Finished));
 
-            //Trace.WriteLine("Idle to Validated is valid? " + sm.TransitionHandler(States.Idle, States.Validated).IsValidTransition);
-            //Trace.WriteLine("Idle to Paused is valid? " + sm.TransitionHandler(States.Idle, States.Paused).IsValidTransition);
+            //_Debug.WriteLine("Idle to Validated is valid? " + sm.TransitionHandler(States.Idle, States.Validated).IsValidTransition);
+            //_Debug.WriteLine("Idle to Paused is valid? " + sm.TransitionHandler(States.Idle, States.Paused).IsValidTransition);
 
             for (int i = 0 ; i < 1000 ; i++) {
                 sm.DoTransition(States.Validated, m_batch);
@@ -110,7 +110,7 @@ namespace Highpoint.Sage.SimCore {
 
             sm.DoTransition(States.Validated, m_batch);
 
-            System.Diagnostics.Debug.Assert(States.Finished.Equals(sm.State), "State machine did not transition to 'Finished' state");
+            _Debug.Assert(States.Finished.Equals(sm.State), "State machine did not transition to 'Finished' state");
 
         }
 
@@ -127,7 +127,7 @@ namespace Highpoint.Sage.SimCore {
 
             sm.DoTransition(States.Validated, m_batch);
 
-            System.Diagnostics.Debug.Assert(States.Validated.Equals(sm.State), "State machine did not transition to 'Validated' state");
+            _Debug.Assert(States.Validated.Equals(sm.State), "State machine did not transition to 'Validated' state");
 
         }
 
@@ -146,9 +146,9 @@ namespace Highpoint.Sage.SimCore {
             try {
                 sm.DoTransition(States.Validated, m_batch);
             } catch (TransitionFailureException tfe) {
-                Trace.WriteLine(tfe);
+                _Debug.WriteLine(tfe);
             }
-            System.Diagnostics.Debug.Assert(States.Idle.Equals(sm.State), "State machine did not stay in 'Idle' state");
+            _Debug.Assert(States.Idle.Equals(sm.State), "State machine did not stay in 'Idle' state");
 
         }
 
@@ -168,9 +168,9 @@ namespace Highpoint.Sage.SimCore {
             try {
                 sm.DoTransition(States.Paused, m_batch);
             } catch (TransitionFailureException tfe) {
-                Trace.WriteLine(tfe);
+                _Debug.WriteLine(tfe);
             }
-            System.Diagnostics.Debug.Assert(States.Idle.Equals(sm.State), "State machine did not stay in 'Idle' state");
+            _Debug.Assert(States.Idle.Equals(sm.State), "State machine did not stay in 'Idle' state");
 
         }
 
@@ -221,15 +221,15 @@ namespace Highpoint.Sage.SimCore {
             sm.TransitionHandler(States.Running, States.Finished).Rollback += new RollbackTransitionEvent(RollbackTransitionToFinished);
 
             sm.DoTransition(States.Validated, m_batch);
-            System.Diagnostics.Debug.Assert(States.Validated.Equals(sm.State), "Transition chain did not move to the 'Validated' state.");
+            _Debug.Assert(States.Validated.Equals(sm.State), "Transition chain did not move to the 'Validated' state.");
             sm.DoTransition(States.Running, m_batch);
-            System.Diagnostics.Debug.Assert(States.Running.Equals(sm.State), "Transition chain did not move to the 'Running' state.");
+            _Debug.Assert(States.Running.Equals(sm.State), "Transition chain did not move to the 'Running' state.");
             sm.DoTransition(States.Paused, m_batch);
-            System.Diagnostics.Debug.Assert(States.Paused.Equals(sm.State), "Transition chain did not move to the 'Paused' state.");
+            _Debug.Assert(States.Paused.Equals(sm.State), "Transition chain did not move to the 'Paused' state.");
             sm.DoTransition(States.Running, m_batch);
-            System.Diagnostics.Debug.Assert(States.Running.Equals(sm.State), "Transition chain did not move to the 'Running' state.");
+            _Debug.Assert(States.Running.Equals(sm.State), "Transition chain did not move to the 'Running' state.");
             sm.DoTransition(States.Finished, m_batch);
-            System.Diagnostics.Debug.Assert(States.Finished.Equals(sm.State), "Transition chain did not move to the 'Finished' state.");
+            _Debug.Assert(States.Finished.Equals(sm.State), "Transition chain did not move to the 'Finished' state.");
 
         }
 
@@ -280,7 +280,7 @@ namespace Highpoint.Sage.SimCore {
 
             sm.DoTransition(States.Validated, m_batch);
 
-            System.Diagnostics.Debug.Assert(States.Validated.Equals(sm.State), "");
+            _Debug.Assert(States.Validated.Equals(sm.State), "");
 
         }
 
@@ -331,7 +331,7 @@ namespace Highpoint.Sage.SimCore {
 
             sm.DoTransition(States.Validated, m_batch);
 
-            System.Diagnostics.Debug.Assert(States.Validated.Equals(sm.State), "");
+            _Debug.Assert(States.Validated.Equals(sm.State), "");
 
         }
 
@@ -386,7 +386,7 @@ namespace Highpoint.Sage.SimCore {
         private void StateHandler(IModel model, object userData) {
             CheckBatch(userData);
             if (m_outputEnabled) {
-                Trace.WriteLine("The model " + model.Name + " is now in the " + model.StateMachine.State + " state.");
+                _Debug.WriteLine("The model " + model.Name + " is now in the " + model.StateMachine.State + " state.");
             }
         }
 
@@ -396,140 +396,140 @@ namespace Highpoint.Sage.SimCore {
 
         public ITransitionFailureReason PrepareToTransitionToIdleWithSuccess(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toIdle");
+                _Debug.WriteLine("Preparing to transition toIdle");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionToIdleWithFailure(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toIdle (failure)");
+                _Debug.WriteLine("Preparing to transition toIdle (failure)");
             CheckBatch(userData);
             return new SimpleTransitionFailureReason("Felt like rejecting transition to Idle.", null);
         }
 
         public void CommitTransitionToIdle(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to Idle transition.");
+                _Debug.WriteLine("Committing to Idle transition.");
             CheckBatch(userData);
         }
 
         public void RollbackTransitionToIdle(IModel model, object userData, IList reasonsForFailure) {
             if (m_outputEnabled)
-                Trace.WriteLine("Rolling back Idle transition.");
+                _Debug.WriteLine("Rolling back Idle transition.");
             CheckBatch(userData);
             if (reasonsForFailure == null)
                 return;
             foreach (ITransitionFailureReason tfr in reasonsForFailure) {
                 if (m_outputEnabled)
-                    Trace.WriteLine(tfr.Reason);
+                    _Debug.WriteLine(tfr.Reason);
             }
         }
 
         public ITransitionFailureReason PrepareToTransitiontoValidWithSuccess(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition to Valid");
+                _Debug.WriteLine("Preparing to transition to Valid");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitiontoValidWithFailure(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition to Valid (failure)");
+                _Debug.WriteLine("Preparing to transition to Valid (failure)");
             CheckBatch(userData);
             return new SimpleTransitionFailureReason("Felt like rejecting transition to Valid.", null);
         }
 
         public void CommitTransitiontoValid(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to Valid transition.");
+                _Debug.WriteLine("Committing to Valid transition.");
             CheckBatch(userData);
         }
 
         public void RollbackTransitiontoValid(IModel model, object userData, IList reasonsForFailure) {
             if (m_outputEnabled)
-                Trace.WriteLine("Rolling back Valid transition.");
+                _Debug.WriteLine("Rolling back Valid transition.");
             CheckBatch(userData);
             if (reasonsForFailure == null)
                 return;
             foreach (ITransitionFailureReason tfr in reasonsForFailure) {
                 if (m_outputEnabled)
-                    Trace.WriteLine(tfr.Reason);
+                    _Debug.WriteLine(tfr.Reason);
             }
         }
 
         public ITransitionFailureReason PrepareToTransitionToRunningWithSuccess(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toRunning");
+                _Debug.WriteLine("Preparing to transition toRunning");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionToRunningWithFailure(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toRunning (failure)");
+                _Debug.WriteLine("Preparing to transition toRunning (failure)");
             CheckBatch(userData);
             return new SimpleTransitionFailureReason("Felt like rejecting transition to Running.", null);
         }
 
         public void CommitTransitionToRunning(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to Running transition.");
+                _Debug.WriteLine("Committing to Running transition.");
             CheckBatch(userData);
         }
 
         public void RollbackTransitionToRunning(IModel model, object userData, IList reasonsForFailure) {
             if (m_outputEnabled)
-                Trace.WriteLine("Rolling back Running transition.");
+                _Debug.WriteLine("Rolling back Running transition.");
             CheckBatch(userData);
             if (reasonsForFailure == null)
                 return;
             foreach (ITransitionFailureReason tfr in reasonsForFailure) {
-                Trace.WriteLine(tfr.Reason);
+                _Debug.WriteLine(tfr.Reason);
             }
         }
 
         public ITransitionFailureReason PrepareToTransitionToPausedWithSuccess(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toPaused");
+                _Debug.WriteLine("Preparing to transition toPaused");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionToPausedWithFailure(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toPaused (failure)");
+                _Debug.WriteLine("Preparing to transition toPaused (failure)");
             CheckBatch(userData);
             return new SimpleTransitionFailureReason("Felt like rejecting transition to Paused.", null);
         }
 
         public void CommitTransitionToPaused(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to Paused transition.");
+                _Debug.WriteLine("Committing to Paused transition.");
             CheckBatch(userData);
         }
 
         public void RollbackTransitionToPaused(IModel model, object userData, IList reasonsForFailure) {
             if (m_outputEnabled)
-                Trace.WriteLine("Rolling back Paused transition.");
+                _Debug.WriteLine("Rolling back Paused transition.");
             CheckBatch(userData);
             if (reasonsForFailure == null)
                 return;
             foreach (ITransitionFailureReason tfr in reasonsForFailure) {
-                Trace.WriteLine(tfr.Reason);
+                _Debug.WriteLine(tfr.Reason);
             }
         }
 
         public ITransitionFailureReason PrepareToTransitionToFinishedWithSuccess(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toFinished");
+                _Debug.WriteLine("Preparing to transition toFinished");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionToFinishedWithFailure(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition toFinished (failure)");
+                _Debug.WriteLine("Preparing to transition toFinished (failure)");
             CheckBatch(userData);
             return new SimpleTransitionFailureReason("Felt like rejecting transition to Finished.", null);
         }
@@ -537,94 +537,94 @@ namespace Highpoint.Sage.SimCore {
         public void CommitTransitionToFinished(IModel model, object userData) {
             CheckBatch(userData);
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to Finished transition.");
+                _Debug.WriteLine("Committing to Finished transition.");
         }
 
         public void RollbackTransitionToFinished(IModel model, object userData, IList reasonsForFailure) {
             if (m_outputEnabled)
-                Trace.WriteLine("Rolling back Finished transition.");
+                _Debug.WriteLine("Rolling back Finished transition.");
             CheckBatch(userData);
             if (reasonsForFailure == null)
                 return;
             foreach (ITransitionFailureReason tfr in reasonsForFailure) {
-                Trace.WriteLine(tfr.Reason);
+                _Debug.WriteLine(tfr.Reason);
             }
         }
 
         public ITransitionFailureReason PrepareToTransitionOutOfIdleWithSuccess_1(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition out of Idle (1)");
+                _Debug.WriteLine("Preparing to transition out of Idle (1)");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionOutOfIdleWithSuccess_2(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition out of Idle (2)");
+                _Debug.WriteLine("Preparing to transition out of Idle (2)");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionOutOfIdleWithSuccess_3(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition out of Idle (3)");
+                _Debug.WriteLine("Preparing to transition out of Idle (3)");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionOutOfIdleWithSuccess_4(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition out of Idle (4)");
+                _Debug.WriteLine("Preparing to transition out of Idle (4)");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitiontoValidWithSuccess_1(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition into Valid (1)");
+                _Debug.WriteLine("Preparing to transition into Valid (1)");
             CheckBatch(userData);
             return null;
         }
         public ITransitionFailureReason PrepareToTransitiontoValidWithSuccess_2(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition into Valid (2)");
+                _Debug.WriteLine("Preparing to transition into Valid (2)");
             CheckBatch(userData);
             return null;
         }
         public ITransitionFailureReason PrepareToTransitiontoValidWithSuccess_3(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition into Valid (3)");
+                _Debug.WriteLine("Preparing to transition into Valid (3)");
             CheckBatch(userData);
             return null;
         }
         public ITransitionFailureReason PrepareToTransitiontoValidWithSuccess_4(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition into Valid (4)");
+                _Debug.WriteLine("Preparing to transition into Valid (4)");
             CheckBatch(userData);
             return null;
         }
 
         public ITransitionFailureReason PrepareToTransitionIdletoValidWithSuccess_1(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition from Idle into Valid (1)");
+                _Debug.WriteLine("Preparing to transition from Idle into Valid (1)");
             CheckBatch(userData);
             return null;
         }
         public ITransitionFailureReason PrepareToTransitionIdletoValidWithSuccess_2(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition from Idle into Valid (2)");
+                _Debug.WriteLine("Preparing to transition from Idle into Valid (2)");
             CheckBatch(userData);
             return null;
         }
         public ITransitionFailureReason PrepareToTransitionIdletoValidWithSuccess_3(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition from Idle into Valid (3)");
+                _Debug.WriteLine("Preparing to transition from Idle into Valid (3)");
             CheckBatch(userData);
             return null;
         }
         public ITransitionFailureReason PrepareToTransitionIdletoValidWithSuccess_4(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Preparing to transition from Idle into Valid (4)");
+                _Debug.WriteLine("Preparing to transition from Idle into Valid (4)");
             return null;
             //CheckBatch(userData);
         }
@@ -632,97 +632,97 @@ namespace Highpoint.Sage.SimCore {
         public void CommitTransitionOutOfIdle_1(IModel model, object userData) {
             CheckBatch(userData);
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle (1).");
+                _Debug.WriteLine("Committing to transition from Idle (1).");
         }
 
         public void CommitTransitionOutOfIdle_2(IModel model, object userData) {
             CheckBatch(userData);
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle (2).");
+                _Debug.WriteLine("Committing to transition from Idle (2).");
         }
 
         public void CommitTransitionOutOfIdle_3(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle (3).");
+                _Debug.WriteLine("Committing to transition from Idle (3).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionOutOfIdle_4(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle (4).");
+                _Debug.WriteLine("Committing to transition from Idle (4).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionToValid_1(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition to Valid (1).");
+                _Debug.WriteLine("Committing to transition to Valid (1).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionToValid_2(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition to Valid (2).");
+                _Debug.WriteLine("Committing to transition to Valid (2).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionToValid_3(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition to Valid (3).");
+                _Debug.WriteLine("Committing to transition to Valid (3).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionToValid_4(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition to Valid (4).");
+                _Debug.WriteLine("Committing to transition to Valid (4).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionIdleToValid_1(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle to Valid (1).");
+                _Debug.WriteLine("Committing to transition from Idle to Valid (1).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionIdleToValid_2(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle to Valid (2).");
+                _Debug.WriteLine("Committing to transition from Idle to Valid (2).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionIdleToValid_3(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle to Valid (3).");
+                _Debug.WriteLine("Committing to transition from Idle to Valid (3).");
             CheckBatch(userData);
         }
 
         public void CommitTransitionIdleToValid_4(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Committing to transition from Idle to Valid (4).");
+                _Debug.WriteLine("Committing to transition from Idle to Valid (4).");
             CheckBatch(userData);
         }
 
         public ITransitionFailureReason UniversalPrepareToTransition(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Universal handler reports, Preparing to transition to Valid (success)");
+                _Debug.WriteLine("Universal handler reports, Preparing to transition to Valid (success)");
             CheckBatch(userData);
             return null;
         }
 
         public void UniversalCommitTransition(IModel model, object userData) {
             if (m_outputEnabled)
-                Trace.WriteLine("Universal handler reports, Committing to Valid transition.");
+                _Debug.WriteLine("Universal handler reports, Committing to Valid transition.");
             CheckBatch(userData);
         }
 
         public void UniversalRollbackTransition(IModel model, object userData, IList reasonsForFailure) {
             if (m_outputEnabled)
-                Trace.WriteLine("Universal handler reports, Rolling back transition.");
+                _Debug.WriteLine("Universal handler reports, Rolling back transition.");
             CheckBatch(userData);
             if (reasonsForFailure == null)
                 return;
             if (m_outputEnabled) {
                 foreach (ITransitionFailureReason tfr in reasonsForFailure) {
-                    Trace.WriteLine(tfr.Reason);
+                    _Debug.WriteLine(tfr.Reason);
                 }
             }
         }

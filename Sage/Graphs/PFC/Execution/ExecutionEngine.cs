@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Highpoint.Sage.SimCore;
 using System.Collections;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.PFC.Execution {
 
@@ -82,7 +83,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
             }
 
             List<IPfcStepNode> startSteps = pfc.GetStartSteps();
-            System.Diagnostics.Debug.Assert(startSteps.Count == 1);
+            _Debug.Assert(startSteps.Count == 1);
             m_startStep = m_stepStateMachines[startSteps[0]];
         }
 

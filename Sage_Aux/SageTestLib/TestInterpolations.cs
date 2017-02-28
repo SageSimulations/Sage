@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Highpoint.Sage.Mathematics {
@@ -16,7 +16,7 @@ namespace Highpoint.Sage.Mathematics {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		
 		/// <summary>
@@ -108,7 +108,7 @@ namespace Highpoint.Sage.Mathematics {
         }
 
 		private void Verify(IInterpolable interp, double xValue, double expectedYValue){
-			System.Diagnostics.Debug.Assert(Math.Abs(interp.GetYValue(xValue) - expectedYValue  ) < 0.000001 ,"Point x = "+xValue+" does not result in y = "+expectedYValue+".");
+            _Debug.Assert(Math.Abs(interp.GetYValue(xValue) - expectedYValue  ) < 0.000001 ,"Point x = "+xValue+" does not result in y = "+expectedYValue+".");
 		}
     }
 }

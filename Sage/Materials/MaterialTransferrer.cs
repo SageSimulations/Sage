@@ -3,6 +3,7 @@ using System;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Materials.Chemistry;
 using System.Collections.Generic;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Materials {
 
@@ -136,7 +137,7 @@ namespace Highpoint.Sage.Materials {
         /// Blocks the caller's detachable event thread until this transfer has started.
         /// </summary>
         public void BlockTilStart() {
-            System.Diagnostics.Debug.Assert(m_model.Executive.CurrentEventType == ExecEventType.Detachable);
+            _Debug.Assert(m_model.Executive.CurrentEventType == ExecEventType.Detachable);
             if (m_completionKey == long.MinValue/*i.e. it has not started*/) {
                 IDetachableEventController waiter = m_model.Executive.CurrentEventController;
                 m_startWaiters.Add(waiter);
@@ -148,7 +149,7 @@ namespace Highpoint.Sage.Materials {
         /// Blocks the caller's detachable event thread until this transfer has finished.
         /// </summary>
         public void BlockTilDone() {
-            System.Diagnostics.Debug.Assert(m_model.Executive.CurrentEventType == ExecEventType.Detachable);
+            _Debug.Assert(m_model.Executive.CurrentEventType == ExecEventType.Detachable);
             if (m_completionKey > m_model.Executive.Now.Ticks) {
                 m_endWaiters.Add(m_model.Executive.CurrentEventController);
                 m_model.Executive.CurrentEventController.Suspend();

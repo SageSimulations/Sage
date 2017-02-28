@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Persistence;
@@ -99,7 +99,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		}
 
         public virtual void Activate(){
-            //Trace.WriteLine("Activating " + m_name );
+            //_Debug.WriteLine("Activating " + m_name );
             if (!m_startConditionsSpecified){
                 m_when = m_model.Executive.Now;
                 m_priority = 0.0;
@@ -115,7 +115,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
         private void BeginExecution(IExecutive exec, object userData){
 			if ( s_diagnostics ) {
-				Trace.WriteLine("Task processor " + Name + " beginning execution instance of graph " + m_masterTask.Name);
+				_Debug.WriteLine("Task processor " + Name + " beginning execution instance of graph " + m_masterTask.Name);
 			}
             m_masterTask.Start((IDictionary)userData);
         }

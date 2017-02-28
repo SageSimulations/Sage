@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.ItemBased.Ports;

@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System.Collections;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.Validity {
 
@@ -126,7 +126,7 @@ namespace Highpoint.Sage.Graphs.Validity {
 				System.Diagnostics.StackFrame sf = st.GetFrame(1);
 				string where = sf.GetMethod() + " [" + sf.GetFileName() + ", line " + sf.GetFileLineNumber() + "]";
 				m_suspendResumeStack.Push(where);
-				//Trace.WriteLine("Suspend (" + m_suspensions + ") : " + where);
+				//_Debug.WriteLine("Suspend (" + m_suspensions + ") : " + where);
 			}
 		}
 
@@ -155,10 +155,10 @@ namespace Highpoint.Sage.Graphs.Validity {
 					if ( m_root is SimCore.IModelObject ) {
 						((SimCore.IModelObject)m_root).Model.AddWarning(new SimCore.GenericModelWarning("ValidationStackMismatch",msg,where,this));
 					} else {
-						Trace.WriteLine(msg);
+						_Debug.WriteLine(msg);
 					}
 				}
-				//Trace.WriteLine("Resume  (" + m_suspensions + ") : " + where);
+				//_Debug.WriteLine("Resume  (" + m_suspensions + ") : " + where);
 			}
 			Refresh();
 		}
@@ -181,7 +181,7 @@ namespace Highpoint.Sage.Graphs.Validity {
         /// </summary>
 		public void Refresh(){
 			if ( m_suspensions==0 && m_dirty ) {
-				if ( s_diagnostics ) Trace.WriteLine("Refreshing after a structure change.");
+				if ( s_diagnostics ) _Debug.WriteLine("Refreshing after a structure change.");
 				
 				if ( m_htNodes != null ) {
 					foreach ( IHasValidity ihv in m_htNodes.Keys ) {

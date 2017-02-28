@@ -2,7 +2,7 @@
 
 namespace Highpoint.Sage.Utility {
 	using System;
-	using Trace = System.Diagnostics.Debug;
+	using _Debug = System.Diagnostics.Debug;
 	using System.Collections;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -18,7 +18,7 @@ namespace Highpoint.Sage.Utility {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]

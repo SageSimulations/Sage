@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.ItemBased.Ports;
@@ -20,7 +20,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -38,11 +38,11 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 			foreach ( IPort port in sps.Ports ) port.PortDataPresented+=new PortDataEvent(OnPortDataPresented);
 
 			sps.Input.Put(new object());
-			System.Diagnostics.Debug.Assert(m_lastResult == m_nPorts+1,"Not all output ports reported arrival of the pushed object.");
+            _Debug.Assert(m_lastResult == m_nPorts+1,"Not all output ports reported arrival of the pushed object.");
 		}
 
 		private void OnPortDataPresented(object data, IPort where) {
-			Trace.WriteLine(data + " arriving on port with key " + where.Key.ToString());
+			_Debug.WriteLine(data + " arriving on port with key " + where.Key.ToString());
 			m_lastResult++;
 		}
 	}
@@ -59,7 +59,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -79,11 +79,11 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 			foreach ( IPort port in pj.Ports ) {
 				if ( port is IInputPort ) ((IInputPort)port).Put(new object());
 			}
-			System.Diagnostics.Debug.Assert(m_lastResult == m_nPorts*2,"Not all output ports reported arrival of the pushed object.");
+            _Debug.Assert(m_lastResult == m_nPorts*2,"Not all output ports reported arrival of the pushed object.");
 		}
 
 		private void OnPortDataPresented(object data, IPort where) {
-			Trace.WriteLine(data + " arriving on port with key " + where.Key.ToString());
+			_Debug.WriteLine(data + " arriving on port with key " + where.Key.ToString());
 			m_lastResult++;
 		}
 	}

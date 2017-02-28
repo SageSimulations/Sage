@@ -6,7 +6,7 @@ namespace Highpoint.Sage.Testing
 {
     using SimCore;
     using Resources;
-    using Trace = System.Diagnostics.Debug;
+    using _Debug = System.Diagnostics.Debug;
 
     public class AllTests
     {
@@ -92,754 +92,754 @@ namespace Highpoint.Sage.Testing
 
                     // zTestExecutive.cs
                     case 1:
-                        Trace.WriteLine("Test ExecutiveCount");
+                        _Debug.WriteLine("Test ExecutiveCount");
                         new ExecTester().TestExecutiveCount();
                         break;
                     case 2:
-                        Trace.WriteLine("Test ExecutiveCountDefaultParameter");
+                        _Debug.WriteLine("Test ExecutiveCountDefaultParameter");
                         new ExecTester().TestExecutiveCountDefaultParameter();
                         break;
                     case 3:
-                        Trace.WriteLine("Test ExecutiveWhen");
+                        _Debug.WriteLine("Test ExecutiveWhen");
                         new ExecTester().TestExecutiveWhen();
                         break;
                     case 4:
-                        Trace.WriteLine("Test ExecutivePriority");
+                        _Debug.WriteLine("Test ExecutivePriority");
                         new ExecTester().TestExecutivePriority();
                         break;
                     case 5:
-                        Trace.WriteLine("Test ExecutiveUnRequestHash");
+                        _Debug.WriteLine("Test ExecutiveUnRequestHash");
                         new ExecTester().TestExecutiveUnRequestHash();
                         break;
                     case 6:
-                        Trace.WriteLine("Test ExecutiveUnRequestTarget");
+                        _Debug.WriteLine("Test ExecutiveUnRequestTarget");
                         new ExecTester().TestExecutiveUnRequestTarget();
                         break;
                     case 7:
-                        Trace.WriteLine("Test ExecutiveUnRequestDelegate");
+                        _Debug.WriteLine("Test ExecutiveUnRequestDelegate");
                         new ExecTester().TestExecutiveUnRequestDelegate();
                         break;
                     case 8:
-                        Trace.WriteLine("Test ExecutiveUnRequestSelector");
+                        _Debug.WriteLine("Test ExecutiveUnRequestSelector");
                         new ExecTester().TestExecutiveUnRequestSelector();
                         break;
                     case 9:
-                        Trace.WriteLine("Test ThreadSepFunctionality");
+                        _Debug.WriteLine("Test ThreadSepFunctionality");
                         new ExecTester().TestThreadSepFunctionality();
                         break;
                     case 10:
-                        Trace.WriteLine("Test Executive2");
+                        _Debug.WriteLine("Test Executive2");
                         new ExecTester().RecreateFailure();
                         break;
 
                     case 11:
-                        Trace.WriteLine("Test Executive Stopping and restarting.");
+                        _Debug.WriteLine("Test Executive Stopping and restarting.");
                         new ExecTester().TestExecutiveStopStart();
                         break;
 
                     case 12:
-                        Trace.WriteLine("Test Executive Pause/Resume.");
+                        _Debug.WriteLine("Test Executive Pause/Resume.");
                         new ExecTester().TestExecutivePauseResume();
                         break;
 
                     case 13:
-                        Trace.WriteLine("Test Executive Performance.");
+                        _Debug.WriteLine("Test Executive Performance.");
                         new ExecTester().TestPerformance();
                         break;
 
                     // zTestStateMachine.cs
                     case 20:
-                        Trace.WriteLine("Test StateMachine");
+                        _Debug.WriteLine("Test StateMachine");
                         new StateMachineTester().TestStateMachine();
                         break;
                     case 21:
-                        Trace.WriteLine("Test TransitionSuccessWithFollowon");
+                        _Debug.WriteLine("Test TransitionSuccessWithFollowon");
                         new StateMachineTester().TestTransitionSuccessWithFollowon();
                         break;
                     case 22:
-                        Trace.WriteLine("Test TransitionSuccessWithoutFollowon");
+                        _Debug.WriteLine("Test TransitionSuccessWithoutFollowon");
                         new StateMachineTester().TestTransitionSuccessWithoutFollowon();
                         break;
                     case 23:
-                        Trace.WriteLine("Test TransitionFailure");
+                        _Debug.WriteLine("Test TransitionFailure");
                         new StateMachineTester().TestTransitionFailure();
                         break;
                     case 24:
-                        Trace.WriteLine("Test TransitionIllegal");
+                        _Debug.WriteLine("Test TransitionIllegal");
                         new StateMachineTester().TestTransitionIllegal();
                         break;
                     case 25:
-                        Trace.WriteLine("Test TransitionIllegalToo");
+                        _Debug.WriteLine("Test TransitionIllegalToo");
                         new StateMachineTester().TestTransitionIllegalToo();
                         break;
                     case 26:
-                        Trace.WriteLine("Test TransitionChainSuccess");
+                        _Debug.WriteLine("Test TransitionChainSuccess");
                         new StateMachineTester().TestTransitionChainSuccess();
                         break;
                     case 27:
-                        Trace.WriteLine("Test TransitionMultipleHandlers");
+                        _Debug.WriteLine("Test TransitionMultipleHandlers");
                         new StateMachineTester().TestTransitionMultipleHandlers();
                         break;
                     case 28:
-                        Trace.WriteLine("Test TransitionMultipleHandlersSorted");
+                        _Debug.WriteLine("Test TransitionMultipleHandlersSorted");
                         new StateMachineTester().TestTransitionMultipleHandlersSorted();
                         break;
 
                     // zTestDAGCycleChecker.cs
                     case 30:
-                        Trace.WriteLine("Test DAGCycleCheckerTester - Basic");
+                        _Debug.WriteLine("Test DAGCycleCheckerTester - Basic");
                         new Graphs.DAGCycleCheckerTester().TestBasicValidation();
                         break;
                     case 31:
-                        Trace.WriteLine("Test DAGCycleCheckerTester - Implied");
+                        _Debug.WriteLine("Test DAGCycleCheckerTester - Implied");
                         new Graphs.DAGCycleCheckerTester().TestValidationWithImpliedRelationships();
                         break;
                     case 32:
-                        Trace.WriteLine("Test DAGCycleCheckerTester - Performance");
+                        _Debug.WriteLine("Test DAGCycleCheckerTester - Performance");
                         new Graphs.DAGCycleCheckerTester().TestValidationPerformance();
                         break;
                     case 33:
-                        Trace.WriteLine("Test DAGCycleCheckerTester - Inner Edge Performance");
+                        _Debug.WriteLine("Test DAGCycleCheckerTester - Inner Edge Performance");
                         new Graphs.DAGCycleCheckerTester().TestInnerEdgePerformance();
                         break;
 
                     // zTestTasks.cs
                     case 41:
-                        Trace.WriteLine("Test ChildSequencing");
+                        _Debug.WriteLine("Test ChildSequencing");
                         new Graphs.Tasks.TaskTester().TestChildSequencing();
                         break;
                     case 42:
-                        Trace.WriteLine("Test PlainGraph");
+                        _Debug.WriteLine("Test PlainGraph");
                         new Graphs.Tasks.TaskTester().TestPlainGraph();
                         break;
                     case 43:
-                        Trace.WriteLine("Test CoStart");
+                        _Debug.WriteLine("Test CoStart");
                         new Graphs.Tasks.TaskTester().TestCoStart();
                         break;
                     case 44:
-                        Trace.WriteLine("Test CoFinish");
+                        _Debug.WriteLine("Test CoFinish");
                         new Graphs.Tasks.TaskTester().TestCoFinish();
                         break;
                     case 45:
-                        Trace.WriteLine("Test SynchroStart");
+                        _Debug.WriteLine("Test SynchroStart");
                         new Graphs.Tasks.TaskTester().TestSynchroStart();
                         break;
-                    //case 46: Trace.WriteLine("Test SynchroFinish"); new Highpoint.Sage.Graphs.Tasks.TaskTester().TestSynchroFinish(); break;
+                    //case 46: _Debug.WriteLine("Test SynchroFinish"); new Highpoint.Sage.Graphs.Tasks.TaskTester().TestSynchroFinish(); break;
 
 
                     case 50:
-                        Trace.WriteLine("Test SmartPropertyBag Memento leakage");
+                        _Debug.WriteLine("Test SmartPropertyBag Memento leakage");
                         new SmartPropertyBagTester().TestRepeatedSnapshottingAndRestoration();
                         break;
 
                     // zTestGraphValidities.cs
                     case 61:
-                        Trace.WriteLine("Test BasicValidation");
+                        _Debug.WriteLine("Test BasicValidation");
                         new Tasks.GraphValidityTester().TestBasicValidation();
                         break;
                     case 62:
-                        Trace.WriteLine("Test AddTasks");
+                        _Debug.WriteLine("Test AddTasks");
                         new Tasks.GraphValidityTester().TestAddTasks();
                         break;
                     case 63:
-                        Trace.WriteLine("Test SynchronizeTasks");
+                        _Debug.WriteLine("Test SynchronizeTasks");
                         new Tasks.GraphValidityTester().TestSynchronizeTasks();
                         break;
                     case 64:
-                        Trace.WriteLine("Test SynchronizeTasksInTwoLevels");
+                        _Debug.WriteLine("Test SynchronizeTasksInTwoLevels");
                         new Tasks.GraphValidityTester().TestSynchronizeTasksInTwoLevels();
                         break;
                     case 65:
-                        Trace.WriteLine("Test SynchronizeAndAddTasks");
+                        _Debug.WriteLine("Test SynchronizeAndAddTasks");
                         new Tasks.GraphValidityTester().TestSynchronizeAndAddTasks();
                         break;
                     case 66:
-                        Trace.WriteLine("Test RemoveTasks");
+                        _Debug.WriteLine("Test RemoveTasks");
                         new Tasks.GraphValidityTester().TestRemoveTasks();
                         break;
                     case 67:
-                        Trace.WriteLine("Test SynchronizeAndRemoveTasks");
+                        _Debug.WriteLine("Test SynchronizeAndRemoveTasks");
                         new Tasks.GraphValidityTester().TestSynchronizeAndRemoveTasks();
                         break;
                     case 68:
-                        Trace.WriteLine("Test ");
+                        _Debug.WriteLine("Test ");
                         new Tasks.GraphValidityTester().TestToCauseResumeFailure();
                         break;
 
-                    //case 69: Trace.WriteLine("Test Task Enumerators"); new Highpoint.Sage.Tasks.GraphValidityTester().TestTaskEnumerators(); break;
+                    //case 69: _Debug.WriteLine("Test Task Enumerators"); new Highpoint.Sage.Tasks.GraphValidityTester().TestTaskEnumerators(); break;
 
 #if NYRFPT
                     // zTestGraphPersistance.cs
                     case 81:
-                        Trace.WriteLine("Test PlainGraphPersistence");
+                        _Debug.WriteLine("Test PlainGraphPersistence");
                         new Graphs.Tasks.TaskGraphPersistenceTester().TestPlainGraphPersistence();
                         break;
                     case 82:
-                        Trace.WriteLine("Test CoStartPersistance");
+                        _Debug.WriteLine("Test CoStartPersistance");
                         new Graphs.Tasks.TaskGraphPersistenceTester().TestCoStartPersistance();
                         break;
                     case 83:
-                        Trace.WriteLine("Test CoFinishPersistence");
+                        _Debug.WriteLine("Test CoFinishPersistence");
                         new Graphs.Tasks.TaskGraphPersistenceTester().TestCoFinishPersistence();
                         break;
                     case 84:
-                        Trace.WriteLine("Test SynchroStartPersistence");
+                        _Debug.WriteLine("Test SynchroStartPersistence");
                         new Graphs.Tasks.TaskGraphPersistenceTester().TestSynchroStartPersistence();
                         break;
                     case 85:
-                        Trace.WriteLine("Test SynchroFinishPersistence");
+                        _Debug.WriteLine("Test SynchroFinishPersistence");
                         new Graphs.Tasks.TaskGraphPersistenceTester().TestSynchroFinishPersistence();
                         break;
 #endif
                     // zTestResources.cs
                     case 101:
-                        Trace.WriteLine("Test PersistentResourceBasics");
+                        _Debug.WriteLine("Test PersistentResourceBasics");
                         new ResourceTester().TestPersistentResourceBasics();
                         break;
                     case 102:
-                        Trace.WriteLine("Test ConsumableResourceBasics");
+                        _Debug.WriteLine("Test ConsumableResourceBasics");
                         new ResourceTester().TestConsumableResourceBasics();
                         break;
                     case 103:
-                        Trace.WriteLine("Test MaterialConduits");
+                        _Debug.WriteLine("Test MaterialConduits");
                         new ResourceTester().TestMaterialConduits();
                         break;
                     case 104:
-                        Trace.WriteLine("Test Earmarking");
+                        _Debug.WriteLine("Test Earmarking");
                         new ResourceTester().TestEarmarking();
                         break;
                     case 105:
-                        Trace.WriteLine("Test Advanced Earmarking");
+                        _Debug.WriteLine("Test Advanced Earmarking");
                         new ResourceTester().TestAdvancedEarmarking();
                         break;
 
                     // zTestMaterials.cs
                     case 121:
-                        Trace.WriteLine("Test Removal");
+                        _Debug.WriteLine("Test Removal");
                         new MaterialTester().TestRemoval();
                         break;
                     case 122:
-                        Trace.WriteLine("Test Combinatorics");
+                        _Debug.WriteLine("Test Combinatorics");
                         new MaterialTester().TestCombinatorics();
                         break;
                     case 123:
-                        Trace.WriteLine("Test Reactions");
+                        _Debug.WriteLine("Test Reactions");
                         new MaterialTester().TestReactions();
                         break;
                     case 124:
-                        Trace.WriteLine("Test SecondaryReactions");
+                        _Debug.WriteLine("Test SecondaryReactions");
                         new MaterialTester().TestSecondaryReactions();
                         break;
                     case 125:
-                        Trace.WriteLine("Test SecondaryReactions");
+                        _Debug.WriteLine("Test SecondaryReactions");
                         new MaterialTester().TestMaterialSpecifications();
                         break;
 
                     case 126:
-                        Trace.WriteLine("Test Material Transferrer");
+                        _Debug.WriteLine("Test Material Transferrer");
                         new MaterialTester().TestMaterialTransferrer();
                         break;
 
                     case 130:
-                        Trace.WriteLine("Test Reaction Basics");
+                        _Debug.WriteLine("Test Reaction Basics");
                         new Chemistry101().TestReactionBasics();
                         break;
                     case 131:
-                        Trace.WriteLine("Test Reaction Basics");
+                        _Debug.WriteLine("Test Reaction Basics");
                         new Chemistry101().TestRP_CombineAPI();
                         break;
 
                     case 132:
-                        Trace.WriteLine("Test Catalytic Reaction Basics");
+                        _Debug.WriteLine("Test Catalytic Reaction Basics");
                         new Chemistry101().TestCatalyticReactionBasics();
                         break;
 
                     case 140:
-                        Trace.WriteLine("Test Mersenne Twister");
+                        _Debug.WriteLine("Test Mersenne Twister");
                         new Randoms.MersenneTester().TestMersenneAgainstMatumotosGoldNoBuffering();
                         break;
                     case 141:
-                        Trace.WriteLine("Test Mersenne Twister");
+                        _Debug.WriteLine("Test Mersenne Twister");
                         new Randoms.MersenneTester().TestMersenneAgainstMatumotosGoldWithBuffering();
                         break;
                     case 142:
-                        Trace.WriteLine("Test Mersenne Twister");
+                        _Debug.WriteLine("Test Mersenne Twister");
                         new Randoms.MersenneTester().TestMersenneAgainstMatumotosGoldWithBufferingMulti();
                         break;
                     case 143:
-                        Trace.WriteLine("Test Mersenne Twister Performance without threading");
+                        _Debug.WriteLine("Test Mersenne Twister Performance without threading");
                         new Randoms.MersenneTester().PerformanceTestNoThreading();
                         break;
                     case 144:
-                        Trace.WriteLine("Test Mersenne Twister Performance with threading");
+                        _Debug.WriteLine("Test Mersenne Twister Performance with threading");
                         new Randoms.MersenneTester().PerformanceTestWithThreading();
                         break;
                     case 145:
-                        Trace.WriteLine("Test Mersenne Twister interval fidelity");
+                        _Debug.WriteLine("Test Mersenne Twister interval fidelity");
                         new Randoms.MersenneTester().RunIntervalTest();
                         break;
 
                     case 150:
-                        Trace.WriteLine("Test Evaluator Basics");
+                        _Debug.WriteLine("Test Evaluator Basics");
                         new EvaluatorTester().TestEvaluatorBasics();
                         break;
 
                     case 199:
-                        Trace.WriteLine("Test Temperature Controller");
+                        _Debug.WriteLine("Test Temperature Controller");
                         new Thermodynamics.TemperatureControllerTester101().TestTCConstDeltaTargetingUp2();
                         break;
 
                     case 200:
-                        Trace.WriteLine("Test Stochastic BranchBlock");
+                        _Debug.WriteLine("Test Stochastic BranchBlock");
                         new ItemBased.BranchBlockTester().TestStochasticBranchBlock();
                         break;
 
                     case 201:
-                        Trace.WriteLine("Test Delegated BranchBlock");
+                        _Debug.WriteLine("Test Delegated BranchBlock");
                         new ItemBased.BranchBlockTester().TestDelegatedBranchBlock();
                         break;
 
                     case 210:
-                        Trace.WriteLine("Test Server");
+                        _Debug.WriteLine("Test Server");
                         new ItemBased.Blocks.ServerTester().TestServerBasics();
                         break;
 
                     case 211:
-                        Trace.WriteLine("Test Resource Server");
+                        _Debug.WriteLine("Test Resource Server");
                         new ItemBased.Blocks.ServerTester().TestResourceServer();
                         break;
 
                     case 212:
-                        Trace.WriteLine("Test Resource Server");
+                        _Debug.WriteLine("Test Resource Server");
                         new ItemBased.Blocks.ServerTester().TestResourceServerComplexDemands();
                         break;
 
                     case 213:
-                        Trace.WriteLine("Test Buffered Server");
+                        _Debug.WriteLine("Test Buffered Server");
                         new ItemBased.Blocks.ServerTester().TestBufferedServer();
                         break;
 
                     case 220:
-                        Trace.WriteLine("Empirical Distribution From Histogram");
+                        _Debug.WriteLine("Empirical Distribution From Histogram");
                         new Mathematics.Distributions101().TestDistributionEmpirical();
                         break;
 
                     case 221:
-                        Trace.WriteLine("Single Element Distribution");
+                        _Debug.WriteLine("Single Element Distribution");
                         new Mathematics.Distributions101()
                             .TestSingleDatapointAsTwoInLinearDoubleInterpolable();
                         break;
 
                     case 222:
-                        Trace.WriteLine("Universal Distribution From Histogram");
+                        _Debug.WriteLine("Universal Distribution From Histogram");
                         new Mathematics.Distributions101().TestUniversalDistribution();
                         break;
 
                     case 230:
-                        Trace.WriteLine("Resource Starvation");
+                        _Debug.WriteLine("Resource Starvation");
                         new ResourceTester().TestStarvation();
                         break;
 
                     case 240:
-                        Trace.WriteLine("Interpolations 2 Point");
+                        _Debug.WriteLine("Interpolations 2 Point");
                         new Mathematics.Interpolations101().TestInterpolationFrom2Points();
                         break;
 
                     case 241:
-                        Trace.WriteLine("Interpolations 2 Point Neg Slope");
+                        _Debug.WriteLine("Interpolations 2 Point Neg Slope");
                         new Mathematics.Interpolations101().TestInterpolationFrom2PointsNegativeSlope();
                         break;
 
                     case 242:
-                        Trace.WriteLine("Interpolations 4 Point");
+                        _Debug.WriteLine("Interpolations 4 Point");
                         new Mathematics.Interpolations101().TestInterpolationFrom4Points();
                         break;
 
                     case 243:
-                        Trace.WriteLine("Interpolations Point Replacement");
+                        _Debug.WriteLine("Interpolations Point Replacement");
                         new Mathematics.Interpolations101().TestInterpolationPointReplacement();
                         break;
 
                     case 250:
-                        Trace.WriteLine("WeakReferenceHashtable Tester");
+                        _Debug.WriteLine("WeakReferenceHashtable Tester");
                         new Utility.WeakReferenceHashtableTester().TestWRHTBasics();
                         break;
 
                     case 260:
-                        Trace.WriteLine("Prioritized ResourceRequest Handling");
+                        _Debug.WriteLine("Prioritized ResourceRequest Handling");
                         new ResourceTesterExt().TestBasicFuctionality();
                         break;
 
                     case 261:
-                        Trace.WriteLine("Prioritized ResourceRequest Handling");
+                        _Debug.WriteLine("Prioritized ResourceRequest Handling");
                         new ResourceTesterExt().TestPrioritizedResourceRequestHandling();
                         break;
 
                     case 262:
-                        Trace.WriteLine("Prioritized ResourceRequest Handling");
+                        _Debug.WriteLine("Prioritized ResourceRequest Handling");
                         new ResourceTesterExt().TestPrioritizedResourceRequestWRemoval_1();
                         break;
 
                     case 263:
-                        Trace.WriteLine("Prioritized ResourceRequest Handling");
+                        _Debug.WriteLine("Prioritized ResourceRequest Handling");
                         new ResourceTesterExt().TestPrioritizedResourceRequestWRemoval_2();
                         break;
 
                     case 300:
-                        Trace.WriteLine("TupleSpace Testing - basic");
+                        _Debug.WriteLine("TupleSpace Testing - basic");
                         new Utility.TupleTester().TestTupleBasics();
                         break;
                     case 301:
-                        Trace.WriteLine("TupleSpace Testing - blocking read");
+                        _Debug.WriteLine("TupleSpace Testing - blocking read");
                         new Utility.TupleTester().TestBlockingRead();
                         break;
                     case 302:
-                        Trace.WriteLine("TupleSpace Testing - blocking take");
+                        _Debug.WriteLine("TupleSpace Testing - blocking take");
                         new Utility.TupleTester().TestBlockingTake();
                         break;
                     case 303:
-                        Trace.WriteLine("TupleSpace Testing - blocking post");
+                        _Debug.WriteLine("TupleSpace Testing - blocking post");
                         new Utility.TupleTester().TestBlockingPost();
                         break;
                     case 304:
-                        Trace.WriteLine("TupleSpace Testing - read");
+                        _Debug.WriteLine("TupleSpace Testing - read");
                         new Utility.TupleTester().TestRead();
                         break;
                     case 305:
-                        Trace.WriteLine("TupleSpace Testing - take");
+                        _Debug.WriteLine("TupleSpace Testing - take");
                         new Utility.TupleTester().TestTake();
                         break;
 
                     case 310:
-                        Trace.WriteLine("TreeNodeHelperTester - Basics");
+                        _Debug.WriteLine("TreeNodeHelperTester - Basics");
                         new Utility.TreeNodeHelperTester().TestTreeNodeHelperBasics();
                         break;
                     case 311:
-                        Trace.WriteLine("TreeNodeHelperTester - Read-Only");
+                        _Debug.WriteLine("TreeNodeHelperTester - Read-Only");
                         new Utility.TreeNodeHelperTester().TestReadOnlyTreeNodeHelperBasics();
                         break;
                     case 312:
-                        Trace.WriteLine("TreeNodeHelperTester - Child Sequencing");
+                        _Debug.WriteLine("TreeNodeHelperTester - Child Sequencing");
                         new Utility.TreeNodeHelperTester().TestTreeNodeHelperChildSequencing();
                         break;
 
                     case 320:
-                        Trace.WriteLine("GraphLoopingTester - Basic Looping");
+                        _Debug.WriteLine("GraphLoopingTester - Basic Looping");
                         new Graphs.GraphLoopingTester().TestBasicLooping();
                         break;
                     case 321:
-                        Trace.WriteLine("TreeNodeHelperTester - Basic Branching");
+                        _Debug.WriteLine("TreeNodeHelperTester - Basic Branching");
                         new Graphs.GraphLoopingTester().TestBasicBranching();
                         break;
 #if NYRFPT
                     case 400:
-                        Trace.WriteLine("TimePeriodTester - Basic Operations");
+                        _Debug.WriteLine("TimePeriodTester - Basic Operations");
                         new Scheduling.TimePeriodTester().TestTimePeriodBasics();
                         break;
                     case 401:
-                        Trace.WriteLine("TimePeriodTester - Time Period Envelope");
+                        _Debug.WriteLine("TimePeriodTester - Time Period Envelope");
                         new Scheduling.TimePeriodTester().TestTimePeriodEnvelope();
                         break;
                     case 402:
-                        Trace.WriteLine("TimePeriodTester - Nested Time Period Envelopes");
+                        _Debug.WriteLine("TimePeriodTester - Nested Time Period Envelopes");
                         new Scheduling.TimePeriodTester().TestNestedTimePeriodEnvelope();
                         break;
 #endif
                     case 404:
-                        Trace.WriteLine("TimePeriodRelationshipTester - Basic Operations");
+                        _Debug.WriteLine("TimePeriodRelationshipTester - Basic Operations");
                         new Scheduling.TimePeriodRelationshipTester().TestBasics();
                         break;
                     case 405:
-                        Trace.WriteLine("TimePeriodTester - Basic Operations");
+                        _Debug.WriteLine("TimePeriodTester - Basic Operations");
                         new Scheduling.MilestoneRelationshipTester().TestMilestones();
                         break;
 
 #if NYRFPT
                     case 406:
-                        Trace.WriteLine("ActivityTester - Test Activities");
+                        _Debug.WriteLine("ActivityTester - Test Activities");
                         new Scheduling.ActivityTester().TestActivities();
                         break;
                     case 407:
-                        Trace.WriteLine("ActivityTester - Test Activities, Deep");
+                        _Debug.WriteLine("ActivityTester - Test Activities, Deep");
                         new Scheduling.ActivityTester().TestActivitiesDeep();
                         break;
                     case 408:
-                        Trace.WriteLine("ActivityTester - Test Activities, Deep/Random");
+                        _Debug.WriteLine("ActivityTester - Test Activities, Deep/Random");
                         new Scheduling.ActivityTester().TestActivitiesDeepRandom();
                         break;
                     case 409:
-                        Trace.WriteLine("ActivityTester - Test Task Graph Adjustments");
+                        _Debug.WriteLine("ActivityTester - Test Task Graph Adjustments");
                         new Scheduling.ActivityTester().TestTaskGraphAdjustments();
                         break;
 #endif
                     case 420:
-                        Trace.WriteLine("VaporPressureTester - Test Known Vapor Pressure Computations");
+                        _Debug.WriteLine("VaporPressureTester - Test Known Vapor Pressure Computations");
                         new Materials.Chemistry.VaporPressure.VaporPressureTester()
                             .TestKnownVaporPressureValues();
                         break;
                     case 421:
-                        Trace.WriteLine("VaporPressureTester - Test Empirical Water Vapor Pressure Computations");
+                        _Debug.WriteLine("VaporPressureTester - Test Empirical Water Vapor Pressure Computations");
                         new Materials.Chemistry.VaporPressure.VaporPressureTester()
                             .TestEmpiricalWaterVaporPressureScenarios();
                         break;
                     case 422:
-                        Trace.WriteLine("VaporPressureTester - Test Henry's Law Computations");
+                        _Debug.WriteLine("VaporPressureTester - Test Henry's Law Computations");
                         new Materials.Chemistry.VaporPressure.VaporPressureTester().TestHenrysLawScenario
                             ();
                         break;
                     case 423:
-                        Trace.WriteLine("VaporPressureTester - Test Vapor Space Mixture Handling");
+                        _Debug.WriteLine("VaporPressureTester - Test Vapor Space Mixture Handling");
                         new MaterialTester().TestVaporSpaceMixtureHandling();
                         break;
 
                     case 440:
-                        Trace.WriteLine("EmissionsTester - MegaTester");
+                        _Debug.WriteLine("EmissionsTester - MegaTester");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().MegaTest();
                         break;
 
                     case 441:
-                        Trace.WriteLine("EmissionsTester - Evacuate");
+                        _Debug.WriteLine("EmissionsTester - Evacuate");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestEvacuate();
                         break;
                     case 442:
-                        Trace.WriteLine("EmissionsTester - Fill");
+                        _Debug.WriteLine("EmissionsTester - Fill");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestFill();
                         break;
                     case 443:
-                        Trace.WriteLine("EmissionsTester - GasEvolution");
+                        _Debug.WriteLine("EmissionsTester - GasEvolution");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestGasEvolution();
                         break;
                     case 444:
-                        Trace.WriteLine("EmissionsTester - GasSweep");
+                        _Debug.WriteLine("EmissionsTester - GasSweep");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestGasSweep();
                         break;
                     case 445:
-                        Trace.WriteLine("EmissionsTester - Heat");
+                        _Debug.WriteLine("EmissionsTester - Heat");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestHeat();
                         break;
                     case 446:
-                        Trace.WriteLine("EmissionsTester - MassBalance");
+                        _Debug.WriteLine("EmissionsTester - MassBalance");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestMassBalance();
                         break;
                     case 447:
-                        Trace.WriteLine("EmissionsTester - NoEmission");
+                        _Debug.WriteLine("EmissionsTester - NoEmission");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestNoEmissions();
                         break;
                     case 448:
-                        Trace.WriteLine("EmissionsTester - VacuumDistillation");
+                        _Debug.WriteLine("EmissionsTester - VacuumDistillation");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestVacuumDistillation();
                         break;
                     case 449:
-                        Trace.WriteLine("EmissionsTester - VacDistWithScrubber");
+                        _Debug.WriteLine("EmissionsTester - VacDistWithScrubber");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestVacuumDistillationWScrubber();
                         break;
                     case 450:
-                        Trace.WriteLine("EmissionsTester - VacDry");
+                        _Debug.WriteLine("EmissionsTester - VacDry");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestVacuumDry();
                         break;
                     case 451:
-                        Trace.WriteLine("EmissionsTester - PressureTransfer");
+                        _Debug.WriteLine("EmissionsTester - PressureTransfer");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestPressureTransfer
                             ();
                         break;
                     case 452:
-                        Trace.WriteLine("EmissionsTester - Air Dry");
+                        _Debug.WriteLine("EmissionsTester - Air Dry");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestAirDry();
                         break;
 
                     case 461:
-                        Trace.WriteLine("EmissionsTester - Late bound Evacuate");
+                        _Debug.WriteLine("EmissionsTester - Late bound Evacuate");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundEvacuate();
                         break;
                     case 462:
-                        Trace.WriteLine("EmissionsTester - Late bound Fill");
+                        _Debug.WriteLine("EmissionsTester - Late bound Fill");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestLateBoundFill();
                         break;
                     case 463:
-                        Trace.WriteLine("EmissionsTester - Late bound GasEvolution");
+                        _Debug.WriteLine("EmissionsTester - Late bound GasEvolution");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundGasEvolution();
                         break;
                     case 464:
-                        Trace.WriteLine("EmissionsTester - Late bound GasSweep");
+                        _Debug.WriteLine("EmissionsTester - Late bound GasSweep");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundGasSweep();
                         break;
                     case 465:
-                        Trace.WriteLine("EmissionsTester - Late bound Heat");
+                        _Debug.WriteLine("EmissionsTester - Late bound Heat");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestLateBoundHeat();
                         break;
                     case 466:
-                        Trace.WriteLine("EmissionsTester - Late bound MassBalance");
+                        _Debug.WriteLine("EmissionsTester - Late bound MassBalance");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundMassBalance();
                         break;
                     case 467:
-                        Trace.WriteLine("EmissionsTester - Late bound NoEmission");
+                        _Debug.WriteLine("EmissionsTester - Late bound NoEmission");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundNoEmissions();
                         break;
                     case 468:
-                        Trace.WriteLine("EmissionsTester - Late bound VacuumDistillation");
+                        _Debug.WriteLine("EmissionsTester - Late bound VacuumDistillation");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundVacuumDistillation();
                         break;
                     case 469:
-                        Trace.WriteLine("EmissionsTester - Late bound VacDistWithScrubber");
+                        _Debug.WriteLine("EmissionsTester - Late bound VacDistWithScrubber");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundVacuumDistillationWScrubber();
                         break;
                     case 470:
-                        Trace.WriteLine("EmissionsTester - Late bound VacDry");
+                        _Debug.WriteLine("EmissionsTester - Late bound VacDry");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundVacuumDry();
                         break;
                     case 471:
-                        Trace.WriteLine("EmissionsTester - Late bound PressureTransfer");
+                        _Debug.WriteLine("EmissionsTester - Late bound PressureTransfer");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestLateBoundPressureTransfer();
                         break;
                     case 472:
-                        Trace.WriteLine("EmissionsTester - Late bound Air Dry");
+                        _Debug.WriteLine("EmissionsTester - Late bound Air Dry");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester().TestLateBoundAirDry();
                         break;
 
                     case 473:
-                        Trace.WriteLine("EmissionsTester - Multi-material fill");
+                        _Debug.WriteLine("EmissionsTester - Multi-material fill");
                         new Materials.Chemistry.EmissionModels.EmissionModelTester()
                             .TestMultiMaterialFill();
                         break;
 
                     case 500:
-                        Trace.WriteLine("DistributionTester - Poisson");
+                        _Debug.WriteLine("DistributionTester - Poisson");
                         new Mathematics.Distributions101().TestDistributionPoisson();
                         break;
                     case 501:
-                        Trace.WriteLine("DistributionTester - Exponential");
+                        _Debug.WriteLine("DistributionTester - Exponential");
                         new Mathematics.Distributions101().TestDistributionExponential();
                         break;
                     case 502:
-                        Trace.WriteLine("DistributionTester - Exponential Timespan");
+                        _Debug.WriteLine("DistributionTester - Exponential Timespan");
                         new Mathematics.Distributions101().TestDistributionTimeSpanExponential();
                         break;
 
                     case 510:
-                        Trace.WriteLine("MultiArrayListEnumerator - Basic");
+                        _Debug.WriteLine("MultiArrayListEnumerator - Basic");
                         new Utility.MultiArrayListEnumerationTester().TestBasicsOfEnumerator();
                         break;
                     case 511:
-                        Trace.WriteLine("MultiArrayListEnumerator - Internal");
+                        _Debug.WriteLine("MultiArrayListEnumerator - Internal");
                         new Utility.MultiArrayListEnumerationTester().TestEnumeratorWithEmptyArrays();
                         break;
 
                     case 540:
-                        Trace.WriteLine("Heap testing");
+                        _Debug.WriteLine("Heap testing");
                         new SageTestLib.HeapTester().TestHeap();
                         break;
                     case 541:
-                        Trace.WriteLine("Heap testing");
+                        _Debug.WriteLine("Heap testing");
                         new SageTestLib.HeapTester().RecreateFailure();
                         break;
 
                     case 550:
-                        Trace.WriteLine("Local Event Queue testing");
+                        _Debug.WriteLine("Local Event Queue testing");
                         new Utility.LocalEventQueueTester().TestLocalEventQueue();
                         break;
                     case 551:
-                        Trace.WriteLine("Local Event Queue testing");
+                        _Debug.WriteLine("Local Event Queue testing");
                         new Utility.LocalEventQueueTester().TestLocalEventQueue2();
                         break;
 
                     case 560:
-                        Trace.WriteLine("Event Time Historian Tester");
+                        _Debug.WriteLine("Event Time Historian Tester");
                         new Utility.HistorianTester().TestEventTimeHistorian();
                         break;
 
                     case 600:
-                        Trace.WriteLine("HashtableOfLists testing");
+                        _Debug.WriteLine("HashtableOfLists testing");
                         new Utility.HashtableOfListsTester().TestHTOL();
                         break;
 
 #if NYRFPT
                     case 650:
-                        Trace.WriteLine("Executable PFC tester without hierarchy");
+                        _Debug.WriteLine("Executable PFC tester without hierarchy");
                         new Graphs.PFC.Execution.ExecutablePfcTester().TestSmallLoopback();
                         break;
 
                     case 651:
-                        Trace.WriteLine("Executable PFC tester with hierarchy");
+                        _Debug.WriteLine("Executable PFC tester with hierarchy");
                         new Graphs.PFC.Execution.ExecutablePfcTester().TestSmallLoopbackHierarchical();
                         break;
 
                     case 652:
-                        Trace.WriteLine("Executable PFC performance tester with hierarchy");
+                        _Debug.WriteLine("Executable PFC performance tester with hierarchy");
                         new Graphs.PFC.Execution.ExecutablePfcTester().TestCreationOfABazillionEECs();
                         break;
 
                     case 653:
-                        Trace.WriteLine("Executable PFC performance tester with hierarchy");
+                        _Debug.WriteLine("Executable PFC performance tester with hierarchy");
                         new Graphs.PFC.Execution.ExecutablePfcExtensionTester().TestSequencers();
                         break;
 #endif
                     case 654:
-                        Trace.WriteLine("Offset Parallelism tester");
+                        _Debug.WriteLine("Offset Parallelism tester");
                         new PFCDemoMaterial.PfcAnalystTester().Test_OffSetParallelism();
                         break;
 
                     case 655:
-                        Trace.WriteLine("PFC reduction tester");
+                        _Debug.WriteLine("PFC reduction tester");
                         new PFCDemoMaterial.PfcAnalystTester().Test_ValidatorFromStoredPFC();
                         break;
 
 #if NYRFPT
                     case 656:
-                        Trace.WriteLine("PFC reduction tester");
+                        _Debug.WriteLine("PFC reduction tester");
                         new SchedulerDemoMaterial.PfcAnalystTester().Test_GetPermissibleTargetsForLinkFrom_WithinLoopFromStepToSelf();
                         break;
 #endif
                     case 657:
-                        Trace.WriteLine("PFC Path Analysis tester");
+                        _Debug.WriteLine("PFC Path Analysis tester");
                         new PFCDemoMaterial.PfcAnalystTester().Test_DeepNonLoopingPath();
                         break;
 
                     case 658:
-                        Trace.WriteLine("PFC Path Analysis tester");
+                        _Debug.WriteLine("PFC Path Analysis tester");
                         new PFCDemoMaterial.PfcAnalystTester().TestBroadestNonLoopbackPath();
                         break;
 
                     case 670:
-                        Trace.WriteLine("String operation tester - to anded lists.");
+                        _Debug.WriteLine("String operation tester - to anded lists.");
                         new Utility.ExtensionTester().TestCommasAndAndedListOperations();
                         break;
 
                     case 671:
-                        Trace.WriteLine("Test XOR'ing of bytes.");
+                        _Debug.WriteLine("Test XOR'ing of bytes.");
                         new Utility.ExtensionTester().TestByteXOR();
                         break;
 
                     case 700:
-                        Trace.WriteLine("List Extension percentile tester");
+                        _Debug.WriteLine("List Extension percentile tester");
                         new Mathematics.ExtensionTester().TestPercentileGetter();
                         break;
                     case 701:
-                        Trace.WriteLine("List Extension sigma bounding tester");
+                        _Debug.WriteLine("List Extension sigma bounding tester");
                         new Mathematics.ExtensionTester().TestSigmaBounding();
                         break;
 
                     case 720:
-                        Trace.WriteLine("Cost tester");
+                        _Debug.WriteLine("Cost tester");
                         new Scheduling.Cost.zTestCost1().TestCostBasics1();
                         break;
                     case 721:
-                        Trace.WriteLine("Cost tester");
+                        _Debug.WriteLine("Cost tester");
                         new Scheduling.Cost.zTestCost1().TestCostBasics2();
                         break;
 
                     case 800:
-                        Trace.WriteLine("");
+                        _Debug.WriteLine("");
                         new Graphs.PFC.PFCGraphTester().Test_InsertStepIntoLoop();
                         break;
 
@@ -1002,7 +1002,7 @@ namespace Highpoint.Sage.Testing
 
 #endregion
 
-            //Trace.WriteLine("Tests completed. Hit <Enter> to continue.");
+            //_Debug.WriteLine("Tests completed. Hit <Enter> to continue.");
             //Console.ReadLine();
         }
     }

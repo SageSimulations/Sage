@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore; // For IExecutive and IDetachableEventController, used in Joining & Yielding.
 using Highpoint.Sage.Persistence;
@@ -822,7 +822,7 @@ namespace Highpoint.Sage.Graphs {
 		public virtual void PreVertexSatisfied(IDictionary graphContext){
 			m_activeContexts.Add(graphContext);
 
-			if ( s_diagnostics ) Trace.WriteLine("Firing edge " + Name);
+			if ( s_diagnostics ) _Debug.WriteLine("Firing edge " + Name);
 
             #region Post Mortem Support
 #if DEBUG
@@ -844,7 +844,7 @@ namespace Highpoint.Sage.Graphs {
 			#endregion
 
 			if ( EdgeExecutionStartingEvent != null ) EdgeExecutionStartingEvent(graphContext,this);
-			if ( s_diagnostics ) Trace.WriteLine("Edge " + Name + " is active.");
+			if ( s_diagnostics ) _Debug.WriteLine("Edge " + Name + " is active.");
 			if ( ExecutionDelegate != null ) {
 				ExecutionDelegate(graphContext, this, m_eecs);
 			} else {
@@ -860,10 +860,10 @@ namespace Highpoint.Sage.Graphs {
 			if ( EdgeExecutionFinishingEvent != null ) EdgeExecutionFinishingEvent(graphContext,this);
              m_activeContexts.Remove(graphContext);
 			if ( PostVertex != null ) {
-				if ( s_diagnostics ) Trace.WriteLine("Edge " + Name + " is signaling completion to " + PostVertex.Name);
+				if ( s_diagnostics ) _Debug.WriteLine("Edge " + Name + " is signaling completion to " + PostVertex.Name);
 				PostVertex.PreEdgeSatisfied(graphContext,this);
 			} else {
-				if ( s_diagnostics ) Trace.WriteLine("Edge " + Name + " is signaling completion, but " + Name + " has a null postVertex.");
+				if ( s_diagnostics ) _Debug.WriteLine("Edge " + Name + " is signaling completion, but " + Name + " has a null postVertex.");
 			}
 		}
 
@@ -913,7 +913,7 @@ namespace Highpoint.Sage.Graphs {
 			foreach ( Edge edge in from.SuccessorEdges ) {
 				if ( edge.PostVertex.Equals(to) ) {
 //					if ( m_diagnostics ) {
-//						Trace.WriteLine("Skipping addition of redundant ligature, " + Ligature.CreateName(from,to));
+//						_Debug.WriteLine("Skipping addition of redundant ligature, " + Ligature.CreateName(from,to));
 //					}
 					return null;
 				}
@@ -1152,13 +1152,13 @@ namespace Highpoint.Sage.Graphs {
 		public virtual void DeserializeFrom(XmlSerializationContext xmlsc) {
 			m_name = (string)xmlsc.LoadObject("Name");
 			m_childEdges = (ArrayList)xmlsc.LoadObject("ChildEdges");
-			//Trace.WriteLine("Just deserialized " + m_name + ", and it has " + ChildEdges.Count + " child edges.");
+			//_Debug.WriteLine("Just deserialized " + m_name + ", and it has " + ChildEdges.Count + " child edges.");
 			m_childLigatures = (ArrayList)xmlsc.LoadObject("ChildLigatures");
 			ParentEdge = (Edge)xmlsc.LoadObject("ParentEdge");
 			Post = (Vertex)xmlsc.LoadObject("PostVertex");
-			//Trace.WriteLine("Assigning " + m_post.Name + "(" + m_post.GetHashCode()+ ") into " + this.Name +"(" + this.GetHashCode()+ ").");
+			//_Debug.WriteLine("Assigning " + m_post.Name + "(" + m_post.GetHashCode()+ ") into " + this.Name +"(" + this.GetHashCode()+ ").");
 			Pre = (Vertex)xmlsc.LoadObject("PreVertex");
-			//Trace.WriteLine("Assigning " + m_pre.Name + "(" + m_pre.GetHashCode()+ ") into " + this.Name +"(" + this.GetHashCode()+ ").");
+			//_Debug.WriteLine("Assigning " + m_pre.Name + "(" + m_pre.GetHashCode()+ ") into " + this.Name +"(" + this.GetHashCode()+ ").");
 			ExecutionDelegate = (EdgeExecutionDelegate)xmlsc.LoadObject("ExecutionDelegate");			
 			EdgeExecutionStartingEvent = (EdgeEvent)xmlsc.LoadObject("EESE");
 			EdgeExecutionFinishingEvent = (EdgeEvent)xmlsc.LoadObject("EEFE");
@@ -1181,7 +1181,7 @@ namespace Highpoint.Sage.Graphs {
 			Post.BeforeVertexFiringEvent+=new VertexEvent(OnPostVertexStartingToFire);
 			#endregion
 
-			//Trace.WriteLine("Just deserialized " + m_name + ", and it has " + ChildEdges.Count + " child edges.");
+			//_Debug.WriteLine("Just deserialized " + m_name + ", and it has " + ChildEdges.Count + " child edges.");
 		}
 
 		#endregion

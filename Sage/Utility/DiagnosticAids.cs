@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -46,7 +46,7 @@ namespace Highpoint.Sage.Diagnostics {
 					    };
 					}
 				} catch ( System.Configuration.ConfigurationException sce ) {
-					Trace.WriteLine(sce.ToString());
+					_Debug.WriteLine(sce.ToString());
 				}
 			}
 			if ( _settings == null ) return false;
@@ -70,14 +70,14 @@ namespace Highpoint.Sage.Diagnostics {
 #if DEBUG
 			foreach ( DictionaryEntry de in postMortems ) {
 				PmData pmData = (PmData)de.Value;
-				Trace.WriteLine("PostMortem of Context associated with " + de.Key);
-				Trace.WriteLine("Vertices that fired:");
+				_Debug.WriteLine("PostMortem of Context associated with " + de.Key);
+				_Debug.WriteLine("Vertices that fired:");
 				foreach ( Vertex v in pmData.VerticesFired ) {
-					Trace.WriteLine("\t" + v.Name);
+					_Debug.WriteLine("\t" + v.Name);
 				}
-				Trace.WriteLine("Edges that fired:");
+				_Debug.WriteLine("Edges that fired:");
 				foreach ( Edge e in pmData.EdgesFired ) {
-					Trace.WriteLine("\t" + e.Name);
+					_Debug.WriteLine("\t" + e.Name);
 				}
 			}
 #endif
@@ -230,31 +230,31 @@ namespace Highpoint.Sage.Diagnostics {
 			foreach ( Substance substance in mix.Constituents ) {
 				double energy = (substance.Temperature+Constants.CELSIUS_TO_KELVIN)*substance.Mass*substance.MaterialType.SpecificHeat;
 				totalEnergy+=energy;
-				Trace.WriteLine("\t{0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",
+				_Debug.WriteLine("\t{0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",
 					substance.MaterialType.Name,
 					substance.Mass.ToString(_dblFmt),
 					substance.Temperature.ToString(_dblFmt),
 					substance.Volume.ToString(_dblFmt), 
 					energy.ToString(_dblFmt));
 			}
-			Trace.WriteLine("{0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",
+			_Debug.WriteLine("{0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",
 				mix.Name,
 				mix.Mass.ToString(_dblFmt),
 				mix.Temperature.ToString(_dblFmt),
 				mix.Volume.ToString(_dblFmt),
 				totalEnergy.ToString(_dblFmt));
-			Trace.WriteLine("");
+			_Debug.WriteLine("");
 		}
 
 		private static void Dump(Substance substance){
 			double energy = (substance.Temperature+Constants.CELSIUS_TO_KELVIN)*substance.Mass*substance.MaterialType.SpecificHeat;
-			Trace.WriteLine("\t{0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",
+			_Debug.WriteLine("\t{0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",
 				substance.MaterialType.Name,
 				substance.Mass.ToString(_dblFmt),
 				substance.Temperature.ToString(_dblFmt),
 				substance.Volume.ToString(_dblFmt), 
 				energy.ToString(_dblFmt));
-			Trace.WriteLine("");
+			_Debug.WriteLine("");
 		}
 	}
 

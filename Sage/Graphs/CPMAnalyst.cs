@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Text;
 using System.IO;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Graphs.Analysis {
 
@@ -142,8 +142,8 @@ namespace Highpoint.Sage.Graphs.Analysis {
 				throw new ApplicationException("There is no path from the start to the finish vertices.");
 			}
 
-			if ( s_diagnostics ) Trace.WriteLine("Finish vertex is " + Finish.Name);
-			if ( s_diagnostics ) Trace.WriteLine(vd.ToString());
+			if ( s_diagnostics ) _Debug.WriteLine("Finish vertex is " + Finish.Name);
+			if ( s_diagnostics ) _Debug.WriteLine(vd.ToString());
             
 			m_traceStack.Clear();
 			ClearBookKeeping();
@@ -169,7 +169,7 @@ namespace Highpoint.Sage.Graphs.Analysis {
 		/// <param name="vertex">the vertex forward from which we will probe.</param>
 		/// <param name="elapsedTime">the current elapsed time.</param>
 		protected void ProbeForward(Vertex vertex, long elapsedTime){
-			if ( s_diagnostics ) Trace.WriteLine(new DateTime(elapsedTime) + " : Probing forward to vertex " + vertex.Name + " at " + string.Format("{0:f2}",TimeSpan.FromTicks(elapsedTime).TotalMinutes));
+			if ( s_diagnostics ) _Debug.WriteLine(new DateTime(elapsedTime) + " : Probing forward to vertex " + vertex.Name + " at " + string.Format("{0:f2}",TimeSpan.FromTicks(elapsedTime).TotalMinutes));
 
 			if ( VertexPegs != null && VertexPegs.Contains(vertex) ) {
 				elapsedTime = (long)VertexPegs[vertex];
@@ -186,7 +186,7 @@ namespace Highpoint.Sage.Graphs.Analysis {
 				nextEdges = sd.NextEdgesForward(Vertices,ref elapsedTime); // PCB: Propagates earlier time?
 			}
 
-			if ( s_diagnostics ) Trace.WriteLine(vertex.Name + " earliest " + string.Format("{0:f2}",(new TimeSpan(vertexData.Earliest).TotalMinutes)));
+			if ( s_diagnostics ) _Debug.WriteLine(vertex.Name + " earliest " + string.Format("{0:f2}",(new TimeSpan(vertexData.Earliest).TotalMinutes)));
 
 			m_traceStack.Push(vertex);
 			foreach ( Edge edge in nextEdges ) {
@@ -194,7 +194,7 @@ namespace Highpoint.Sage.Graphs.Analysis {
 				if ( edge is ISupportsCpmAnalysis ) {
 					edgeData.NominalDuration = ((ISupportsCpmAnalysis)edge).GetNominalDuration().Ticks;
 				}
-				if ( s_diagnostics ) Trace.WriteLine("From vertex " + vertex.Name + ", we look forward " + TimeSpan.FromTicks(edgeData.NominalDuration) + " to " + edge.PostVertex.Name + ".");
+				if ( s_diagnostics ) _Debug.WriteLine("From vertex " + vertex.Name + ", we look forward " + TimeSpan.FromTicks(edgeData.NominalDuration) + " to " + edge.PostVertex.Name + ".");
 				ProbeForward(edge.PostVertex,vertexData.Earliest+edgeData.NominalDuration);
 			}
 			Debug.Assert(m_traceStack.Pop()==vertex);
@@ -226,15 +226,15 @@ namespace Highpoint.Sage.Graphs.Analysis {
 			if ( vertex.Synchronizer == null ) {
 				if ( elapsedTime < vertexData.Latest ) vertexData.Latest = elapsedTime;
 				nextEdges = vertexData.GetNextEdgesReverse();
-				if ( s_diagnostics ) Trace.WriteLine(nextEdges.Count>0?" - authorized to proceed.":" - this vertex is not yet satisfied (" + vertexData.RevSatStatus + ").");
+				if ( s_diagnostics ) _Debug.WriteLine(nextEdges.Count>0?" - authorized to proceed.":" - this vertex is not yet satisfied (" + vertexData.RevSatStatus + ").");
 			} else {
 				SynchronizerData sd = GetSynchronizerData(vertex);
 				if ( vertexData.GetNextEdgesReverse().Count>0 ) sd.RegisterBackwardVisit(vertex, elapsedTime);
 				nextEdges = sd.NextEdgesBackward(Vertices, ref elapsedTime);
-				if ( s_diagnostics ) Trace.WriteLine(nextEdges.Count>0?" - synchronizer authorized us to proceed.":" - this vertex has a synchronizer that is not yet satisfied.");
+				if ( s_diagnostics ) _Debug.WriteLine(nextEdges.Count>0?" - synchronizer authorized us to proceed.":" - this vertex has a synchronizer that is not yet satisfied.");
 			}
 
-			if ( s_diagnostics ) Trace.WriteLine("Setting " + vertex.Name + " latest to " + string.Format("{0:f2}",TimeSpan.FromTicks(elapsedTime).TotalMinutes));
+			if ( s_diagnostics ) _Debug.WriteLine("Setting " + vertex.Name + " latest to " + string.Format("{0:f2}",TimeSpan.FromTicks(elapsedTime).TotalMinutes));
 
 			m_traceStack.Push(vertex);
 			foreach ( Edge edge in nextEdges ) {
@@ -294,7 +294,7 @@ namespace Highpoint.Sage.Graphs.Analysis {
 					postData.Latest = preData.Latest + ed.NominalDuration;
 					
 					if ( s_diagnostics ) {
-						Trace.WriteLine("Resetting " + post.Name + " latest time to " + pre.Name + "'s latest (" 
+						_Debug.WriteLine("Resetting " + post.Name + " latest time to " + pre.Name + "'s latest (" 
 							+ string.Format("{0:f2}",TimeSpan.FromTicks(preData.Latest)) + ") + "
 							+ pre.PrincipalEdge.Name + "'s nominal duration of " 
 							+ string.Format("{0:f2}",TimeSpan.FromTicks(ed.NominalDuration))); 
@@ -323,7 +323,7 @@ namespace Highpoint.Sage.Graphs.Analysis {
 		private void ValidateResults(Vertex startVertex){
 			
 			if ( s_diagnosticsValidation ) {
-				Trace.WriteLine("Performing post-analysis validation of graph timecycle data.");
+				_Debug.WriteLine("Performing post-analysis validation of graph timecycle data.");
 				
 				m_errorCount = 0;
 				m_sb = new StringBuilder();
@@ -337,15 +337,15 @@ namespace Highpoint.Sage.Graphs.Analysis {
                     throw new TimeCycleException("Timecycle error:\r\n" + msg + "\r\n\r\n" + m_sb);
 				}
 
-				Trace.WriteLine(msg);
+				_Debug.WriteLine(msg);
 
 			}
 		}
 
 		private void _ValidateResults(Vertex startVertex){
-			//Trace.WriteLine("Validating from vertex " + startVertex.Name);
+			//_Debug.WriteLine("Validating from vertex " + startVertex.Name);
 			foreach ( Edge edge in startVertex.SuccessorEdges ) {
-				//Trace.WriteLine("\tValidating edge " + edge.Name);
+				//_Debug.WriteLine("\tValidating edge " + edge.Name);
 				if ( !m_verifiedEdges.Contains(edge) ) {
 					m_verifiedEdges.Add(edge,edge);
 					VertexData vdPre  = (VertexData)Vertices[startVertex];
@@ -507,7 +507,7 @@ namespace Highpoint.Sage.Graphs.Analysis {
 				}
 				sw.Flush();
 				sw.Close();
-				Trace.WriteLine("Dumped log file to " + logFilePath);
+				_Debug.WriteLine("Dumped log file to " + logFilePath);
 			}
 		}
 		

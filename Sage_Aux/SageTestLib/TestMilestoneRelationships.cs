@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -43,36 +43,36 @@ namespace Highpoint.Sage.Scheduling {
 		}
 		[TestCleanup]
 		public void destroy() {
-			Trace.WriteLine( "Done." );
+			_Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]
 		public void TestMilestones(){
 			Milestone ms1 = new Milestone(DateTime.Now);
 			ms1.ChangeEvent +=new ObservableChangeHandler(ChangeEvent);
-			Trace.WriteLine(ms1.ToString());
+			_Debug.WriteLine(ms1.ToString());
 			ms1.MoveBy(-TwentyMinutes);
-			Trace.WriteLine(ms1.ToString());
+			_Debug.WriteLine(ms1.ToString());
 
 			Milestone ms2 = new Milestone(DateTime.Now+FiveMinutes);
 			ms2.ChangeEvent +=new ObservableChangeHandler(ChangeEvent);
-			Trace.WriteLine(ms2.ToString());
+			_Debug.WriteLine(ms2.ToString());
 			ms2.MoveBy(-TwentyMinutes);
-			Trace.WriteLine(ms2.ToString());
+			_Debug.WriteLine(ms2.ToString());
 
-            Trace.WriteLine("Milestone 1 is at " + ms1 +", and Milestone 2 is at " + ms2 +". Strutting them together.");
+            _Debug.WriteLine("Milestone 1 is at " + ms1 +", and Milestone 2 is at " + ms2 +". Strutting them together.");
 			MilestoneRelationship mr = new MilestoneRelationship_Strut(ms1,ms2);
 			ms1.AddRelationship(mr);
 			ms2.AddRelationship(mr);
 
-            Trace.WriteLine("Moving Milestone1 by ten minutes.");
+            _Debug.WriteLine("Moving Milestone1 by ten minutes.");
 			ms1.MoveBy(TenMinutes);
-            Trace.WriteLine("Milestone 1 is at " + ms1 + ", and Milestone 2 is at " + ms2 + ".");
+            _Debug.WriteLine("Milestone 1 is at " + ms1 + ", and Milestone 2 is at " + ms2 + ".");
 
 		}
 
 		private void ChangeEvent(object whoChanged, object whatChanged, object howChanged) {
-			Trace.WriteLine(((Milestone)whoChanged).ToString() + " changed by " + howChanged.ToString());
+			_Debug.WriteLine(((Milestone)whoChanged).ToString() + " changed by " + howChanged.ToString());
 		}
 	}
 }

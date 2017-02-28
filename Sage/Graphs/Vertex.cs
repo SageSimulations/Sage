@@ -2,7 +2,7 @@
 
 
 using System;
-using Trace = System.Diagnostics.Debug;
+using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore; // For executive.
 using Highpoint.Sage.Persistence;
@@ -139,7 +139,7 @@ namespace Highpoint.Sage.Graphs {
 			if ( PreEdges.Contains(preEdge) ) return;
 			bool hasVm = (m_vm != null);
 			if ( hasVm ) m_vm.Suspend();
-			if ( s_diagnostics ) Trace.WriteLine(String.Format("{0} adding preEdge {1}.",Name,preEdge.Name));
+			if ( s_diagnostics ) _Debug.WriteLine(String.Format("{0} adding preEdge {1}.",Name,preEdge.Name));
 			PreEdges.Add(preEdge);
 			System.Threading.Interlocked.Increment(ref NumPreEdges);
 			if ( PreEdgeAddedEvent != null ) PreEdgeAddedEvent(PrincipalEdge);
@@ -151,7 +151,7 @@ namespace Highpoint.Sage.Graphs {
 			if ( !PreEdges.Contains(preEdge) ) return;
 			bool hasVm = (m_vm != null);
 			if ( hasVm ) m_vm.Suspend();
-			if ( s_diagnostics ) Trace.WriteLine(String.Format("{0} removing preEdge {1}.",Name,preEdge.Name));
+			if ( s_diagnostics ) _Debug.WriteLine(String.Format("{0} removing preEdge {1}.",Name,preEdge.Name));
 			PreEdges.Remove(preEdge);
 			System.Threading.Interlocked.Decrement(ref NumPreEdges);
 			if ( PreEdgeRemovedEvent != null ) PreEdgeRemovedEvent(PrincipalEdge);
@@ -163,7 +163,7 @@ namespace Highpoint.Sage.Graphs {
 			if ( PostEdges.Contains(postEdge) ) return;
 			bool hasVm = (m_vm != null);
 			if ( hasVm ) m_vm.Suspend();
-			if ( s_diagnostics ) Trace.WriteLine(String.Format("{0} adding postEdge {1}.",Name,postEdge.Name));
+			if ( s_diagnostics ) _Debug.WriteLine(String.Format("{0} adding postEdge {1}.",Name,postEdge.Name));
 			PostEdges.Add(postEdge);
 			System.Threading.Interlocked.Increment(ref NumPostEdges);
 			if ( PostEdgeAddedEvent != null ) PostEdgeAddedEvent(PrincipalEdge);
@@ -175,7 +175,7 @@ namespace Highpoint.Sage.Graphs {
 			if ( !PostEdges.Contains(postEdge) ) return;
 			bool hasVm = (m_vm != null);
 			if ( hasVm ) m_vm.Suspend();
-			if ( s_diagnostics ) Trace.WriteLine(String.Format("{0} removing postEdge {1}.",Name,postEdge.Name));
+			if ( s_diagnostics ) _Debug.WriteLine(String.Format("{0} removing postEdge {1}.",Name,postEdge.Name));
 			PostEdges.Remove(postEdge);
 			System.Threading.Interlocked.Decrement(ref NumPostEdges);
 			if ( PostEdgeRemovedEvent != null ) PostEdgeRemovedEvent(PrincipalEdge);
@@ -240,7 +240,7 @@ namespace Highpoint.Sage.Graphs {
 #endif //DEBUG
 			#endregion
 
-			if ( s_diagnostics ) Trace.WriteLine("Firing vertex " + Name);
+			if ( s_diagnostics ) _Debug.WriteLine("Firing vertex " + Name);
 	
 			if ( m_edgeFiringManager != null ) m_edgeFiringManager.Start(graphContext);
 
@@ -368,7 +368,7 @@ namespace Highpoint.Sage.Graphs {
 			m_roleIsKnown = (bool)xmlsc.LoadObject("RoleIsKnown");
 			m_synchronizer = (VertexSynchronizer)xmlsc.LoadObject("Synchronizer");
 			m_triggerDelegate = (TriggerDelegate)xmlsc.LoadObject("TriggerDelegate");
-//			Trace.WriteLine("Deserializing " + m_name + " : it has " + m_postEdges.Count + " post edges in object w/ hashcode " 
+//			_Debug.WriteLine("Deserializing " + m_name + " : it has " + m_postEdges.Count + " post edges in object w/ hashcode " 
 //				+ m_postEdges.GetHashCode() + ". (BTW, this has hashcode " + this.GetHashCode() + ").");
 		}
 
@@ -483,7 +483,7 @@ namespace Highpoint.Sage.Graphs {
                     vertex.SetSynchronizer(this);
                 }
             }
-			//Trace.WriteLine(" )");
+			//_Debug.WriteLine(" )");
         }
 
 		/// <summary>
