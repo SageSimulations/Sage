@@ -151,7 +151,7 @@ namespace Highpoint.Sage.SimCore {
 		/// <summary>
 		/// Any item added to a SPB must implement this interface.
 		/// </summary>
-        interface IHasValue : ISupportsMementos, IHasWriteLock {
+        public interface IHasValue : ISupportsMementos, IHasWriteLock {
             /// <summary>
             /// Retrieves the underlying value object contained in this entry.
             /// </summary>
@@ -215,9 +215,8 @@ namespace Highpoint.Sage.SimCore {
 			}
         }
 
-	    #region SPB Contents' Inner Classes - all but SPBExpressionWrapper and DoubleDelegateWrapper are persistable.
-#if !COMPACT_FRAMEWORK
-		class SPBExpressionWrapper : IHasValue, ISPBTreeNode {
+        #region SPB Contents' Inner Classes - all but SPBExpressionWrapper and DoubleDelegateWrapper are persistable.
+        private class SPBExpressionWrapper : IHasValue, ISPBTreeNode {
 			public event MementoChangeEvent MementoChangeEvent { 
 				add { m_ssh.MementoChangeEvent+=value; }
 				remove { m_ssh.MementoChangeEvent-=value; }
@@ -278,7 +277,7 @@ namespace Highpoint.Sage.SimCore {
 
 			public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
 
-		    class SPBExpressionWrapperMemento : IMemento {
+		    private class SPBExpressionWrapperMemento : IMemento {
 		        private readonly SPBExpressionWrapper m_ew;                
 
 				public SPBExpressionWrapperMemento(SPBExpressionWrapper ew){
@@ -310,12 +309,12 @@ namespace Highpoint.Sage.SimCore {
 					return retval;
 				}
 
-				public bool Equals(IMemento otherGuy){
-					if ( otherGuy == null ) return false;
-					if ( this == otherGuy ) return true;
-					if ( !(otherGuy is SPBExpressionWrapperMemento) ) return false;
+				public bool Equals(IMemento otheOneMemento){
+					if ( otheOneMemento == null ) return false;
+					if ( this == otheOneMemento ) return true;
+					if ( !(otheOneMemento is SPBExpressionWrapperMemento) ) return false;
 
-					if ( m_ew == ((SPBExpressionWrapperMemento)otherGuy).m_ew ) return true;
+					if ( m_ew == ((SPBExpressionWrapperMemento)otheOneMemento).m_ew ) return true;
 					return false;
 				}
 
@@ -331,9 +330,8 @@ namespace Highpoint.Sage.SimCore {
                 public IMemento Parent { get; set; }
 		    }
 		}
-#endif
 
-		class SPBAlias : IHasValue, ISPBTreeNode, IXmlPersistable {
+		private class SPBAlias : IHasValue, ISPBTreeNode, IXmlPersistable {
 			public event MementoChangeEvent MementoChangeEvent { 
 				add { m_ssh.MementoChangeEvent+=value; }
 				remove { m_ssh.MementoChangeEvent-=value; }
@@ -415,7 +413,7 @@ namespace Highpoint.Sage.SimCore {
 
 			#endregion
 
-			class SPBAliasMemento : IMemento {
+			private class SPBAliasMemento : IMemento {
 
                 #region Private Fields
                 private readonly SPBAlias m_orig;
@@ -447,12 +445,12 @@ namespace Highpoint.Sage.SimCore {
 					retval.Add("Value",m_value);
 					return retval;
 				}
-				public bool Equals(IMemento otherGuy){
-					if ( otherGuy == null ) return false;
-					if ( this==otherGuy ) return true;
-					if ( !(otherGuy is SPBAliasMemento )) return false;
+				public bool Equals(IMemento otheOneMemento){
+					if ( otheOneMemento == null ) return false;
+					if ( this==otheOneMemento ) return true;
+					if ( !(otheOneMemento is SPBAliasMemento )) return false;
 
-					SPBAliasMemento spbamOtherGuy = (SPBAliasMemento)otherGuy;
+					SPBAliasMemento spbamOtherGuy = (SPBAliasMemento)otheOneMemento;
 					if ( spbamOtherGuy.m_orig.m_spb != m_orig.m_spb ) return false;
 					if ( spbamOtherGuy.m_orig.m_key != m_orig.m_key ) return false;
 					return spbamOtherGuy.m_value.Equals(m_value);
@@ -472,7 +470,7 @@ namespace Highpoint.Sage.SimCore {
 			
 		}
 
-		class SPBDoubleDelegateWrapper : IHasValue, ISPBTreeNode { // Not IXmlPersistable.
+        private class SPBDoubleDelegateWrapper : IHasValue, ISPBTreeNode { // Not IXmlPersistable.
 			public event MementoChangeEvent MementoChangeEvent { 
 				add { m_ssh.MementoChangeEvent+=value; }
 				remove { m_ssh.MementoChangeEvent-=value; }
@@ -541,12 +539,12 @@ namespace Highpoint.Sage.SimCore {
 					return retval;
 				}
 
-				public bool Equals(IMemento otherGuy){
-					if ( otherGuy == null ) return false;
-					if ( this==otherGuy ) return true;
-					if ( !( otherGuy is SPBDoubleDelegateWrapperMemento ) ) return false;
+				public bool Equals(IMemento otheOneMemento){
+					if ( otheOneMemento == null ) return false;
+					if ( this==otheOneMemento ) return true;
+					if ( !( otheOneMemento is SPBDoubleDelegateWrapperMemento ) ) return false;
                     
-					SPBDoubleDelegateWrapperMemento spbdwm = (SPBDoubleDelegateWrapperMemento)otherGuy;
+					SPBDoubleDelegateWrapperMemento spbdwm = (SPBDoubleDelegateWrapperMemento)otheOneMemento;
 					if ( spbdwm.m_dw.Equals(m_dw) && spbdwm.m_value.Equals(m_value) ) return true;
 					return false;
 				}
@@ -564,7 +562,7 @@ namespace Highpoint.Sage.SimCore {
 		    }
 		}
 
-	    sealed class SPBValueHolder : IHasValue, ISPBTreeNode, IXmlPersistable {
+        private class SPBValueHolder : IHasValue, ISPBTreeNode, IXmlPersistable {
 			public event MementoChangeEvent MementoChangeEvent {
 				add { m_ssh.MementoChangeEvent+=value; }
 				remove { m_ssh.MementoChangeEvent-=value; }
@@ -646,11 +644,11 @@ namespace Highpoint.Sage.SimCore {
 					return retval;
 				}
 
-				public bool Equals(IMemento otherGuy){
-					if ( otherGuy == null ) return false;
-					if ( this == otherGuy ) return true;
+				public bool Equals(IMemento otheOneMemento){
+					if ( otheOneMemento == null ) return false;
+					if ( this == otheOneMemento ) return true;
 
-				    if ( m_value == (otherGuy as SPBValueHolderMemento)?.m_value ) return true;
+				    if ( m_value == (otheOneMemento as SPBValueHolderMemento)?.m_value ) return true;
 
 					return false;
 				}
@@ -674,7 +672,7 @@ namespace Highpoint.Sage.SimCore {
 			}
 		}
 
-	    sealed class SPBStringHolder : IHasValue, ISPBTreeNode, IXmlPersistable {
+        private class SPBStringHolder : IHasValue, ISPBTreeNode, IXmlPersistable {
 			public event MementoChangeEvent MementoChangeEvent {
 				add { m_ssh.MementoChangeEvent+=value; }
 				remove { m_ssh.MementoChangeEvent-=value; }
@@ -756,12 +754,12 @@ namespace Highpoint.Sage.SimCore {
 					return retval;
 				}
 
-				public bool Equals(IMemento otherGuy){
-					if ( otherGuy == null ) return false;
-					if ( this == otherGuy ) return true;
-					if ( !( otherGuy is SPBStringHolderMemento ) ) return false;
+				public bool Equals(IMemento otheOneMemento){
+					if ( otheOneMemento == null ) return false;
+					if ( this == otheOneMemento ) return true;
+					if ( !( otheOneMemento is SPBStringHolderMemento ) ) return false;
 
-					if ( m_value.Equals(((SPBStringHolderMemento)otherGuy).m_value) ) return true;
+					if ( m_value.Equals(((SPBStringHolderMemento)otheOneMemento).m_value) ) return true;
 
 					return false;
 				}
@@ -785,7 +783,7 @@ namespace Highpoint.Sage.SimCore {
 			}
 		}
 
-	    sealed class SPBBooleanHolder : IHasValue, ISPBTreeNode, IXmlPersistable {
+        private class SPBBooleanHolder : IHasValue, ISPBTreeNode, IXmlPersistable {
 			public event MementoChangeEvent MementoChangeEvent {
 				add { m_ssh.MementoChangeEvent+=value; }
 				remove { m_ssh.MementoChangeEvent-=value; }
@@ -869,12 +867,12 @@ namespace Highpoint.Sage.SimCore {
 					return retval;
 				}
 
-				public bool Equals(IMemento otherGuy){
-					if ( otherGuy == null ) return false;
-					if ( this == otherGuy ) return true;
-					if ( !( otherGuy is SPBBooleanHolderMemento ) ) return false;
+				public bool Equals(IMemento otheOneMemento){
+					if ( otheOneMemento == null ) return false;
+					if ( this == otheOneMemento ) return true;
+					if ( !( otheOneMemento is SPBBooleanHolderMemento ) ) return false;
 
-					if ( m_value.Equals(((SPBBooleanHolderMemento)otherGuy).m_value) ) return true;
+					if ( m_value.Equals(((SPBBooleanHolderMemento)otheOneMemento).m_value) ) return true;
 
 					return false;
 				}
@@ -960,7 +958,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 
 		#region Methods for adding things to, and removing them from, the SPB.
-#if !COMPACT_FRAMEWORK
+
 		/// <summary>
 		/// Adds an expression to this SPB. 
 		/// </summary>
@@ -975,11 +973,6 @@ namespace Highpoint.Sage.SimCore {
 			AddSPBEntry(key,spbew);
 			m_ssh.AddChild(spbew);
 		}
-#else
-		public void AddExpression(string key, string expression, string[] argNames){
-			throw new InvalidOperationException("Expressions are not supported in the Compact Framework version of VR_SIM.");
-		}
-#endif
 
 		/// <summary>
 		/// Adds an alias to this SPB. An alias points to an entry in another SPB. The other SPB
@@ -1349,7 +1342,7 @@ namespace Highpoint.Sage.SimCore {
 			return true;
 		}
 
-		class SmartPropertyBagMemento : IMemento {
+        private class SmartPropertyBagMemento : IMemento {
 
             #region Private Fields
             private readonly IDictionary m_mementoDict;
@@ -1448,9 +1441,9 @@ namespace Highpoint.Sage.SimCore {
 				return retval;
 			}
 			
-            public bool Equals(IMemento memento){
-				if ( memento == null ) return false;
-				return DictionariesAreEqual(GetDictionary(),memento.GetDictionary());
+            public bool Equals(IMemento otheOneMemento){
+				if ( otheOneMemento == null ) return false;
+				return DictionariesAreEqual(GetDictionary(),otheOneMemento.GetDictionary());
 			}
 
             /// <summary>

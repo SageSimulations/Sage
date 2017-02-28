@@ -644,7 +644,7 @@ namespace Highpoint.Sage.Utility
             return base.GetHashCode();
         }
 
-        class TreeNodeEventController : ITreeNodeEventController<T>
+        private class TreeNodeEventController : ITreeNodeEventController<T>
         {
 
             private readonly TreeNode<T> m_me;
@@ -706,7 +706,7 @@ namespace Highpoint.Sage.Utility
         }
 
         // ReSharper disable once UnusedMember.Local
-        class MuteTreeNodeEventController : ITreeNodeEventController<T>
+        private class MuteTreeNodeEventController : ITreeNodeEventController<T>
         {
 
             // ReSharper disable once UnusedParameter.Local

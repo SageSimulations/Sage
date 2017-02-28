@@ -24,7 +24,7 @@ namespace Highpoint.Sage.Materials {
         /// The dummy idec, though, acts as though (if there isn't actually a real one) the waiting getter or putter
         /// has, or needs, zero kilograms.
         /// </summary>
-        class DummyIdec : IDetachableEventController {
+        private class DummyIdec : IDetachableEventController {
 
             #region IDetachableEventController Members
 

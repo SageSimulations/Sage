@@ -128,7 +128,7 @@ namespace Highpoint.Sage.Utility {
             public IEnumerator<string> GetEnumerator() { return new EnumOfStr(m_alist); }
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return m_alist.GetEnumerator(); }
 
-            class EnumOfStr : IEnumerator<string> {
+            private class EnumOfStr : IEnumerator<string> {
                 private readonly System.Collections.IEnumerator m_ienum;
                 public EnumOfStr(System.Collections.ArrayList alist) { m_ienum = alist.GetEnumerator(); }
                 public string Current => m_ienum.Current.ToString();

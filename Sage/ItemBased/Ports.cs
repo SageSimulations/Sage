@@ -11,13 +11,6 @@ using Trace = System.Diagnostics.Debug;
 using System.Collections.ObjectModel;
 using Highpoint.Sage.Utility;
 
-// 20080130 : Considered a generic version of ports (and therefore, blocks), but
-// decided not to. It would give me type safety, but introduce a lot of new issues,
-// like differentiation of multiple portsets (by type), requirement to know the
-// type irrespective of whether you cared (such as when responding to a (now-)typed
-// event). I can achieve the same thing by adding Type info to the PortChannelInfo,
-// and refusing connections where both ends declare incompatible types...
-
 namespace Highpoint.Sage.ItemBased.Ports {
 
     //TODO: We cast input & output ports as SimpleIn & SimpleOuts to get port control. This is not optimal. Need IInputPortOwnerController and IOutputPortOwnerController.
@@ -54,65 +47,10 @@ namespace Highpoint.Sage.ItemBased.Ports {
     /// </summary>
     public delegate object DataProvisionHandler(IOutputPort port, object selector);
 
-    /// <summary>
-    /// Interface implemented by any object that exposes ports.
-    /// </summary>
-    public interface IPortOwner {
-        /// <summary>
-        /// Adds a user-created port to this object's port set.
-        /// </summary>
-        /// <param name="port">The port to be added to the portSet.</param>
-        void AddPort(IPort port);
-
-        /// <summary>
-        /// Adds a port to this object's port set in the specified role or channel.
-        /// </summary>
-        /// <param name="channelTypeName">The channel - usually "Input" or "Output", sometimes "Control", "Kanban", etc.</param>
-        /// <returns>The newly-created port.</returns>
-        IPort AddPort(string channelTypeName);
-
-        /// <summary>
-        /// Adds a port to this object's port set in the specified role or channel with the provided Guid.
-        /// </summary>
-        /// <param name="channelTypeName">The channel - usually "Input" or "Output", sometimes "Control", "Kanban", etc.</param>
-        /// <param name="guid">The GUID to be assigned to the new port.</param>
-        /// <returns>The newly-created port.</returns>
-        IPort AddPort(string channelTypeName, Guid guid);
-
-        /// <summary>
-        /// Gets the names of supported port channels.
-        /// </summary>
-        /// <value>The supported channels.</value>
-        List<IPortChannelInfo> SupportedChannelInfo { get; }
-
-        /// <summary>
-        /// Removes a port from an object's portset. Any entity having references
-        /// to the port may still use it, though this may be wrong from an application
-        /// perspective. Implementers are responsible to refuse removal of a port that
-        /// is a hard property exposed (e.g. this.InputPort0), since it will remain
-        /// accessible via that property.
-        /// </summary>
-        /// <param name="port">The port.</param>
-        void RemovePort(IPort port);
-        /// <summary>
-        /// Unregisters all ports.
-        /// </summary>
-        void ClearPorts();
-        /// <summary>
-        /// A PortSet containing the ports that this port owner owns.
-        /// </summary>
-        IPortSet Ports { get; }
-    }
-
     [FlagsAttribute]
     public enum PortDirection {
         Input,
         Output
-    }
-
-    public interface IPortChannelInfo {
-        PortDirection Direction { get; }
-        string TypeName { get; }
     }
 
     public class GeneralPortChannelInfo : IPortChannelInfo {
@@ -147,95 +85,6 @@ namespace Highpoint.Sage.ItemBased.Ports {
         private static List<IPortChannelInfo> _stdinputonlylist = new List<IPortChannelInfo>(new IPortChannelInfo[] { _stdinput });
         private static List<IPortChannelInfo> _stdoutputonlylist = new List<IPortChannelInfo>(new IPortChannelInfo[] { _stdoutput });
         private static List<IPortChannelInfo> _stdinandoutlist = new List<IPortChannelInfo>(new IPortChannelInfo[] { _stdinput, _stdoutput });
-    }
-
-    /// <summary>
-    /// An interface implemented by a PortSet. Permits indexing to a port by key.
-    /// </summary>
-    public interface IPortSet : IEnumerable, IPortEvents {
-        /// <summary>
-        /// Permits a caller to retrieve a port by its guid.
-        /// </summary>
-        IPort this[Guid key] { get; }
-        /// <summary>
-        /// Permits a caller to retrieve a port by its name.
-        /// </summary>
-        IPort this[string name] { get; }
-        /// <summary>
-        /// Gets the <see cref="Highpoint.Sage.ItemBased.Ports.IPort"/> with the specified index, i.
-        /// </summary>
-        /// <value>The <see cref="Highpoint.Sage.ItemBased.Ports.IPort"/>.</value>
-        IPort this[int i] { get; }
-        /// <summary>
-        /// Adds a port to this object's port set.
-        /// </summary>
-        /// <param name="port">The port to be added to the portSet.</param>
-        void AddPort(IPort port);
-
-        /// <summary>
-        /// Removes a port from an object's portset. Any entity having references
-        /// to the port may still use it, though this may be wrong from an application
-        /// perspective.
-        /// </summary>
-        /// <param name="port">The port to be removed from the portSet.</param>
-        void RemovePort(IPort port);
-
-        /// <summary>
-        /// Unregisters all ports.
-        /// </summary>
-        void ClearPorts();
-
-        /// <summary>
-        /// Fired when a port has been added to this IPortSet.
-        /// </summary>
-        event PortEvent PortAdded;
-
-        /// <summary>
-        /// Fired when a port has been removed from this IPortSet.
-        /// </summary>
-        event PortEvent PortRemoved;
-
-        /// <summary>
-        /// Returns a collection of the keys that belong to ports known to this PortSet.
-        /// </summary>
-        ICollection PortKeys { get; }
-
-        /// <summary>
-        /// Looks up the key associated with a particular port.
-        /// </summary>
-        /// <param name="port">The port for which we want the key.</param>
-        /// <returns>The key for the provided port.</returns>
-        [Obsolete("Ports use their Guids as the key.")]
-        Guid GetKey(IPort port);
-
-        /// <summary>
-        /// Gets the count of all kids of ports in this collection.
-        /// </summary>
-        /// <value>The count.</value>
-        int Count { get; }
-
-        /// <summary>
-        /// Gets the output ports owned by this PortSet.
-        /// </summary>
-        /// <value>The output ports.</value>
-        ReadOnlyCollection<IOutputPort> Outputs {get;}
-
-        /// <summary>
-        /// Gets the input ports owned by this PortSet.
-        /// </summary>
-        /// <value>The input ports.</value>
-        ReadOnlyCollection<IInputPort> Inputs {get;}
-
-        /// <summary>
-        /// Sorts the ports based on one element of their Out-of-band data sets.
-        /// Following a return from this call, the ports will be in the order requested.
-        /// The &quot;T&quot; parameter will usually be int, double or string, but it must
-        /// represent the IComparable-implementing type of the data stored under the
-        /// provided OOBDataKey.
-        /// </summary>
-        /// <param name="oobDataKey">The oob data key.</param>
-        void SetSortOrder<T>(object oobDataKey) where T : IComparable;
-
     }
 
     /// <summary>
@@ -695,206 +544,6 @@ namespace Highpoint.Sage.ItemBased.Ports {
         }
     }
 
-
-
-    /// <summary>
-    /// An interface describing the events that are fired by all IPort objects.
-    /// </summary>
-    public interface IPortEvents {
-        /// <summary>
-        /// This event fires when data is presented on a port. For an input port, this
-        /// implies presentation by an outsider, and for an output port, it implies 
-        /// presentation by the port owner.
-        /// </summary>
-        event PortDataEvent PortDataPresented;
-
-        /// <summary>
-        /// This event fires when data is accepted by a port. For an input port, this
-        /// implies acceptance by the port owner, and for an output port, it implies 
-        /// acceptance by an outsider.
-        /// </summary>
-        event PortDataEvent PortDataAccepted;
-
-        /// <summary>
-        /// This event fires when data is rejected by a port. For an input port, this
-        /// implies rejection by the port owner, and for an output port, it implies 
-        /// rejection by an outsider.
-        /// </summary>
-        event PortDataEvent PortDataRejected;
-
-        /// <summary>
-        /// This event fires immediately before the port's connector property becomes non-null.
-        /// </summary>
-        event PortEvent BeforeConnectionMade;
-
-        /// <summary>
-        /// This event fires immediately after the port's connector property becomes non-null.
-        /// </summary>
-        event PortEvent AfterConnectionMade;
-
-        /// <summary>
-        /// This event fires immediately before the port's connector property becomes null.
-        /// </summary>
-        event PortEvent BeforeConnectionBroken;
-
-        /// <summary>
-        /// This event fires immediately after the port's connector property becomes null.
-        /// </summary>
-        event PortEvent AfterConnectionBroken;
-    }
-
-    /// <summary>
-    /// This interface specifies the methods common to all types of ports, that are visible 
-    /// to objects other than the owner of the port.
-    /// </summary>
-    public interface IPort : IPortEvents, IModelObject {
-        /// <summary>
-        /// This property represents the connector object that this port is associated with.
-        /// </summary>
-        IConnector Connector { get; set; }
-
-        /// <summary>
-        /// This property contains the owner of the port.
-        /// </summary>
-        IPortOwner Owner { get; }
-
-        /// <summary>
-        /// Returns the key by which this port is known to its owner.
-        /// </summary>
-        Guid Key { get; }
-
-        /// <summary>
-        /// This property returns the port at the other end of the connector to which this
-        /// port is connected, or null, if there is no connector, and/or no port on the
-        /// other end of a connected connector.
-        /// </summary>
-        IPort Peer { get; }
-
-        /// <summary>
-        /// Returns the default out-of-band data from this port. Out-of-band data
-        /// is data that is not material that is to be transferred out of, or into,
-        /// this port, but rather context, type, or other metadata to the transfer
-        /// itself.
-        /// </summary>
-        /// <returns>The default out-of-band data from this port.</returns>
-        object GetOutOfBandData();
-
-        /// <summary>
-        /// Returns out-of-band data from this port. Out-of-band data is data that is
-        /// not material that is to be transferred out of, or into, this port, but
-        /// rather context, type, or other metadata to the transfer itself.
-        /// </summary>
-        /// <param name="selector">The key of the sought metadata.</param>
-        /// <returns>The desired out-of-band metadata.</returns>
-        object GetOutOfBandData(object selector);
-
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="IPort"/> is intrinsic. An intrinsic
-        /// port is a hard-wired part of its owner. It is there when its owner is created, and
-        /// cannot be removed.
-        /// </summary>
-        /// <value><c>true</c> if intrinsic; otherwise, <c>false</c>.</value>
-        bool Intrinsic { get; }
-
-        /// <summary>
-        /// Detaches this port's data handlers.
-        /// </summary>
-        void DetachHandlers();
-
-        /// <summary>
-        /// The port index represents its sequence, if any, with respect to the other ports.
-        /// </summary>
-        int Index { get; set; }
-
-    }
-
-    /// <summary>
-    /// IInputPort is the portion of an InputPort that is intended to be visible
-    /// and accessible from outside the scope of its owner.
-    /// </summary>
-    public interface IInputPort : IPort {
-        /// <summary>
-        /// This method attempts to place the provided data object onto the port from
-        /// upstream of its owner. It will succeed if the port is unoccupied, or if
-        /// the port is occupied and the port permits overwrites.
-        /// </summary>
-        /// <param name="obj">the data object</param>
-        /// <returns>True if successful. False if it fails.</returns>
-        bool Put(object obj); // True if accepted.
-
-        /// <summary>
-        /// This is called by a peer to let the input port know that there is data
-        /// available at the peer, in case the input port wants to pull the data.
-        /// </summary>
-        void NotifyDataAvailable();
-
-        /// <summary>
-        /// This sets the PutHandler that this port will use, replacing the current
-        /// one. This should be used only by objects under the control of, or owned by, the
-        /// IPortOwner that owns this port.
-        /// </summary>
-        /// <value>The new PutHandler.</value>
-        DataArrivalHandler PutHandler { get; set; }
-    }
-
-    /// <summary>
-    /// IOutputPort is the portion of an output port that is intended to be visible 
-    /// and accessible from outside the scope of its owner. 
-    /// </summary>
-    public interface IOutputPort : IPort {
-        /// <summary>
-        /// This method removes and returns the current contents of the port.
-        /// </summary>
-        /// <param name="selector">An object that is used in the dataProvider to
-        /// determine which of potentially more than one available data element is
-        /// to be provided to the requestor.</param>
-        /// <returns>The current contents of the port.</returns>
-        object Take(object selector);
-
-        /// <summary>
-        /// True if Peek can be expected to return meaningful data.
-        /// </summary>
-        bool IsPeekable { get; }
-
-        /// <summary>
-        /// Nonconsumptively returns the contents of this port. A subsequent Take
-        /// may or may not produce the same object, if, for example, the stuff
-        /// produced from this port is time-sensitive.
-        /// </summary>
-        /// <param name="selector">An object that is used in the dataProvider to
-        /// determine which of potentially more than one available data element is
-        /// to be provided to the requestor.</param>
-        /// <returns>
-        /// The current contents of this port. Null if this port is not peekable.
-        /// </returns>
-        object Peek(object selector);
-
-        /// <summary>
-        /// This event is fired when new data is available to be taken from a port.
-        /// </summary>
-        event PortEvent DataAvailable;
-
-
-        /// <summary>
-        /// This sets the DataProvisionHandler that this port will use to handle requests
-        /// to take data from this port, replacing the current one. This should be used
-        /// only by objects under the control of, or owned by, the IPortOwner that owns
-        /// this port.
-        /// </summary>
-        /// <value>The take handler.</value>
-        DataProvisionHandler TakeHandler { get; set; }
-
-        /// <summary>
-        /// This sets the DataProvisionHandler that this port will use to handle requests
-        /// to peek at data on this port, replacing the current one. This should be used
-        /// only by objects under the control of, or owned by, the IPortOwner that owns
-        /// this port.
-        /// </summary>
-        /// <value>The peek handler.</value>
-        DataProvisionHandler PeekHandler { get; set; }
-
-    }
-
     /// <summary>
     /// Base class implementation for ports.
     /// </summary>
@@ -1310,8 +959,10 @@ namespace Highpoint.Sage.ItemBased.Ports {
     }
 
     /// <summary>
-    /// An InputPortProxy represents to an encasing IPortOwner, an input port on some encased child IPortOwner. 
-    /// </summary>
+    /// Class InputPortProxy is a class that represents to an outer container
+    /// the functionality of an input port on an internal port owner. This can be used
+    /// to expose the externally-visible ports from a network of blocks that is
+    /// being represented as one container-level block.    /// </summary>
     public class InputPortProxy : IInputPort {
 
         #region Private Fields
@@ -1337,7 +988,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
             IMOHelper.Initialize(ref m_model, model, ref m_name, name, ref m_description, description, ref m_guid, guid);
 
             m_portSet = new PortSet();
-            m_internalPortOwner = new PlaceholderPortOwner(name + ".Internal");
+            m_internalPortOwner = new PortOwnerProxy(name + ".Internal");
             m_wardPartner = new SimpleOutputPort(model, name + ".WardPartner", Guid.NewGuid(), m_internalPortOwner, new DataProvisionHandler(_takeHandler), new DataProvisionHandler(_peekHandler));
             m_ward = ward;
             m_internalConnector = new BasicNonBufferedConnector(m_wardPartner, m_ward);
@@ -1750,16 +1401,25 @@ namespace Highpoint.Sage.ItemBased.Ports {
         }
     }
 
-    internal class PlaceholderPortOwner : IPortOwner, IHasName {
+    /// <summary>
+    /// Class PlaceholderPortOwner is a class to which the duties of PortOwner can be delegated.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.ItemBased.Ports.IPortOwner" />
+    /// <seealso cref="Highpoint.Sage.SimCore.IHasName" />
+    internal class PortOwnerProxy : IPortOwner, IHasName {
         private string m_name;
 
         private PortSet m_portSet = new PortSet();
 
-        public PlaceholderPortOwner(string name) {
+        public PortOwnerProxy(string name) {
             m_name = name;
         }
         #region IPortOwner Members
 
+        /// <summary>
+        /// Adds a user-created port to this object's port set.
+        /// </summary>
+        /// <param name="port">The port to be added to the portSet.</param>
         public void AddPort(IPort port) {
             m_portSet.AddPort(port);
         }
@@ -1785,14 +1445,29 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <value>The supported channels.</value>
         public List<IPortChannelInfo> SupportedChannelInfo { get { return GeneralPortChannelInfo.StdInputAndOutput; } }
 
+        /// <summary>
+        /// Removes a port from an object's portset. Any entity having references
+        /// to the port may still use it, though this may be wrong from an application
+        /// perspective. Implementers are responsible to refuse removal of a port that
+        /// is a hard property exposed (e.g. this.InputPort0), since it will remain
+        /// accessible via that property.
+        /// </summary>
+        /// <param name="port">The port.</param>
         public void RemovePort(IPort port) {
             m_portSet.RemovePort(port);
         }
 
+        /// <summary>
+        /// Unregisters all ports.
+        /// </summary>
         public void ClearPorts() {
             m_portSet.ClearPorts();
         }
 
+        /// <summary>
+        /// A PortSet containing the ports that this port owner owns.
+        /// </summary>
+        /// <value>The ports.</value>
         public IPortSet Ports {
             get { return m_portSet; }
         }
@@ -1801,6 +1476,10 @@ namespace Highpoint.Sage.ItemBased.Ports {
 
         #region IHasName Members
 
+        /// <summary>
+        /// The user-friendly name for this object.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name {
              get { return m_name; }
         }
@@ -1808,32 +1487,60 @@ namespace Highpoint.Sage.ItemBased.Ports {
         #endregion
     }
 
+    /// <summary>
+    /// Class OutputPortProxy is a class that represents to an outer container
+    /// the functionality of a port on an internal port owner. This can be used
+    /// to expose the externally-visible ports from a network of blocks that is
+    /// being represented as one container-level block. 
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.ItemBased.Ports.IOutputPort" />
     public class OutputPortProxy : IOutputPort {
 
         #region Private Fields
+        /// <summary>
+        /// The m ward
+        /// </summary>
         private IOutputPort m_ward;
+        /// <summary>
+        /// The m owner
+        /// </summary>
         private IPortOwner m_owner;
+        /// <summary>
+        /// The m external connector
+        /// </summary>
         private IConnector m_externalConnector;
+        /// <summary>
+        /// The m internal connector
+        /// </summary>
         private IConnector m_internalConnector;
+        /// <summary>
+        /// The m ward partner
+        /// </summary>
         private IInputPort m_wardPartner;
+        /// <summary>
+        /// The m port set
+        /// </summary>
         private PortSet m_portSet;
+        /// <summary>
+        /// The m internal port owner
+        /// </summary>
         private IPortOwner m_internalPortOwner;
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OutputPortProxy"/> class.
+        /// Initializes a new instance of the <see cref="OutputPortProxy" /> class.
         /// </summary>
-        /// <param name="model">The model in which this <see cref="T:OutputPortProxy"/> will run.</param>
-        /// <param name="name">The name of the new <see cref="T:OutputPortProxy"/>.</param>
-        /// <param name="description">The description of the new <see cref="T:OutputPortProxy"/>.</param>
-        /// <param name="guid">The GUID of the new <see cref="T:OutputPortProxy"/>.</param>
+        /// <param name="model">The model in which this <see cref="T:OutputPortProxy" /> will run.</param>
+        /// <param name="name">The name of the new <see cref="T:OutputPortProxy" />.</param>
+        /// <param name="description">The description of the new <see cref="T:OutputPortProxy" />.</param>
+        /// <param name="guid">The GUID of the new <see cref="T:OutputPortProxy" />.</param>
         /// <param name="owner">The owner of this proxy port.</param>
         /// <param name="ward">The ward - the internal port which this proxy port will represent.</param>
         public OutputPortProxy(IModel model, string name, string description, Guid guid, IPortOwner owner, IOutputPort ward) {
             IMOHelper.Initialize(ref m_model, model, ref m_name, name, ref m_description, description, ref m_guid, guid);
 
             m_portSet = new PortSet();
-            m_internalPortOwner = new PlaceholderPortOwner(name + ".PortOwner");
+            m_internalPortOwner = new PortOwnerProxy(name + ".PortOwner");
             m_wardPartner = new SimpleInputPort(model, name + ".WardPartner", Guid.NewGuid(), m_internalPortOwner, new DataArrivalHandler(_dataArrivalHandler));
             m_ward = ward;
             m_internalConnector = new BasicNonBufferedConnector(m_ward, m_wardPartner);
@@ -1843,6 +1550,12 @@ namespace Highpoint.Sage.ItemBased.Ports {
             IMOHelper.RegisterWithModel(this);
         }
 
+        /// <summary>
+        /// Datas the arrival handler.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="inputPort">The input port.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool _dataArrivalHandler(object data, IInputPort inputPort) {
             if (m_externalConnector != null) {
                 return m_externalConnector.Put(data);
@@ -1867,7 +1580,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <summary>
         /// True if Peek can be expected to return meaningful data.
         /// </summary>
-        /// <value></value>
+        /// <value><c>true</c> if this instance is peekable; otherwise, <c>false</c>.</value>
         public bool IsPeekable {
             get {
                 return m_ward.IsPeekable;
@@ -1882,9 +1595,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <param name="selector">An object that is used in the dataProvider to
         /// determine which of potentially more than one available data element is
         /// to be provided to the requestor.</param>
-        /// <returns>
-        /// The current contents of this port. Null if this port is not peekable.
-        /// </returns>
+        /// <returns>The current contents of this port. Null if this port is not peekable.</returns>
         public object Peek(object selector) {
             return m_ward.Peek(selector);
         }
@@ -1936,7 +1647,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <summary>
         /// This property represents the connector object that this port is associated with.
         /// </summary>
-        /// <value></value>
+        /// <value>The connector.</value>
         public IConnector Connector {
             get {
                 return m_externalConnector;
@@ -1954,7 +1665,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <summary>
         /// This property contains the owner of the port.
         /// </summary>
-        /// <value></value>
+        /// <value>The owner.</value>
         public IPortOwner Owner {
             get { return m_owner; }
         }
@@ -1962,7 +1673,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <summary>
         /// Returns the key by which this port is known to its owner.
         /// </summary>
-        /// <value></value>
+        /// <value>The key.</value>
         public Guid Key {
             get { return Guid; }
         }
@@ -1972,7 +1683,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// port is connected, or null, if there is no connector, and/or no port on the
         /// other end of a connected connector.
         /// </summary>
-        /// <value></value>
+        /// <value>The peer.</value>
         public IPort Peer {
             get { return Connector.Upstream; }
         }
@@ -1983,9 +1694,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// this port, but rather context, type, or other metadata to the transfer
         /// itself.
         /// </summary>
-        /// <returns>
-        /// The default out-of-band data from this port.
-        /// </returns>
+        /// <returns>The default out-of-band data from this port.</returns>
         public object GetOutOfBandData() {
             return m_ward.GetOutOfBandData();
         }
@@ -2002,7 +1711,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         }
 
         /// <summary>
-        /// Gets and sets a value indicating whether this <see cref="IPort"/> is intrinsic. An intrinsic
+        /// Gets and sets a value indicating whether this <see cref="IPort" /> is intrinsic. An intrinsic
         /// port is a hard-wired part of its owner. It is there when its owner is created, and
         /// cannot be removed.
         /// </summary>
@@ -2027,6 +1736,7 @@ namespace Highpoint.Sage.ItemBased.Ports {
         /// <summary>
         /// The port index represents its sequence, if any, with respect to the other ports.
         /// </summary>
+        /// <value>The index.</value>
         public int Index { get { return m_ward.Index; } set { m_ward.Index = value; } }
 
 
@@ -2034,6 +1744,11 @@ namespace Highpoint.Sage.ItemBased.Ports {
 
         #region IPortEvents Members
 
+        /// <summary>
+        /// This event fires when data is presented on a port. For an input port, this
+        /// implies presentation by an outsider, and for an output port, it implies
+        /// presentation by the port owner.
+        /// </summary>
         public event PortDataEvent PortDataPresented {
             add {
                 m_ward.PortDataPresented += value;
@@ -2043,6 +1758,11 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// This event fires when data is accepted by a port. For an input port, this
+        /// implies acceptance by the port owner, and for an output port, it implies
+        /// acceptance by an outsider.
+        /// </summary>
         public event PortDataEvent PortDataAccepted {
             add {
                 m_ward.PortDataAccepted += value;
@@ -2052,6 +1772,11 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// This event fires when data is rejected by a port. For an input port, this
+        /// implies rejection by the port owner, and for an output port, it implies
+        /// rejection by an outsider.
+        /// </summary>
         public event PortDataEvent PortDataRejected {
             add {
                 m_ward.PortDataRejected += value;
@@ -2061,6 +1786,9 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// This event fires immediately before the port's connector property becomes non-null.
+        /// </summary>
         public event PortEvent BeforeConnectionMade {
             add {
                 m_ward.BeforeConnectionMade += value;
@@ -2070,6 +1798,9 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// This event fires immediately after the port's connector property becomes non-null.
+        /// </summary>
         public event PortEvent AfterConnectionMade {
             add {
                 m_ward.AfterConnectionMade += value;
@@ -2079,6 +1810,9 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// This event fires immediately before the port's connector property becomes null.
+        /// </summary>
         public event PortEvent BeforeConnectionBroken {
             add {
                 m_ward.BeforeConnectionBroken += value;
@@ -2088,6 +1822,9 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// This event fires immediately after the port's connector property becomes null.
+        /// </summary>
         public event PortEvent AfterConnectionBroken {
             add {
                 m_ward.AfterConnectionBroken += value;
@@ -2101,9 +1838,21 @@ namespace Highpoint.Sage.ItemBased.Ports {
         #endregion
 
         #region Implementation of IModelObject
+        /// <summary>
+        /// The m name
+        /// </summary>
         private string m_name = null;
+        /// <summary>
+        /// The m unique identifier
+        /// </summary>
         private Guid m_guid = Guid.Empty;
+        /// <summary>
+        /// The m model
+        /// </summary>
         private IModel m_model;
+        /// <summary>
+        /// The m description
+        /// </summary>
         private string m_description = null;
 
         /// <summary>
@@ -2306,24 +2055,18 @@ namespace Highpoint.Sage.ItemBased.Ports {
     }
 
     /// <summary>
-    /// This interface is implemented by any object that can choose ports. It is useful in
-    /// constructing an autonomous route navigator, route strategy object, or transportation
-    /// manager.
+    /// Class PortManagementFacade provides one object from which the managers for all of a group of ports owned by one owner
+    /// can be obtained. It is a convenience class.
     /// </summary>
-    public interface IPortSelector {
-        /// <summary>
-        /// Selects a port from among a presented set of ports.
-        /// </summary>
-        /// <param name="portSet">The Set of ports.</param>
-        /// <returns>The selected port.</returns>
-        IPort SelectPort(IPortSet portSet);
-    }
-
     public class PortManagementFacade {
 
         private Dictionary<IInputPort, InputPortManager> m_inputPortManagers;
         private Dictionary<IOutputPort, OutputPortManager> m_outputPortManagers;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PortManagementFacade"/> class with the ports owned by the specified port owner.
+        /// </summary>
+        /// <param name="portOwner">The port owner.</param>
         public PortManagementFacade(IPortOwner portOwner) {
             m_inputPortManagers = new Dictionary<IInputPort,InputPortManager>();
             m_outputPortManagers = new Dictionary<IOutputPort,OutputPortManager>();
@@ -2335,25 +2078,70 @@ namespace Highpoint.Sage.ItemBased.Ports {
             }
         }
 
+        /// <summary>
+        /// Obtains the manager for a specified input port.
+        /// </summary>
+        /// <param name="iip">The input port.</param>
+        /// <returns>InputPortManager.</returns>
         public InputPortManager ManagerFor(IInputPort iip) { return m_inputPortManagers[iip]; }
+        /// <summary>
+        /// Obtains the manager for a specified output port.
+        /// </summary>
+        /// <param name="iop">The output port.</param>
+        /// <returns>OutputPortManager.</returns>
         public OutputPortManager ManagerFor(IOutputPort iop) { return m_outputPortManagers[iop]; }
     }
 
-
+    /// <summary>
+    /// Class PortManager is an abstract class that sets up some of the basic functionality of
+    /// both input port managers and output port managers.
+    /// </summary>
     public abstract class PortManager {
 
+        /// <summary>
+        /// The diagnostics switch. Set in the Sage Config file.
+        /// </summary>
         protected static bool Diagnostics = Sage.Diagnostics.DiagnosticAids.Diagnostics("PortManager");
 
-        public PortManager() { }
+        /// <summary>
+        /// Types of buffer persistence. How long the data is buffered for the port.
+        /// </summary>
+        public enum BufferPersistence
+        {
+            /// <summary>
+            /// The data is not buffered. If it is not read in the call that sets it, it is lost.
+            /// </summary>
+            None,
+            /// <summary>
+            /// The data is buffered until it is read or overwritten.
+            /// </summary>
+            UntilRead,
+            /// <summary>
+            /// The data is buffered until it is overwritten.
+            /// </summary>
+            UntilWrite
+        }
 
-        public enum BufferPersistence { None, UntilRead, UntilWrite }
-
+        /// <summary>
+        /// The buffer persistence
+        /// </summary>
         protected BufferPersistence m_bufferPersistence;
 
+        /// <summary>
+        /// Gets or sets the data buffer persistence.
+        /// </summary>
+        /// <value>The data buffer persistence.</value>
         public BufferPersistence DataBufferPersistence { get { return m_bufferPersistence; } set { m_bufferPersistence = value; } }
 
+        /// <summary>
+        /// Clears the buffer.
+        /// </summary>
         public abstract void ClearBuffer();
 
+        /// <summary>
+        /// Gets a value indicating whether this port is connected.
+        /// </summary>
+        /// <value><c>true</c> if this port is connected; otherwise, <c>false</c>.</value>
         public abstract bool IsPortConnected { get; }
 
     }

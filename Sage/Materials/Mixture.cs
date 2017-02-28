@@ -834,12 +834,14 @@ namespace Highpoint.Sage.Materials.Chemistry {
             set {
                 Update();
                 ( (MixtureMemento)value ).Load(this);
-                //throw new MementoException("Does not support reconstitution from memento.",this);
             }
         }
 
-        class MixtureMemento : IMemento {
-
+        /// <summary>
+        /// Class MixtureMemento creates a moment-in-time snapshot (see Memento design pattern) of a mixture.
+        /// </summary>
+        /// <seealso cref="Highpoint.Sage.Utility.Mementos.IMemento" />
+        public class MixtureMemento : IMemento {
 
             #region Private Fields
             private readonly Mixture m_mixture;
@@ -885,7 +887,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
                 mixture.m_constituentSubstances.Clear();
 
 				if ( m_massAtRecordedTime == 0 ) {
-					// There is no mass, so the temperature will not be set by the properties of its constitient substances.
+					// There is no mass, so the temperature will not be set by the properties of its constituent substances.
 					// Even though it does not matter to the energy balance, we set the temperature of the (empty) mixture
 					// to the temperature it was at the time it was recorded.
 					mixture.Temperature = m_tempAtRecordedTime;
@@ -904,7 +906,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
                 OnLoadCompleted?.Invoke(this);
             }
 
-            void memento_OnLoadCompleted(IMemento memento) {
+            private void memento_OnLoadCompleted(IMemento memento) {
                 m_mixture.ResumeChangeEvents(true);
             }
 
@@ -933,15 +935,15 @@ namespace Highpoint.Sage.Materials.Chemistry {
             }
 
             /// <summary>
-            /// Deterimnes if this Mixture is equal to the specified Mixture.
+            /// Determines if this Mixture is equal to the specified Mixture.
             /// </summary>
-            /// <param name="otherGuy">The specified Mixture.</param>
+            /// <param name="otherMemento">The specified Mixture.</param>
             /// <returns></returns>
-            public bool Equals(IMemento otherGuy){
-                if ( otherGuy == null ) return false;
-                if ( this == otherGuy ) return true;
+            public bool Equals(IMemento otherMemento){
+                if ( otherMemento == null ) return false;
+                if ( this == otherMemento ) return true;
 
-                MixtureMemento mmog = otherGuy as MixtureMemento;
+                MixtureMemento mmog = otherMemento as MixtureMemento;
                 if ( m_substanceMementos.Count!=mmog?.m_substanceMementos.Count ) return false;
                 
                 foreach ( DictionaryEntry de in m_substanceMementos ) {

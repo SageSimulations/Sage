@@ -89,9 +89,9 @@ namespace Highpoint.Sage.Utility.Mementos {
 		/// <summary>
 		/// Returns true if the two mementos are semantically equal.
 		/// </summary>
-		/// <param name="memento">The memento this one should compare itself to.</param>
+		/// <param name="otheOneMemento">The memento this one should compare itself to.</param>
 		/// <returns>True if the mementos are semantically equal.</returns>
-		bool Equals(IMemento memento);
+		bool Equals(IMemento otheOneMemento);
 
         /// <summary>
         /// This event is fired once this memento has completed its Load(ISupportsMementos ism) invocation.
@@ -104,79 +104,7 @@ namespace Highpoint.Sage.Utility.Mementos {
         IMemento Parent { get; set; }
     }
 
-
-	#region DictionaryMemento - currently commented out.
-/*    public class DictionaryMemento : IMemento {
-        // Relies on the code that is reconstituting an object to
-        // know what kind of object it is reconstituting, and in
-        // some cases, limits the TM to only being able to reset
-        // the state of the same object to a pre-recorded state.
-        private IDictionary m_payload;
-        public DictionaryMemento(IDictionary payload){
-            
-            m_payload = payload;
-        }
-        public object Payload {
-            get { return m_payload; }
-        }
-
-        public IDictionary GetDictionary(){
-            return m_payload;
-        }
-
-        public ISupportsMementos CreateTarget(){
-            return m_payload.GetType().Assembly.CreateInstance(m_payload.GetType().Name);
-        }
-
-        public void Load(IDictionary dictionary){
-            dictionary.Clear();
-            foreach ( DictionaryEntry de in m_payload ) {
-                dictionary.Add(de.Key,de.Value);
-            }
-        }
-
-        public bool Equals(IMemento otherGuy) {
-            if ( this == otherGuy ) return true;
-            if (!(otherGuy is DictionaryMemento )) return false;
-            DictionaryMemento dmOtherGuy = (DictionaryMemento)otherGuy;
-            if ( m_payload.Count != dmOtherGuy.m_payload.Count ) return false;
-
-            foreach ( DictionaryEntry de in dmOtherGuy.m_payload ) {
-                if ( !m_payload.Contains(de.Key) || !m_payload[de.Key].Equals(de.Value) ) return false;
-            }
-            return true;
-        }
-
-        class DictionaryMementoWrapper {
-
-            public DictionaryMementoWrapper(IDictionary){
-                
-            }
-        }
-    }
-*/
-	#endregion
-	
-	public class MementoException : Exception 
-	{
-
-	    /// <summary>
-		/// Creates a MementoException.
-		/// </summary>
-		/// <param name="msg">Textual message reflecting the reason for this exception.</param>
-		/// <param name="subject">The object into which the memento is being loaded.</param>
-        public MementoException(string msg, object subject):base(msg){
-            Subject = subject;
-        }
-
-		/// <summary>
-		/// The object into which the memento is being loaded.
-		/// </summary>
-        public object Subject { get; }
-	}
-
-    
-	/// <summary>
+    /// <summary>
 	/// A class that will perform much of the bookkeeping required to implement
 	/// the ISupportsMementos interface, including child management, change tracking
 	/// and memento generation.

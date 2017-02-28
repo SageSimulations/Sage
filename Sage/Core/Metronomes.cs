@@ -4,9 +4,6 @@ using System;
 using System.Diagnostics;
 using Trace = System.Diagnostics.Debug;
 using Highpoint.Sage.Utility;
-#if COMPACT_FRAMEWORK
-using SortedList = Highpoint.Sage.CF.SortedList;
-#endif
 
 namespace Highpoint.Sage.SimCore {
 

@@ -134,6 +134,7 @@ namespace Highpoint.Sage.ItemBased {
         string Name { get; }
         string Value { get; }
     }
+
     /// <summary>
     /// A tag that can be read and written.
     /// </summary>
@@ -191,7 +192,7 @@ namespace Highpoint.Sage.ItemBased {
     /// add "Tutti-Frutti" to the list of acceptable values.
     /// <b></b>A TagType is used to create tags or its type.
     /// </summary>
-    class TagType : ITagType {
+    public class TagType : ITagType {
 
         #region Private Fields
         private string m_typeName;
@@ -314,19 +315,38 @@ namespace Highpoint.Sage.ItemBased {
         #endregion
     }
 
-    class Tag : ITag {
+
+    /// <summary>
+    /// Class Tag is the base class for implementations of Tags.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.ItemBased.ITag" />
+    public class Tag : ITag
+    {
         ITagType m_tagType;
         string m_value = "";
 
-        public Tag(TagType tagType) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tag"/> class.
+        /// </summary>
+        /// <param name="tagType">Type of the tag.</param>
+        public Tag(TagType tagType)
+        {
             m_tagType = tagType;
-            if (m_tagType.isConstrained) {
+            if (m_tagType.isConstrained)
+            {
                 m_value = m_tagType.ValueCandidates[0];
             }
         }
         #region ITag Members
 
-        public bool SetValue(string newValue) {
+        /// <summary>
+        /// Sets the value of this tag. Must follow any constraints specified by the tag type.
+        /// </summary>
+        /// <param name="newValue">The new value.</param>
+        /// <returns><c>true</c> if setting the new value was successful, <c>false</c> otherwise.</returns>
+        /// <exception cref="System.Exception">The method or operation is not implemented.</exception>
+        public bool SetValue(string newValue)
+        {
             throw new Exception("The method or operation is not implemented.");
         }
 
@@ -334,15 +354,31 @@ namespace Highpoint.Sage.ItemBased {
 
         #region IReadOnlyTag Members
 
-        public ITagType TagType {
+        /// <summary>
+        /// Gets the type of the tag.
+        /// </summary>
+        /// <value>The type of the tag.</value>
+        public ITagType TagType
+        {
             get { throw new Exception("The method or operation is not implemented."); }
         }
 
-        public string Name {
+        /// <summary>
+        /// Gets the name of the tag.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name
+        {
             get { throw new Exception("The method or operation is not implemented."); }
         }
 
-        public string Value {
+        /// <summary>
+        /// Gets the value of the tag.
+        /// </summary>
+        /// <value>The value.</value>
+        /// <exception cref="System.Exception">The method or operation is not implemented.</exception>
+        public string Value
+        {
             get { throw new Exception("The method or operation is not implemented."); }
         }
 

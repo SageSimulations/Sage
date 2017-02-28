@@ -6,11 +6,6 @@ using Trace = System.Diagnostics.Debug;
 using System.Collections;
 using System.Collections.Generic;
 
-#if COMPACT_FRAMEWORK
-using SortedList = Highpoint.Sage.CF.SortedList;
-#endif
-
-
 namespace Highpoint.Sage.SimCore {
     /// <summary>
     /// This delegate is implemented by a method that is intended to perform part

@@ -161,14 +161,14 @@ namespace Highpoint.Sage.Utility {
             }
         }
 
-        class ListWrapper {
+        private class ListWrapper {
             public ListWrapper(){
                 List = new ArrayList();
             }
             public ArrayList List { get; }
         }
 
-        class HtolEnumerator : IEnumerator {
+        private class HtolEnumerator : IEnumerator {
             private readonly HashtableOfLists m_htol;
             private IEnumerator m_htEnum, m_lstEnum;
             public HtolEnumerator(HashtableOfLists htol){
@@ -350,7 +350,7 @@ namespace Highpoint.Sage.Utility {
             }
         }
 
-        class HtolEnumerator<TTKey,TTValue> : IEnumerator<TTValue> {
+        private class HtolEnumerator<TTKey,TTValue> : IEnumerator<TTValue> {
             private readonly HashtableOfLists<TTKey, TTValue> m_htol;
             private IEnumerator<List<TTValue>> m_allListEnumerator;
             private IEnumerator<TTValue> m_currListEnumerator;

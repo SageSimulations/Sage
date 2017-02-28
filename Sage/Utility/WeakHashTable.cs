@@ -203,7 +203,7 @@ namespace Highpoint.Sage.Utility {
 
         #endregion
 
-        class WeakHashtableEnumerator : IDictionaryEnumerator {
+        private class WeakHashtableEnumerator : IDictionaryEnumerator {
             private readonly IEnumerator m_enum;
 
             public WeakHashtableEnumerator(IEnumerator weakHashtableEnum) {

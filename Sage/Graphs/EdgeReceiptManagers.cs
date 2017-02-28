@@ -51,7 +51,7 @@ namespace Highpoint.Sage.Graphs {
 		#endregion
 	}
 
-    class ChannelMonitor {
+    public class ChannelMonitor {
 		private IVertex m_vertex;
 		private object m_channelMarker;
 		private ArrayList m_myEdges;

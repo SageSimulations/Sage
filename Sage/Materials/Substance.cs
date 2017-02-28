@@ -117,8 +117,14 @@ namespace Highpoint.Sage.Materials.Chemistry {
 			return retval;
         }
 
-        public bool Equals(ISupportsMementos otherGuy){
-            Substance otherSubstance = otherGuy as Substance;
+        /// <summary>
+        /// Ascertains equality between this one and the other one.
+        /// </summary>
+        /// <param name="otherOne">The other one.</param>
+        /// <returns><c>true</c> if this one and the other one are equal, <c>false</c> otherwise.</returns>
+        public bool Equals(ISupportsMementos otherOne)
+        {
+            Substance otherSubstance = otherOne as Substance;
             if (otherSubstance == null) return false;
             if ( m_materialSpecs != null && otherSubstance.m_materialSpecs == null ) return false;
 			if ( m_materialSpecs == null && otherSubstance.m_materialSpecs != null ) return false;
@@ -641,16 +647,36 @@ namespace Highpoint.Sage.Materials.Chemistry {
         /// <value><c>true</c> if [reports own changes]; otherwise, <c>false</c>.</value>
         public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
 
-	    class SubstanceMemento : IMemento {
+        /// <summary>
+        /// Class SubstanceMemento creates a moment-in-time snapshot (see Memento design pattern) of a substance.
+        /// </summary>
+        /// <seealso cref="Highpoint.Sage.Utility.Mementos.IMemento" />
+        public class SubstanceMemento : IMemento {
 
             #region Private Fields
+            /// <summary>
+            /// The material type
+            /// </summary>
             private readonly MaterialType m_materialType;
+            /// <summary>
+            /// The temperature
+            /// </summary>
             private readonly double m_temperature;
+            /// <summary>
+            /// The mass
+            /// </summary>
             private readonly double m_mass;
-			private readonly Hashtable m_matlSpecs;
+            /// <summary>
+            /// The material specs
+            /// </summary>
+            private readonly Hashtable m_matlSpecs;
 
-	        #endregion
+            #endregion
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="SubstanceMemento"/> class.
+            /// </summary>
+            /// <param name="substance">The substance.</param>
             public SubstanceMemento(Substance substance) {
                 m_materialType = substance.m_type;
                 m_temperature = substance.Temperature;
@@ -664,6 +690,13 @@ namespace Highpoint.Sage.Materials.Chemistry {
 				}
             }
 
+            /// <summary>
+            /// Creates an empty copy of whatever object this memento can reconstitute. Some
+            /// mementos are only able to reconstitute into their source objects (they can only
+            /// be used to restore state in the same object), and these mementos will return a
+            /// reference to that object.)
+            /// </summary>
+            /// <returns>ISupportsMementos.</returns>
             public ISupportsMementos CreateTarget(){
                 Substance substance = (Substance)m_materialType.CreateMass(m_mass,m_temperature);
 				if ( m_matlSpecs != null ) {
@@ -672,6 +705,10 @@ namespace Highpoint.Sage.Materials.Chemistry {
 				return substance;
             }
 
+            /// <summary>
+            /// Loads the contents of this Memento into the provided object.
+            /// </summary>
+            /// <param name="ism">The object to receive the contents of the memento.</param>
             public void Load(ISupportsMementos ism){
                 Substance substance = (Substance)ism;
                 substance.m_mass = m_mass;
@@ -687,6 +724,11 @@ namespace Highpoint.Sage.Materials.Chemistry {
                 OnLoadCompleted?.Invoke(this);
             }
 
+            /// <summary>
+            /// Emits an IDictionary form of the memento that can be, for example, dumped to
+            /// Trace.
+            /// </summary>
+            /// <returns>An IDictionary form of the memento.</returns>
             public IDictionary GetDictionary(){
                 IDictionary retval = new System.Collections.Specialized.ListDictionary();
                 retval.Add("Name",m_materialType.Name);
@@ -702,12 +744,17 @@ namespace Highpoint.Sage.Materials.Chemistry {
 				return retval;
             }
 
-            public bool Equals(IMemento otherGuy){
-                if ( otherGuy == null ) return false;
-                if ( this == otherGuy ) return true;
-                if ( !(otherGuy is SubstanceMemento) ) return false;
+            /// <summary>
+            /// Ascertains equality between this one and the other one.
+            /// </summary>
+            /// <param name="otherOne">The other one.</param>
+            /// <returns><c>true</c> if this one and the other one are equal, <c>false</c> otherwise.</returns>
+            public bool Equals(IMemento otherOne){
+                if ( otherOne == null ) return false;
+                if ( this == otherOne ) return true;
+                if ( !(otherOne is SubstanceMemento) ) return false;
 
-                SubstanceMemento smog = (SubstanceMemento)otherGuy;
+                SubstanceMemento smog = (SubstanceMemento)otherOne;
                 
                 bool eq = ( m_mass==smog.m_mass && m_temperature==smog.m_temperature && m_materialType==smog.m_materialType );
 
@@ -728,11 +775,11 @@ namespace Highpoint.Sage.Materials.Chemistry {
             /// This event is fired once this memento has completed its Load(ISupportsMementos ism) invocation.
             /// </summary>
             public event MementoEvent OnLoadCompleted;
-            
+
             /// <summary>
             /// This holds a reference to the memento, if any, that contains this memento.
             /// </summary>
-            /// <value></value>
+            /// <value>The parent.</value>
             public IMemento Parent { get; set; }
 	    }
 
@@ -785,7 +832,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
         public static IComparer<Substance> ByMassThenName { get; } = new ByMassThenNameComparer();
 
 
-        class ByMassComparer : IComparer<Substance>
+        private class ByMassComparer : IComparer<Substance>
         {
 
             #region IComparer<Substance> Members
@@ -798,7 +845,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
             #endregion
         }
 
-        class ByMassThenNameComparer : IComparer<Substance>
+        private class ByMassThenNameComparer : IComparer<Substance>
         {
 
             #region IComparer<Substance> Members

@@ -2399,7 +2399,7 @@ namespace Highpoint.Sage.Mathematics {
     /// <summary>
     /// Implements a linear CDF with an X-range of (0.0-1.0]
     /// </summary>
-    class Linear : ICDF {
+    public class Linear : ICDF {
         /// <summary>
         /// Returns the X-value variate from a Linear CDF that corresponds to the value of 'linear'.
         /// </summary>
@@ -2452,7 +2452,7 @@ namespace Highpoint.Sage.Mathematics {
     /// Implements an empirical CDF. The xValues passed in will be in the interval of [0.0,1.0), and
     /// the yValues passed in will be empirically-determined data points.
     /// </summary>
-    class EmpiricalCDF : ICDF {
+    public class EmpiricalCDF : ICDF {
         private readonly SmallDoubleInterpolable m_empirical;
 
         /// <summary>
@@ -2517,14 +2517,32 @@ namespace Highpoint.Sage.Mathematics {
 
     }
 
-    class PoissonCDF : ICDF {
-        private  SmallDoubleInterpolable m_sdi;
+    /// <summary>
+    /// A Poisson Cumulative Density Function.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.Mathematics.ICDF" />
+    public class PoissonCDF : ICDF {
+        /// <summary>
+        /// The m SDI
+        /// </summary>
+        private SmallDoubleInterpolable m_sdi;
 
         // ReSharper disable once InconsistentNaming
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PoissonCDF"/> class.
+        /// </summary>
+        /// <param name="lambda">The lambda.</param>
+        /// <param name="outerLimit">The outer limit.</param>
         public PoissonCDF(double lambda, double outerLimit) {
             if (!LookupTableInitialization(lambda, outerLimit)) ComputationalInitialization(lambda, outerLimit);
         }
 
+        /// <summary>
+        /// Lookups the table initialization.
+        /// </summary>
+        /// <param name="lambda">The lambda.</param>
+        /// <param name="outerLimit">The outer limit.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool LookupTableInitialization(double lambda, double outerLimit)
         {
             List<double> xValues = PoissonCDFLookupTable.ForLambda(lambda);
@@ -2536,6 +2554,12 @@ namespace Highpoint.Sage.Mathematics {
             return true;
         }
 
+        /// <summary>
+        /// Computationals the initialization.
+        /// </summary>
+        /// <param name="_lambda">The lambda.</param>
+        /// <param name="outerLimit">The outer limit.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool ComputationalInitialization(double _lambda, double outerLimit)
         {
             double lambda = _lambda;
@@ -2564,13 +2588,25 @@ namespace Highpoint.Sage.Mathematics {
 
         #region ICDF Members
 
+        /// <summary>
+        /// Returns the X-value variate from the implementing CDF that corresponds to the value of 'linear'.
+        /// </summary>
+        /// <param name="linear">A double in the range of (0.0-1.0].</param>
+        /// <returns>System.Double.</returns>
         public double GetVariate(double linear) {
             return Math.Round(m_sdi.GetYValue(linear)+0.5); // Find the nearest integer value.
         }
 
         #endregion
 
+        /// <summary>
+        /// The m factorials
+        /// </summary>
         private double[] m_factorials;
+        /// <summary>
+        /// Initializes the factorials.
+        /// </summary>
+        /// <param name="max">The maximum.</param>
         private void InitFactorials(int max) {
             m_factorials = new double[max + 1];
             double f = 1;
@@ -2581,6 +2617,11 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
+        /// <summary>
+        /// Factorials the specified x.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <returns>System.Double.</returns>
         private double Factorial(int x) {
             return m_factorials[x];
         }
@@ -2588,9 +2629,24 @@ namespace Highpoint.Sage.Mathematics {
 
     }
 
-    class UniformCDF : ICDF {
+    /// <summary>
+    /// A Uniform Cumulative Density Function.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.Mathematics.ICDF" />
+    public class UniformCDF : ICDF {
+        /// <summary>
+        /// The m minimum
+        /// </summary>
         readonly double m_min;
+        /// <summary>
+        /// The m dx
+        /// </summary>
         readonly double m_dx;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UniformCDF"/> class.
+        /// </summary>
+        /// <param name="min">The minimum.</param>
+        /// <param name="max">The maximum.</param>
         public UniformCDF(double min, double max) {
             m_min = min;
             m_dx = ( max - min );
@@ -2598,6 +2654,11 @@ namespace Highpoint.Sage.Mathematics {
 
         #region ICDF Members
 
+        /// <summary>
+        /// Returns the X-value variate from the implementing CDF that corresponds to the value of 'linear'.
+        /// </summary>
+        /// <param name="linear">A double in the range of (0.0-1.0].</param>
+        /// <returns>System.Double.</returns>
         public double GetVariate(double linear) {
             return m_min + ( m_dx * linear );
         }
@@ -2606,9 +2667,24 @@ namespace Highpoint.Sage.Mathematics {
 
     }
 
-    class CauchyCDF : ICDF {
+    /// <summary>
+    /// A Cauchy Cumulative Density Function.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.Mathematics.ICDF" />
+    public class CauchyCDF : ICDF {
+        /// <summary>
+        /// The m location
+        /// </summary>
         readonly double m_location;
+        /// <summary>
+        /// The m shape
+        /// </summary>
         readonly double m_shape;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CauchyCDF"/> class.
+        /// </summary>
+        /// <param name="location">The location.</param>
+        /// <param name="shape">The shape.</param>
         public CauchyCDF(double location, double shape) {
             m_location = location;
             m_shape = shape;
@@ -2616,12 +2692,236 @@ namespace Highpoint.Sage.Mathematics {
 
         #region ICDF Members
 
+        /// <summary>
+        /// Returns the X-value variate from the implementing CDF that corresponds to the value of 'linear'.
+        /// </summary>
+        /// <param name="linear">A double in the range of (0.0-1.0].</param>
+        /// <returns>System.Double.</returns>
         public double GetVariate(double linear) {
             return m_location + ( m_shape * ( Math.Tan(( linear - 0.5 ) * Math.PI) ) );
         }
 
         #endregion
 
+    }
+
+    // 
+
+    /// <summary>
+    /// A Weibull Cumulative Density Function. See http://www.itl.nist.gov/div898/handbook/eda/section3/eda366.htm
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.Mathematics.ICDF" />
+    public class WeibullCDF : ICDF {
+        /// <summary>
+        /// The SmallDoubleInterpolable along which the CDF is plotted.
+        /// </summary>
+        private readonly SmallDoubleInterpolable m_sdi;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeibullCDF"/> class.
+        /// </summary>
+        /// <param name="gamma">The gamma.</param>
+        /// <param name="nBins">The n bins.</param>
+        public WeibullCDF(double gamma, int nBins) {
+            double increment = 1.0 / nBins;
+            double invGamma = 1.0 / gamma;
+            double[] cdfY = new double[nBins + 1];
+            double[] cdfX = new double[nBins + 1];
+            int i;
+            for (i = 0 ; i < nBins - 12 ; i++) {
+                // Since we provide the Y, and expect to pull the X, we must
+                // invert the CDF - i.e. insert the Y values into the x array,
+                // and vice-versa. That lets us provide the Y value of the CDF into
+                // the x-parameter of the GetYValue(...) call on the interpolator,
+                // and receive the actual X value that would deliver that Y value.
+                cdfX[i] = i * increment;
+                cdfY[i] = Math.Pow(-Math.Log(1.0 - cdfX[i]), invGamma);
+            }
+            for (i = nBins - 12 ; i < nBins ; i++) {
+                cdfX[i] = cdfX[i - 1] + ( 0.5 * ( 1 - cdfX[i - 1] ) );
+                cdfY[i] = Math.Pow(-Math.Log(1.0 - cdfX[i]), invGamma);
+            }
+
+            cdfX[i] = 1.0;
+            cdfY[i] = ( cdfY[i - 1] + ( 3 * ( cdfY[i - 1] - cdfY[i - 2] ) ) );
+
+            m_sdi = new SmallDoubleInterpolable(cdfX, cdfY);
+
+        }
+
+        #region ICDF Members
+
+        /// <summary>
+        /// Returns the X-value variate from the implementing CDF that corresponds to the value of 'linear'.
+        /// </summary>
+        /// <param name="linear">A double in the range of (0.0-1.0].</param>
+        /// <returns>System.Double.</returns>
+        public double GetVariate(double linear) {
+            return m_sdi.GetYValue(linear);
+        }
+
+        #endregion
+
+    }
+
+    /// <summary>
+    /// A Triangular Cumulative Density Function.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.Mathematics.ICDF" />
+    public class TriangularCDF : ICDF {
+
+        #region Private Fields
+        /// <summary>
+        /// The m lo
+        /// </summary>
+        private readonly double m_lo;
+        /// <summary>
+        /// The m hi
+        /// </summary>
+        private readonly double m_hi;
+        /// <summary>
+        /// The m PCT lo
+        /// </summary>
+        private readonly double m_pctLo;
+        /// <summary>
+        /// The m PCT hi
+        /// </summary>
+        private readonly double m_pctHi;
+        /// <summary>
+        /// The m lo range
+        /// </summary>
+        private readonly double m_loRange;
+        /// <summary>
+        /// The m hi range
+        /// </summary>
+        private readonly double m_hiRange;
+        #endregion
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TriangularCDF"/> class.
+        /// </summary>
+        /// <param name="lowBound">The low bound.</param>
+        /// <param name="peak">The peak.</param>
+        /// <param name="highBound">The high bound.</param>
+        public TriangularCDF(double lowBound, double peak, double highBound) {
+            //			m_sdi = new SmallDoubleInterpolable(3);
+            //			m_sdi.SetYValue(0,lowBound);
+            //			m_sdi.SetYValue(.5,peak);
+            //			m_sdi.SetYValue(1.0,highBound);
+            m_lo = lowBound;
+            m_hi = highBound;
+            m_loRange = peak - lowBound;
+            m_hiRange = highBound - peak;
+            m_pctLo = ( peak - lowBound ) / ( highBound - lowBound );
+            m_pctHi = 1.0 - m_pctLo;
+        }
+        #region ICDF Members
+
+        /// <summary>
+        /// Returns the X-value variate from the implementing CDF that corresponds to the value of 'linear'.
+        /// </summary>
+        /// <param name="linear">A double in the range of (0.0-1.0].</param>
+        /// <returns>System.Double.</returns>
+        public double GetVariate(double linear) {
+            double retval;
+            if (linear <= m_pctLo) {
+                linear /= m_pctLo; // back to a [0..1)
+                retval = m_lo + ( Math.Sqrt(linear) * m_loRange );
+            } else {
+                linear = ( 1.0 - linear ) / m_pctHi; // back to a [0..1)
+                retval = m_hi - ( Math.Sqrt(linear) * m_hiRange );
+            }
+            return retval;
+        }
+
+        #endregion
+
+    }
+
+    /// <summary>
+    /// A Binomial Cumulative Density Function.
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.Mathematics.ICDF" />
+    public class BinomialCDF : ICDF {
+        /// <summary>
+        /// The m CDF
+        /// </summary>
+        private readonly SmallDoubleInterpolable m_cdf;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinomialCDF"/> class.
+        /// </summary>
+        /// <param name="probability">The probability.</param>
+        /// <param name="numberOfOpps">The number of opps.</param>
+        public BinomialCDF(double probability, int numberOfOpps) {
+            double p = probability;
+            int n = numberOfOpps;
+
+            //			double[] xVals = new double[n+1]; // This will be [0,1];
+            //			double[] yVals = new double[n+1]; // This will be [0,numberOfOpps];
+            ArrayList xVals = new ArrayList();
+            ArrayList yVals = new ArrayList();
+
+
+            InitFactorials(numberOfOpps);
+            double cumP = 0.0; // cumulative probability.
+            for (int x = 0 ; x <= n ; x++) {
+                double tmp = cumP + ( Factorial(n) / ( Factorial(x) * Factorial(n - x) ) ) * Math.Pow(p, x) * Math.Pow(1 - p, n - x);
+                if (tmp != cumP && tmp != 1.0) {
+                    yVals.Add((double)x);
+                    cumP = tmp;
+                    xVals.Add(cumP);
+                } else {
+                    yVals.Add((double)n);
+                    xVals.Add(1.0);
+                    break;
+                }
+            }
+
+            double[] xvals = (double[])xVals.ToArray(typeof(double));
+            double[] yvals = (double[])yVals.ToArray(typeof(double));
+            m_cdf = new SmallDoubleInterpolable(xvals, yvals);
+
+        }
+
+        /// <summary>
+        /// The m factorials
+        /// </summary>
+        private double[] m_factorials;
+        /// <summary>
+        /// Initializes the factorials.
+        /// </summary>
+        /// <param name="max">The maximum.</param>
+        private void InitFactorials(int max) {
+            m_factorials = new double[max + 1];
+            double f = 1;
+            m_factorials[0] = 1;
+            for (int i = 1 ; i <= max ; i++) {
+                f *= i;
+                m_factorials[i] = f;
+            }
+        }
+
+        /// <summary>
+        /// Factorials the specified x.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <returns>System.Double.</returns>
+        private double Factorial(int x) {
+            return m_factorials[x];
+        }
+
+        #region ICDF Members
+
+        /// <summary>
+        /// Returns the X-value variate from the implementing CDF that corresponds to the value of 'linear'.
+        /// </summary>
+        /// <param name="linear">A double in the range of (0.0-1.0].</param>
+        /// <returns>System.Double.</returns>
+        public double GetVariate(double linear) {
+            return m_cdf.GetYValue(linear);
+        }
+
+        #endregion
     }
 
     #region Unneeded Gaussian CDF. All commented out.
@@ -2675,145 +2975,6 @@ namespace Highpoint.Sage.Mathematics {
 	*/
     #endregion
 
-    // http://www.itl.nist.gov/div898/handbook/eda/section3/eda366.htm
-
-    class WeibullCDF : ICDF {
-        private readonly SmallDoubleInterpolable m_sdi;
-
-        public WeibullCDF(double gamma, int nBins) {
-            double increment = 1.0 / nBins;
-            double invGamma = 1.0 / gamma;
-            double[] cdfY = new double[nBins + 1];
-            double[] cdfX = new double[nBins + 1];
-            int i;
-            for (i = 0 ; i < nBins - 12 ; i++) {
-                // Since we provide the Y, and expect to pull the X, we must
-                // invert the CDF - i.e. insert the Y values into the x array,
-                // and vice-versa. That lets us provide the Y value of the CDF into
-                // the x-parameter of the GetYValue(...) call on the interpolator,
-                // and receive the actual X value that would deliver that Y value.
-                cdfX[i] = i * increment;
-                cdfY[i] = Math.Pow(-Math.Log(1.0 - cdfX[i]), invGamma);
-            }
-            for (i = nBins - 12 ; i < nBins ; i++) {
-                cdfX[i] = cdfX[i - 1] + ( 0.5 * ( 1 - cdfX[i - 1] ) );
-                cdfY[i] = Math.Pow(-Math.Log(1.0 - cdfX[i]), invGamma);
-            }
-
-            cdfX[i] = 1.0;
-            cdfY[i] = ( cdfY[i - 1] + ( 3 * ( cdfY[i - 1] - cdfY[i - 2] ) ) );
-
-            m_sdi = new SmallDoubleInterpolable(cdfX, cdfY);
-
-        }
-
-        #region ICDF Members
-
-        public double GetVariate(double linear) {
-            return m_sdi.GetYValue(linear);
-        }
-
-        #endregion
-
-    }
-
-    class TriangularCDF : ICDF {
-
-        #region Private Fields
-        private readonly double m_lo;
-        private readonly double m_hi;
-        private readonly double m_pctLo;
-        private readonly double m_pctHi;
-        private readonly double m_loRange;
-        private readonly double m_hiRange; 
-        #endregion
-
-        public TriangularCDF(double lowBound, double peak, double highBound) {
-            //			m_sdi = new SmallDoubleInterpolable(3);
-            //			m_sdi.SetYValue(0,lowBound);
-            //			m_sdi.SetYValue(.5,peak);
-            //			m_sdi.SetYValue(1.0,highBound);
-            m_lo = lowBound;
-            m_hi = highBound;
-            m_loRange = peak - lowBound;
-            m_hiRange = highBound - peak;
-            m_pctLo = ( peak - lowBound ) / ( highBound - lowBound );
-            m_pctHi = 1.0 - m_pctLo;
-        }
-        #region ICDF Members
-
-        public double GetVariate(double linear) {
-            double retval;
-            if (linear <= m_pctLo) {
-                linear /= m_pctLo; // back to a [0..1)
-                retval = m_lo + ( Math.Sqrt(linear) * m_loRange );
-            } else {
-                linear = ( 1.0 - linear ) / m_pctHi; // back to a [0..1)
-                retval = m_hi - ( Math.Sqrt(linear) * m_hiRange );
-            }
-            return retval;
-        }
-
-        #endregion
-
-    }
-
-    class BinomialCDF : ICDF {
-        private readonly SmallDoubleInterpolable m_cdf;
-        public BinomialCDF(double probability, int numberOfOpps) {
-            double p = probability;
-            int n = numberOfOpps;
-
-            //			double[] xVals = new double[n+1]; // This will be [0,1];
-            //			double[] yVals = new double[n+1]; // This will be [0,numberOfOpps];
-            ArrayList xVals = new ArrayList();
-            ArrayList yVals = new ArrayList();
-
-
-            InitFactorials(numberOfOpps);
-            double cumP = 0.0; // cumulative probability.
-            for (int x = 0 ; x <= n ; x++) {
-                double tmp = cumP + ( Factorial(n) / ( Factorial(x) * Factorial(n - x) ) ) * Math.Pow(p, x) * Math.Pow(1 - p, n - x);
-                if (tmp != cumP && tmp != 1.0) {
-                    yVals.Add((double)x);
-                    cumP = tmp;
-                    xVals.Add(cumP);
-                } else {
-                    yVals.Add((double)n);
-                    xVals.Add(1.0);
-                    break;
-                }
-            }
-
-            double[] xvals = (double[])xVals.ToArray(typeof(double));
-            double[] yvals = (double[])yVals.ToArray(typeof(double));
-            m_cdf = new SmallDoubleInterpolable(xvals, yvals);
-
-        }
-
-        private double[] m_factorials;
-        private void InitFactorials(int max) {
-            m_factorials = new double[max + 1];
-            double f = 1;
-            m_factorials[0] = 1;
-            for (int i = 1 ; i <= max ; i++) {
-                f *= i;
-                m_factorials[i] = f;
-            }
-        }
-
-        private double Factorial(int x) {
-            return m_factorials[x];
-        }
-
-        #region ICDF Members
-
-        public double GetVariate(double linear) {
-            return m_cdf.GetYValue(linear);
-        }
-
-        #endregion
-    }
     #endregion
 
     /// <summary>

@@ -294,7 +294,7 @@ namespace Highpoint.Sage.SimCore {
 
         #endregion
 
-        class KickoffMgr {
+        private class KickoffMgr {
             private readonly IExecutive m_exec;
             private readonly ExecController m_parent;
             public KickoffMgr(ExecController parent, IExecutive exec) {

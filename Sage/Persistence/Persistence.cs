@@ -608,76 +608,79 @@ namespace Highpoint.Sage.Persistence
 
         }
 
-        class StringXmlSerializer : PrimitiveXmlSerializer{
+        private class StringXmlSerializer : PrimitiveXmlSerializer{
             public StringXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(string)){}
             protected override object ObjectFromString(string str){ return str; }
         }
 
-        class DoubleXmlSerializer : PrimitiveXmlSerializer{
+        private class DoubleXmlSerializer : PrimitiveXmlSerializer{
             public DoubleXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(double)){}
             protected override object ObjectFromString(string str){ return double.Parse(str); }
         }
-        class LongXmlSerializer : PrimitiveXmlSerializer{
+        private class LongXmlSerializer : PrimitiveXmlSerializer{
             public LongXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(long)){}
             protected override object ObjectFromString(string str){ return long.Parse(str); }
         }
-        class ShortXmlSerializer : PrimitiveXmlSerializer{
+        private class ShortXmlSerializer : PrimitiveXmlSerializer{
             public ShortXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(short)){}
             protected override object ObjectFromString(string str){ return short.Parse(str); }
         }
-        class UShortXmlSerializer : PrimitiveXmlSerializer{
+
+        private class UShortXmlSerializer : PrimitiveXmlSerializer{
             public UShortXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(ushort)){}
             protected override object ObjectFromString(string str){ return ushort.Parse(str); }
         }
-        class IntXmlSerializer : PrimitiveXmlSerializer{
+
+        private class IntXmlSerializer : PrimitiveXmlSerializer{
             public IntXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(int)){}
             protected override object ObjectFromString(string str){ return int.Parse(str); }
         }
-        class UintXmlSerializer : PrimitiveXmlSerializer{
+
+        private class UintXmlSerializer : PrimitiveXmlSerializer{
             public UintXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(uint)){}
             protected override object ObjectFromString(string str){ return uint.Parse(str); }
         }
-        class SByteXmlSerializer : PrimitiveXmlSerializer{
+
+        private class SByteXmlSerializer : PrimitiveXmlSerializer{
             public SByteXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(sbyte)){}
             protected override object ObjectFromString(string str){ return sbyte.Parse(str); }
         }
 
-        class ByteXmlSerializer : PrimitiveXmlSerializer{
+        private class ByteXmlSerializer : PrimitiveXmlSerializer{
             public ByteXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(byte)){}
             protected override object ObjectFromString(string str){ return byte.Parse(str); }
         }
 
-        class BoolXmlSerializer : PrimitiveXmlSerializer{
+        private class BoolXmlSerializer : PrimitiveXmlSerializer{
             public BoolXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(bool)){}
             protected override object ObjectFromString(string str){ return bool.Parse(str); }
         }
 
-        class GuidXmlSerializer : PrimitiveXmlSerializer{
+        private class GuidXmlSerializer : PrimitiveXmlSerializer{
             public GuidXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(Guid)){}
             //protected override string StringFromObject(object obj){ return ((TimeSpan)obj).ToString(; }
             protected override object ObjectFromString(string str){ return new Guid(str); }
         }
 
-        class TimeSpanXmlSerializer : PrimitiveXmlSerializer{
+        private class TimeSpanXmlSerializer : PrimitiveXmlSerializer{
             public TimeSpanXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(TimeSpan)){}
             //protected override string StringFromObject(object obj){ return ((TimeSpan)obj).ToString(; }
             protected override object ObjectFromString(string str){ return TimeSpan.Parse(str); }
         }
 
-        class DateTimeXmlSerializer : PrimitiveXmlSerializer{
+        private class DateTimeXmlSerializer : PrimitiveXmlSerializer{
             public DateTimeXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(DateTime)){}
             //protected override string StringFromObject(object obj){ return obj.ToString(); }
             protected override object ObjectFromString(string str){ return DateTime.Parse(str); }
         }
-        
-        class TypeXmlSerializer : PrimitiveXmlSerializer{
+
+        private class TypeXmlSerializer : PrimitiveXmlSerializer{
             public TypeXmlSerializer(XmlSerializationContext xmlsc):base(xmlsc,typeof(Type)){}
             //protected override string StringFromObject(object obj){ return obj.ToString(); }
             protected override object ObjectFromString(string str){ return Type.GetType(str); }
         }
-        
-        
-        class HashtableXmlSerializer : ISerializer {
+         
+        private class HashtableXmlSerializer : ISerializer {
             private readonly XmlSerializationContext m_xmlsc;
             private readonly Type m_type = typeof(Hashtable);
             public HashtableXmlSerializer(XmlSerializationContext xmlsc){
@@ -726,8 +729,8 @@ namespace Highpoint.Sage.Persistence
             #endregion
 
         }
-        
-        class ArrayListXmlSerializer : ISerializer {
+
+        private class ArrayListXmlSerializer : ISerializer {
             private readonly XmlSerializationContext m_xmlsc;
             private readonly Type m_type = typeof(ArrayList);
             public ArrayListXmlSerializer(XmlSerializationContext xmlsc){
@@ -780,7 +783,7 @@ namespace Highpoint.Sage.Persistence
         // the array takes primitives, we throw an exception. Run zTestPersistence's 
         // new DeepPersistenceTester().TestArrayPersistence(); to see the issue in action.
         // ReSharper disable once UnusedMember.Local
-        class ArrayXmlSerializer : ISerializer { 
+        private class ArrayXmlSerializer : ISerializer { 
             private readonly XmlSerializationContext m_xmlsc;
             private readonly Type m_type = typeof(Array);
             public ArrayXmlSerializer(XmlSerializationContext xmlsc){
@@ -876,7 +879,7 @@ namespace Highpoint.Sage.Persistence
 
         }
 
-        class DelegateXmlSerializer : ISerializer {
+        private class DelegateXmlSerializer : ISerializer {
             private readonly XmlSerializationContext m_xmlsc;
             public DelegateXmlSerializer(XmlSerializationContext xmlsc){
                 m_xmlsc = xmlsc;
@@ -913,7 +916,7 @@ namespace Highpoint.Sage.Persistence
             #endregion
 
         }
-        class DictionaryEntryXmlSerializer : ISerializer {
+        private class DictionaryEntryXmlSerializer : ISerializer {
             private readonly XmlSerializationContext m_xmlsc;
             private readonly Type m_type = typeof(DictionaryEntry);
             public DictionaryEntryXmlSerializer(XmlSerializationContext xmlsc){
@@ -949,7 +952,7 @@ namespace Highpoint.Sage.Persistence
             #endregion
 
         }
-        class EnumXmlSerializer : ISerializer {
+        private class EnumXmlSerializer : ISerializer {
             private readonly XmlSerializationContext m_xmlsc;
             public EnumXmlSerializer(XmlSerializationContext xmlsc){
                 m_xmlsc = xmlsc;

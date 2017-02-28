@@ -225,7 +225,7 @@ namespace Highpoint.Sage.Dependencies {
             return new ArrayList(va);
         }
 
-        class DefaultVertexComparer : IComparer {
+        public class DefaultVertexComparer : IComparer {
             public int Compare(object x, object y) {
                 VertexRecord v1 = (VertexRecord)x;
                 VertexRecord v2 = (VertexRecord)y;

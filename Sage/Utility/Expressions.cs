@@ -10,8 +10,6 @@ using System.Linq;
 using System.Reflection;
 
 namespace Highpoint.Sage.SimCore {
-// The compiler is not a part of the Compact framework.
-#if !COMPACT_FRAMEWORK
 
     /// <summary>
     /// An exception that encapsulates the errors encountered in trying to compile an expression.
@@ -243,5 +241,4 @@ namespace Highpoint.Sage.SimCore {
             return "System.Double Result = System.Double.NaN;\r\n\t\t"+body;
         }
     }
-#endif
 }

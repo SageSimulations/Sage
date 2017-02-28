@@ -186,9 +186,6 @@
     <Compile Include="TestChemistry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TestCustomSortedList.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TestDAGCycleChecker.cs">
       <SubType>Code</SubType>
     </Compile>

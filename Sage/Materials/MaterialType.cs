@@ -444,9 +444,14 @@ namespace Highpoint.Sage.Materials.Chemistry {
 			return substance;
         }
 
-        public bool Equals(MaterialType mt){
-			if ( !m_name.Equals(mt.m_name) ) return false;
-			if ( !m_guid.Equals(mt.m_guid) ) return false;
+        /// <summary>
+        /// Ascertains equality between this one and the other one.
+        /// </summary>
+        /// <param name="otherOne">The other one.</param>
+        /// <returns><c>true</c> if this one and the other one are equal, <c>false</c> otherwise.</returns>
+        public bool Equals(MaterialType otherOne){
+			if ( !m_name.Equals(otherOne.m_name) ) return false;
+			if ( !m_guid.Equals(otherOne.m_guid) ) return false;
 			return true;
         }
 

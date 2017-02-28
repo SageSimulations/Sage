@@ -8,9 +8,6 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Collections.Generic;
 // ReSharper disable RedundantDefaultMemberInitializer
-#if COMPACT_FRAMEWORK
-using SortedList = Highpoint.Sage.CF.SortedList;
-#endif
 
 namespace Highpoint.Sage.SimCore {
 
@@ -320,7 +317,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         }
 
         #region Join Handling
-        class JoinSet {
+        private class JoinSet {
 
             private Executive m_exec;
             private List<long> m_eventCodes;

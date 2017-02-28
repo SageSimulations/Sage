@@ -135,7 +135,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
             return GetSsmData(pfcEc).InstanceExecutionContexts;
         }
 
-        class SsmData {
+        private class SsmData {
             private StepState m_state = s_initial_State;
             private Queue<IDetachableEventController> m_qIdec = new Queue<IDetachableEventController>();
             private Guid m_nextExecutionInstanceUid = Guid.Empty;
@@ -490,7 +490,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         /// PFCStepJoiner, when RunAndWait is called, halts the step that owns the rootStepPfcec, and waits for completion of
         /// each child PFC (these are to have been actions of the root step) before resuming the parent step.
         /// </summary>
-        class PfcStepJoiner {
+        private class PfcStepJoiner {
 
             #region Private Fields
             private IModel m_model;
@@ -537,7 +537,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
     public delegate bool ExecutableCondition(object graphContext, TransitionStateMachine tsm);
 
     public class TransitionStateMachine {
-        class TsmData {
+        private class TsmData {
             private long m_nextExpressionEvaluation;
             private TransitionState m_state;
             public TsmData() {
