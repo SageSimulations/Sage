@@ -1,0 +1,61 @@
+<GhostDoc>
+<IgnoreFilePatterns>
+  <IgnoreFilePattern>*.min.js</IgnoreFilePattern>
+  <IgnoreFilePattern>jquery*.js</IgnoreFilePattern>
+</IgnoreFilePatterns>
+  <SpellChecker>
+    <IncludeExtensions>
+    </IncludeExtensions>
+    <IgnoreExtensions>
+    </IgnoreExtensions>
+    <IgnoreFiles>
+    </IgnoreFiles>
+  </SpellChecker>
+<HelpConfigurations selected="HelpFile">
+  <HelpConfiguration name="HelpFile">
+    <OutputPath>..\..\..\SageHelp</OutputPath>
+    <CleanupOutputPath>true</CleanupOutputPath>
+    <HelpFileName>Sage4</HelpFileName>
+    <HelpFileNamingMethod>MemberName</HelpFileNamingMethod>
+    <ImageFolderPath>.\Sage\Media</ImageFolderPath>
+    <Theme>Classic</Theme>
+    <HtmlFormats>
+      <HtmlHelp>true</HtmlHelp>
+      <MSHelpViewer>false</MSHelpViewer>
+      <MSHelp2>false</MSHelp2>
+      <Website>true</Website>
+    </HtmlFormats>
+    <IncludeScopes>
+      <Public>true</Public>
+      <Internal>false</Internal>
+      <Protected>true</Protected>
+      <Private>false</Private>
+      <Inherited>true</Inherited>
+      <InheritedFromReferences>true</InheritedFromReferences>
+      <EnableTags>false</EnableTags>
+      <TagList />
+    </IncludeScopes>
+    <SyntaxLanguages>
+      <CSharp>true</CSharp>
+      <VisualBasic>false</VisualBasic>
+      <CPlusPlus>false</CPlusPlus>
+    </SyntaxLanguages>
+    <ResolveCrefLinks>true</ResolveCrefLinks>
+    <HeaderText>Sage Modeling and Simulation Library</HeaderText>
+    <FooterText>(c) 2002-2016, Highpoint Software Systems, LLC</FooterText>
+    <ConceptualContent>
+      <ContentLayout file="Sage4.content" folder="Sage\Content\" />
+      <MediaContent file="Sage4.MediaContent.xml" folder="Sage\Media\" />
+      <CodeSnippetsFile>Sage4.snippets</CodeSnippetsFile>
+      <TokensFile>Sage4.tokens</TokensFile>
+      <AdditionalContentFolder>Sage\Content\</AdditionalContentFolder>
+    </ConceptualContent>
+    <SelectedProjects>
+      <SelectedProject>Sage4</SelectedProject>
+    </SelectedProjects>
+  </HelpConfiguration>
+</HelpConfigurations>
+<GeneralProperties>
+  <SearchInheritedCommentsOnlyWithinProject>False</SearchInheritedCommentsOnlyWithinProject>
+</GeneralProperties>
+</GhostDoc>
