@@ -3,6 +3,7 @@
 #define TIME_BOUNDED
 
 using System;
+using System.CodeDom;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics;
@@ -14,6 +15,18 @@ using Highpoint.Sage.Licensing;
 using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.SimCore {
+
+    public enum ExecType
+    {
+        /// <summary>
+        /// The full featured executive is multi-threaded, and supports the full API.
+        /// </summary>
+        FullFeatured,
+        /// <summary>
+        /// The single threaded executive obtains highest performance through a limited feature set.
+        /// </summary>
+        SingleThreaded
+    }
 
     /// <summary>
     /// ExecFactory produces instances of objects that implement IExecutive.
@@ -79,6 +92,34 @@ namespace Highpoint.Sage.SimCore {
             return CreateExecutive(Guid.NewGuid());
         }
 
+        /// <summary>
+        /// Creates an executive of the built-in type specified by the provided enumeration.
+        /// </summary>
+        /// <param name="execType">Type of the executive.</param>
+        /// <returns>IExecutive.</returns>
+        public IExecutive CreateExecutive(ExecType execType)
+        {
+            return CreateExecutive(execType, Guid.NewGuid());
+        }
+
+        /// <summary>
+        /// Creates an executive of the built-in type specified by the provided enumeration.
+        /// </summary>
+        /// <param name="execType">Type of the execute.</param>
+        /// <param name="guid">The unique identifier.</param>
+        /// <returns>IExecutive.</returns>
+        public IExecutive CreateExecutive(ExecType execType, Guid guid)
+        {
+            switch(execType)
+            {
+                case ExecType.FullFeatured:
+                    return CreateExecutive(typeof (Highpoint.Sage.SimCore.Executive).FullName, guid);
+                case ExecType.SingleThreaded:
+                    return CreateExecutive(typeof(Highpoint.Sage.SimCore.ExecutiveFastLight).FullName, guid);
+                default:
+                    throw new ApplicationException("Attempt to create an instance of an unsupported executive (" + execType + ").");
+            }
+        }
 
         public IExecutive CreateExecutive(string typeName, Guid guid) {
 

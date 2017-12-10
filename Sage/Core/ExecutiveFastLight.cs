@@ -143,16 +143,24 @@ namespace Highpoint.Sage.SimCore {
         /// <param name="execGuid">The GUID by which this executive will be known.</param>
         public ExecutiveFastLight(Guid execGuid) {
             NameValueCollection nvc = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("Sage");
-            if (nvc["IgnoreCausalityViolations"] != null)
-                _ignoreCausalityViolations = bool.Parse(nvc["IgnoreCausalityViolations"]);
+            if (nvc != null)
+            {
+                if (nvc["IgnoreCausalityViolations"] != null)
+                    _ignoreCausalityViolations = bool.Parse(nvc["IgnoreCausalityViolations"]);
 
 
-            nvc = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("diagnostics");
-            string strEba = nvc["ExecBreakAt"];
-            if (!m_hasTarget && strEba != null && strEba.Length > 0) {
-                _targetdatestr = strEba;
-                m_targetdate = DateTime.Parse(_targetdatestr);
-                m_hasTarget = true;
+                nvc = (NameValueCollection) System.Configuration.ConfigurationManager.GetSection("diagnostics");
+                string strEba = nvc["ExecBreakAt"];
+                if (!m_hasTarget && strEba != null && strEba.Length > 0)
+                {
+                    _targetdatestr = strEba;
+                    m_targetdate = DateTime.Parse(_targetdatestr);
+                    m_hasTarget = true;
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Sage initialization section found in app.config.");
             }
 
             m_execGuid = execGuid;
@@ -241,7 +249,7 @@ namespace Highpoint.Sage.SimCore {
 
         /// <summary>
         /// Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
-        /// to be zero, and the userData object is assumeds to be null.
+        /// to be zero, and the userData object is assumed to be null.
         /// </summary>
         /// <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
         /// <param name="when">The date &amp; time at which the callback is to be made.</param>

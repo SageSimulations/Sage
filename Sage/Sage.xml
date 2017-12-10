@@ -100,6 +100,16 @@
             <param name="exec"></param>
             <param name="userData"></param>
         </member>
+        <member name="F:Highpoint.Sage.SimCore.ExecType.FullFeatured">
+            <summary>
+            The full featured executive is multi-threaded, and supports the full API.
+            </summary>
+        </member>
+        <member name="F:Highpoint.Sage.SimCore.ExecType.SingleThreaded">
+            <summary>
+            The single threaded executive obtains highest performance through a limited feature set.
+            </summary>
+        </member>
         <member name="T:Highpoint.Sage.SimCore.ExecFactory">
             <summary>
             ExecFactory produces instances of objects that implement IExecutive.
@@ -115,6 +125,21 @@
             Creates a copy of the default type of executive.
             </summary>
             <returns>An instance of the default executive type.</returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.ExecFactory.CreateExecutive(Highpoint.Sage.SimCore.ExecType)">
+            <summary>
+            Creates an executive of the built-in type specified by the provided enumeration.
+            </summary>
+            <param name="execType">Type of the executive.</param>
+            <returns>IExecutive.</returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.ExecFactory.CreateExecutive(Highpoint.Sage.SimCore.ExecType,System.Guid)">
+            <summary>
+            Creates an executive of the built-in type specified by the provided enumeration.
+            </summary>
+            <param name="execType">Type of the execute.</param>
+            <param name="guid">The unique identifier.</param>
+            <returns>IExecutive.</returns>
         </member>
         <member name="M:Highpoint.Sage.SimCore.ExecFactory.CreateExecutive(System.Guid)">
             <summary>
@@ -180,7 +205,7 @@
         <member name="M:Highpoint.Sage.SimCore.Executive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
-            to be zero, and the userData object is assumeds to be null.
+            to be zero, and the userData object is assumed to be null.
             </summary>
             <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
             <param name="when">The date &amp; time at which the callback is to be made.</param>
@@ -482,7 +507,7 @@
         <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
-            to be zero, and the userData object is assumeds to be null.
+            to be zero, and the userData object is assumed to be null.
             </summary>
             <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
             <param name="when">The date &amp; time at which the callback is to be made.</param>
@@ -956,7 +981,7 @@
         <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
-            to be zero, and the userData object is assumeds to be null.
+            to be zero, and the userData object is assumed to be null.
             </summary>
             <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
             <param name="when">The date &amp; time at which the callback is to be made.</param>
@@ -1783,6 +1808,30 @@
             periods, start times and/or finish times.
             </summary>
         </member>
+        <member name="M:Highpoint.Sage.SimCore.Metronome_Simple.CreateMetronome(Highpoint.Sage.SimCore.IExecutive,System.DateTime,System.DateTime,System.TimeSpan)">
+            <summary>
+            Creates a metronome with the specified parameters. It uses a static factory method 
+            because if there is already an existing metronome with the same parameters, that 
+            metronome is returned, rather than creating another one - after all, the whole 
+            point is to avoid a large number of tick events on the executive's event list.
+            </summary>
+            <param name="exec">The executive that will issue the ticks.</param>
+            <param name="startAt">The time at which the metronome's ticks are to start.</param>
+            <param name="finishAfter">The time at which the metronome's ticks are to stop.</param>
+            <param name="period">The period of the ticking.</param>
+            <returns>A metronome that meets the criteria.</returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Metronome_Simple.CreateMetronome(Highpoint.Sage.SimCore.IExecutive,System.TimeSpan)">
+            <summary>
+            Creates a metronome with the specified parameters. It uses a static factory method 
+            because if there is already an existing metronome with the same parameters, that 
+            metronome is returned, rather than creating another one - after all, the whole 
+            point is to avoid a large number of tick events on the executive's event list.
+            </summary>
+            <param name="exec">The executive that will issue the ticks.</param>
+            <param name="period">The period of the ticking.</param>
+            <returns>Metronome_Simple.</returns>
+        </member>
         <member name="M:Highpoint.Sage.SimCore.Metronome_Simple.#ctor(Highpoint.Sage.SimCore.IExecutive,System.DateTime,System.DateTime,System.TimeSpan)">
             <summary>
             Constructor for the Metronome_Simple class.
@@ -1804,7 +1853,7 @@
             The tick event that is fired by this metronome. Simulation objects expecting to
             receive periodic notifications will receive them from this event. Note that there is
             no inferred sequence to these notifications. If a dependency order is required, then
-            the Metronone_Dependencies class should be used.
+            the Metronome_Dependencies class should be used.
             </summary>
         </member>
         <member name="T:Highpoint.Sage.SimCore.TaskProcessorListener">
@@ -3544,12 +3593,12 @@
             		if ( hde.IsLeaf ) {
             			Trace.Write(hde.Value.ToString());
             			if ( hde.Value is double ) {
-            	 			Trace.WriteLine(" &lt;NOTE: this is a double.&gt;"); 
+            	 			_Debug.WriteLine(" &lt;NOTE: this is a double.&gt;"); 
             			} else {
-            				Trace.WriteLine("");
+            				_Debug.WriteLine("");
             			}
             		} else {
-            			Trace.WriteLine("");
+            			_Debug.WriteLine("");
             			DumpEnumerable((IEnumerable)hde.Value,depth+1);
             		}
             	}
@@ -3945,7 +3994,7 @@
             </code>
             ...and this eval could later be called with:
             <code>
-            Trace.WriteLine(eval(3.0,4.0,5.0));
+            _Debug.WriteLine(eval(3.0,4.0,5.0));
             </code>
             which would result in 3.8 being written to the Trace.
             </summary>
@@ -21972,7 +22021,7 @@
             a way of having an entire model's sequence be repeatable without having to
             hard code all of the RC's seed values.</param>
             <param name="defaultBufferSize">The buffer size that will be applied to channels
-            that do not have an explicit buffer zsize specified. This provides a good way
+            that do not have an explicit buffer size specified. This provides a good way
             to switch the entire model's buffering scheme on or off at one location.</param>
         </member>
         <member name="M:Highpoint.Sage.Randoms.RandomServer.#ctor">
@@ -28269,48 +28318,6 @@
             Decompresses the string.
             </summary>
             <param name="compressedText">The compressed text.</param>
-            <returns></returns>
-        </member>
-        <member name="T:Highpoint.Sage.Utility.SysInfoOperations">
-            <summary>
-            Wrapper for some key System Info functions.
-            </summary>
-        </member>
-        <member name="M:Highpoint.Sage.Utility.SysInfoOperations.GetCpuid">
-            <summary>
-            Gets the CPU IDs for the processors.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Highpoint.Sage.Utility.SysInfoOperations.GetVolumeSerial(System.String)">
-            <summary>
-            return Volume Serial Number from hard drive
-            </summary>
-            <param name="strDriveLetter">[optional] Drive letter</param>
-            <returns>[string] VolumeSerialNumber</returns>
-        </member>
-        <member name="M:Highpoint.Sage.Utility.SysInfoOperations.GetMacAddress">
-            <summary>
-            Returns MAC Address from first Network Card in Computer
-            </summary>
-            <returns>[string] MAC Address</returns>
-        </member>
-        <member name="M:Highpoint.Sage.Utility.SysInfoOperations.GetCpuId">
-            <summary>
-            Return processorId from first CPU in machine
-            </summary>
-            <returns>[string] ProcessorId</returns>
-        </member>
-        <member name="M:Highpoint.Sage.Utility.SysInfoOperations.GetCpuLoads">
-            <summary>
-            Gets the CPU load percentages.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Highpoint.Sage.Utility.SysInfoOperations.GetCpul2CachesInKb">
-            <summary>
-            Gets the CPU level 2 caches in KB.
-            </summary>
             <returns></returns>
         </member>
         <member name="T:Highpoint.Sage.Utility.SubtreeChangeType">

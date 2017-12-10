@@ -276,7 +276,7 @@ namespace Highpoint.Sage.SimCore {
         long RequestDaemonEvent(ExecEventReceiver eer, DateTime when, double priority, object userData);
         /// <summary>
         /// Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
-        /// to be zero, and the userData object is assumeds to be null.
+        /// to be zero, and the userData object is assumed to be null.
         /// </summary>
         /// <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
         /// <param name="when">The date &amp; time at which the callback is to be made.</param>

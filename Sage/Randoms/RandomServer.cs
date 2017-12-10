@@ -168,10 +168,10 @@ namespace Highpoint.Sage.Randoms {
         /// a way of having an entire model's sequence be repeatable without having to
         /// hard code all of the RC's seed values.</param>
         /// <param name="defaultBufferSize">The buffer size that will be applied to channels
-        /// that do not have an explicit buffer zsize specified. This provides a good way
+        /// that do not have an explicit buffer size specified. This provides a good way
         /// to switch the entire model's buffering scheme on or off at one location.</param>
         // ReSharper disable once UnusedParameter.Local
-        public RandomServer(ulong hyperSeed, int defaultBufferSize){
+        public RandomServer(ulong hyperSeed, int defaultBufferSize = 0){
             
             // TODO : Fix the bug referenced below.
             m_defaultBufferSize = 0;// defaultBufferSize; // Problem - test 210, run several hundred times, results in an OOBE that is a result of a multi-threaded race condition.

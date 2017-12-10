@@ -33,8 +33,10 @@ namespace Highpoint.Sage.Utility {
             return DtFileString(now);
         }
 
-        public static string DtFileString(DateTime when) {
-            return $"{when.Year}{when.Month:00}{when.Day:00}{when.Hour:00}{when.Minute:00}{when.Second:00}";
+        public static string DtFileString(DateTime when, string extension="")
+        {
+            if (!extension.StartsWith(".")) extension = "." + extension;
+            return $"{when.Year}{when.Month:00}{when.Day:00}{when.Hour:00}{when.Minute:00}{when.Second:00}{extension}";
         }
 
         /// <summary>
