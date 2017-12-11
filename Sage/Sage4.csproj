@@ -684,6 +684,7 @@
     <Compile Include="Utility\WeakList.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utility\XmlTimeSpan.cs" />
     <Compile Include="Utility\XmlTransform.cs" />
     <Compile Include="Utility\XmlConvert.cs">
       <SubType>Code</SubType>

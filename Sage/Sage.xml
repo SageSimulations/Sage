@@ -25423,6 +25423,14 @@
             <param name="dt2">The other DateTime.</param>
             <returns>The earlier of the two DateTime objects.</returns>
         </member>
+        <member name="M:Highpoint.Sage.Utility.DateTimeOperations.DtFileString(System.DateTime,System.String)">
+            <summary>
+            Creates a string from the specified DateTime that can be used as a filename.
+            </summary>
+            <param name="when">The specified DateTime.</param>
+            <param name="extension">The extension, if any, to be post-pended.</param>
+            <returns>The string.</returns>
+        </member>
         <member name="P:Highpoint.Sage.Utility.DateTimeOperations.SecondsSinceTheEpoch">
             <summary>
             Gets the seconds since the epoch (January 1, 1970).
@@ -29067,6 +29075,13 @@
             <returns>
             An <see cref="T:System.Collections.IEnumerator"></see> object that can be used to iterate through the collection.
             </returns>
+        </member>
+        <member name="T:Highpoint.Sage.Utility.XmlTimeSpan">
+            <summary>
+            Class XmlTimeSpan. Unbelievable that TimeSpan STILL isn't serializable. To use in serializing a timespan,
+            add this attribute to the property. 
+            [XmlElement(Type = typeof(Highpoint.Sage.Utility.XmlTimeSpan))]
+            </summary>
         </member>
         <member name="T:Highpoint.Sage.Utility.XmlTransform">
             <summary>
