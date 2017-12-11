@@ -32,10 +32,15 @@ namespace Highpoint.Sage.Utility {
             DateTime now = DateTime.Now;
             return DtFileString(now);
         }
-
+        /// <summary>
+        /// Creates a string from the specified DateTime that can be used as a filename.
+        /// </summary>
+        /// <param name="when">The specified DateTime.</param>
+        /// <param name="extension">The extension, if any, to be post-pended.</param>
+        /// <returns>The string.</returns>
         public static string DtFileString(DateTime when, string extension="")
         {
-            if (!extension.StartsWith(".")) extension = "." + extension;
+            if (extension.Length > 0 && !extension.StartsWith(".")) extension = "." + extension;
             return $"{when.Year}{when.Month:00}{when.Day:00}{when.Hour:00}{when.Minute:00}{when.Second:00}{extension}";
         }
 
