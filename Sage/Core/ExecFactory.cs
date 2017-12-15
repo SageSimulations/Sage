@@ -25,7 +25,11 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// The single threaded executive obtains highest performance through a limited feature set.
         /// </summary>
-        SingleThreaded
+        SingleThreaded,
+        /// <summary>
+        /// This single threaded executive also offers rollback capability for parallel simulation.
+        /// </summary>
+        SingleThreadedWithRollback
     }
 
     /// <summary>
@@ -110,15 +114,26 @@ namespace Highpoint.Sage.SimCore {
         /// <returns>IExecutive.</returns>
         public IExecutive CreateExecutive(ExecType execType, Guid guid)
         {
+            IExecutive exec = null;
             switch(execType)
             {
                 case ExecType.FullFeatured:
-                    return CreateExecutive(typeof (Highpoint.Sage.SimCore.Executive).FullName, guid);
+                    exec = CreateExecutive(typeof (Highpoint.Sage.SimCore.Executive).FullName, guid);
+                    break;
                 case ExecType.SingleThreaded:
-                    return CreateExecutive(typeof(Highpoint.Sage.SimCore.ExecutiveFastLight).FullName, guid);
+                    exec = CreateExecutive(typeof(Highpoint.Sage.SimCore.ExecutiveFastLight).FullName, guid);
+                    break;
+                case ExecType.SingleThreadedWithRollback:
+                    exec = CreateExecutive(typeof(Highpoint.Sage.SimCore.ExecutiveFastLight).FullName, guid);
+                    if (exec != null)
+                    {
+                        ((ExecutiveFastLight)exec).SupportsRollback = true;
+                    }
+                    break;
                 default:
                     throw new ApplicationException("Attempt to create an instance of an unsupported executive (" + execType + ").");
             }
+            return exec;
         }
 
         public IExecutive CreateExecutive(string typeName, Guid guid) {

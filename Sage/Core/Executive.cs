@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using System.Threading;
 using System.Collections.Generic;
 // ReSharper disable RedundantDefaultMemberInitializer
+// ReSharper disable InconsistentNaming
 
 namespace Highpoint.Sage.SimCore {
 
@@ -23,12 +24,12 @@ namespace Highpoint.Sage.SimCore {
         private ExecState m_state = ExecState.Stopped;
         private DateTime m_now = DateTime.MinValue;
         private SortedList m_events = new SortedList(new ExecEventComparer());
-        private Stack m_removals = new Stack();
+        private readonly Stack m_removals = new Stack();
         private double m_currentPriorityLevel = double.MinValue;
         private long m_nextReqHashCode = 0;
         private bool m_stopRequested = false;
         private bool m_abortRequested = false;
-        private Guid m_guid;
+        private readonly Guid m_guid;
         private int m_runNumber = -1;
         private UInt32 m_eventCount = 0;
         private int m_numDaemonEventsInQueue = 0;
@@ -42,7 +43,7 @@ namespace Highpoint.Sage.SimCore {
 
         private static bool _clrConfigDone = false;
         
-        private object m_eventLock = new Object();
+        private object m_eventLock = new object();
         public int EventLockCount = 0;
 
         internal Executive(Guid execGuid) {
@@ -136,7 +137,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
     #endregion
 
-        internal ArrayList RunningDetachables = new ArrayList();
+        internal readonly ArrayList RunningDetachables = new ArrayList();
 
         /// <summary>
         /// Returns a read-only list of the detachable events that are currently running.
@@ -313,7 +314,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         }
 
         public void UnRequestEvents(Delegate execEventReceiverMethod){
-            m_removals.Push(new ExecEventRemover((Delegate)execEventReceiverMethod));
+            m_removals.Push(new ExecEventRemover(execEventReceiverMethod));
         }
 
         #region Join Handling
@@ -327,7 +328,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 m_exec = exec;
                 m_eventCodes = new List<long>(eventCodes);
                 foreach (long eventCode in eventCodes) {
-                    ((ExecEvent)m_exec.m_events.GetKey(m_exec.m_events.IndexOfValue(eventCode))).ServiceCompleted += new EventMonitor(ee_ServiceCompleted);
+                    ((ExecEvent)m_exec.m_events.GetKey(m_exec.m_events.IndexOfValue(eventCode))).ServiceCompleted += ee_ServiceCompleted;
                 }
             }
 
@@ -376,7 +377,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
         public void Start() {
 
-            m_pauseMgr = new Thread(new ThreadStart(_DoPause));
+            m_pauseMgr = new Thread(_DoPause);
             m_pauseMgr.Name = "Pause Management";
             m_pauseMgr.Start();
 
@@ -464,7 +465,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         if (currentEvent.IsDaemon) m_numDaemonEventsInQueue--;
                         m_numEventsInQueue--;
                         if (s_diagnostics)
-                            _Debug.WriteLine(string.Format(_eventSvcMsg, currentEvent, currentEvent.Eer.Target, currentEvent.Eer.Target.GetHashCode(), currentEvent.Eer.Method.Name));
+                            _Debug.WriteLine(_eventSvcMsg, currentEvent, currentEvent.Eer.Target, currentEvent.Eer.Target.GetHashCode(), currentEvent.Eer.Method.Name);
                         switch (currentEvent.m_eventType) {
                             case ExecEventType.Synchronous:
                                 currentEvent.Eer(this, currentEvent.m_userData);
@@ -535,7 +536,6 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                             if (!de.HasAbortHandler) {
                                 if (!issuedError)
                                     _Debug.WriteLine("ERROR : MODEL FINISHED WITH SOME TASKS STILL WAITING TO COMPLETE!");
-                                issuedError = true;
                                 _Debug.WriteLine("\tWaiting Event : " + de.RootEvent.ToString());
                                 _Debug.WriteLine("\tEvent initially called into " + ( (ExecEvent)de.RootEvent ).Eer.Target + ", on method " + ( (ExecEvent)de.RootEvent ).Eer.Method.Name);
                                 _Debug.WriteLine("\tThe event was suspended at time " + de.TimeOfLastWait + ", and was never resumed.");
@@ -714,7 +714,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         /// <param name="target">The object to be detached from this executive.</param>
         public void Detach(object target) {
 
-            foreach (ExecutiveEvent md in new ExecutiveEvent[] { m_clockAboutToChange, m_executiveAborted, m_executiveFinished, m_executiveReset, m_executiveStarted, ExecutiveStartedSingleShot, m_executiveStopped}) {
+            foreach (ExecutiveEvent md in new[] { m_clockAboutToChange, m_executiveAborted, m_executiveFinished, m_executiveReset, m_executiveStarted, ExecutiveStartedSingleShot, m_executiveStopped}) {
                 if (md == null) continue;
                 ExecutiveEvent tmp = md;
                 List<ExecutiveEvent> lstDels = new List<ExecutiveEvent>();
@@ -723,10 +723,11 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         lstDels.Add(ee);
                     }
                 }
+                // ReSharper disable once DelegateSubtraction
                 lstDels.ForEach(n => tmp -= n);
             }
 
-            foreach (EventMonitor em in new EventMonitor[] { m_eventAboutToFire, m_eventHasCompleted }) {
+            foreach (EventMonitor em in new[] { m_eventAboutToFire, m_eventHasCompleted }) {
                 if (em == null) continue;
                 EventMonitor tmp = em;
                 List<EventMonitor> lstDels = new List<EventMonitor>();
@@ -735,6 +736,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         lstDels.Add(ee);
                     }
                 }
+                // ReSharper disable once DelegateSubtraction
                 lstDels.ForEach(n => tmp -= n);
             }
 
@@ -743,7 +745,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         }
 
         // If a lock is held on the Executive, then any attempt to add a handler to a public event is
-        // blocked until that lock is released. This can cause client code to freeze, expecially if running
+        // blocked until that lock is released. This can cause client code to freeze, especially if running
         // in a detachable event and adding a handler to an executive event. For that reason, all public
         // event members are methods with add {} and remove {} that defer to private event members. This
         // does not cause the aforementioned lockup.
@@ -831,6 +833,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         /// </summary>
         /// <value></value>
         public void Dispose() {
+            // ReSharper disable once EmptyGeneralCatchClause
             try { if (m_pauseMgr != null && m_pauseMgr.IsAlive) m_pauseMgr.Abort(); } catch { }
         }
 
@@ -983,7 +986,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             // This method runs in the executive's event service thread.
             lock ( m_lock ) {
                 object userData = m_currEvent.m_userData;
-                IAsyncResult iar = m_currEvent.Eer.BeginInvoke(m_exec,userData,new AsyncCallback(End),null);
+                m_currEvent.Eer.BeginInvoke(m_exec,userData,End,null);
                 Interlocked.Increment(ref m_isWaitingCount);
                 m_timeOfLastWait = m_exec.Now;
                 Monitor.Wait(m_lock); // Keeps exec from running off and launching another event.
@@ -1020,7 +1023,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         public void SuspendUntil(DateTime when){
             // This method runs on the DE's execution thread.
             Debug.Assert(m_exec.CurrentEventType.Equals(ExecEventType.Detachable),m_errMsg1 + m_exec.CurrentEventType,m_errMsg1Explanation);
-            m_exec.RequestEvent(new ExecEventReceiver(_Resume),when,0,null);
+            m_exec.RequestEvent(_Resume,when,0,null);
             Suspend();
         }
 
@@ -1032,7 +1035,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             // This method is called by someone else's thread. The DE should be suspended at this point.
             Debug.Assert(!Equals(m_exec.CurrentEventController),"Resume called from DE's own thread!");
             m_exec.AcquireEventLock();
-            m_exec.RequestEvent(new ExecEventReceiver(_Resume),m_exec.Now,overridePriorityLevel,null);
+            m_exec.RequestEvent(_Resume,m_exec.Now,overridePriorityLevel,null);
             m_exec.ReleaseEventLock();
         }
 
@@ -1247,23 +1250,14 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         public int Compare(object x, object y) {
             ExecEvent ee1 = (ExecEvent)x;
             ExecEvent ee2 = (ExecEvent)y;
-            /*if ( EE1.m_ticks < EE2.m_ticks) return -1;
-            if ( EE1.m_ticks > EE2.m_ticks ) return  1;
-            if ( EE1.m_priority < EE2.m_priority ) return  1;
-            if ( EE1.m_key == EE2.m_key ) return 0;
-            return -1;*/
+
+            if (ee1 == null || ee2 == null) throw new ExecutiveException("ExecEventComparer called with one or more ExecEvents being null.");
+
             if ( ee1.m_when < ee2.m_when) return -1;
             if ( ee1.m_when > ee2.m_when ) return  1;
             if ( ee1.m_priority < ee2.m_priority ) return  1;
             if ( ee1.m_key == ee2.m_key ) return 0;
             return -1;
-            /*
-            if ( ((ExecEvent)x).m_ticks < ((ExecEvent)y).m_ticks ) return -1;
-            if ( ((ExecEvent)x).m_ticks > ((ExecEvent)y).m_ticks ) return  1;
-            if ( ((ExecEvent)x).m_priority < ((ExecEvent)y).m_priority ) return  1;
-            if ( ((ExecEvent)x).m_key == ((ExecEvent)y).m_key ) return 0;
-            return -1;
-            */
         }
     }
 
@@ -1276,21 +1270,21 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         private FilterMethod m_filterMethod;
         public ExecEventRemover(IExecEventSelector ees){
             m_ees = ees;
-            m_filterMethod = new FilterMethod(FilterOnFullData);
+            m_filterMethod = FilterOnFullData;
         }
         public ExecEventRemover(long eventId){
             m_eventId = eventId;
-            m_filterMethod = new FilterMethod(FilterOnEventId);
+            m_filterMethod = FilterOnEventId;
         }
 
         public ExecEventRemover(Delegate target){
             m_target = target;
-            m_filterMethod = new FilterMethod(FilterOnDelegateAll);
+            m_filterMethod = FilterOnDelegateAll;
         }
 
         public ExecEventRemover(object target){
             m_target = target;
-            m_filterMethod = new FilterMethod(FilterOnTargetAll);
+            m_filterMethod = FilterOnTargetAll;
         }
 
         public void Filter( ref SortedList events ) { m_filterMethod(ref events); }
@@ -1316,11 +1310,10 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             } 
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void FilterOnTarget(ref SortedList events ) {
-
-            object eventTarget = null;
             foreach ( ExecEvent ee in events.Keys ) {
-                
+                object eventTarget;
                 if ( ee.Eer.Target is DetachableEvent ) {
                     ExecEventReceiver eer = ((ExecEvent)((DetachableEvent)ee.Eer.Target).RootEvent).Eer;
                     eventTarget = eer.Target;
@@ -1340,11 +1333,10 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void FilterOnDelegate(ref SortedList events ) {
-
-            object eventTarget = null;
             foreach ( ExecEvent ee in events.Keys ) {
-
+                object eventTarget;
                 if ( ee.Eer.Target is DetachableEvent ) {
                     ExecEventReceiver eer = ((ExecEvent)((DetachableEvent)ee.Eer.Target).RootEvent).Eer;
                     eventTarget = eer;
@@ -1363,47 +1355,36 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
         private void FilterOnTargetAll(ref SortedList events ) {
 
-            ArrayList eventsToDelete = new ArrayList();																// AEL
             Type soughtTargetType = m_target.GetType();
-            Type eventTargetType = null;
 
             IList keyList = events.GetKeyList();
             for( int i = keyList.Count-1 ; i >= 0 ;  i-- ) {
                 ExecEvent ee = (ExecEvent)keyList[i];
-                
+
+                Type eventTargetType;
                 if ( ee.Eer.Target is DetachableEvent ) {
                     ExecEventReceiver eer = ((ExecEvent)((DetachableEvent)ee.Eer.Target).RootEvent).Eer;
                     eventTargetType = eer.Target.GetType();
                 } else {
                     // The callback could be static, so if it is, then we need the targetType a different way.
-                    eventTargetType = ee.Eer.Target == null ? ee.Eer.Method.ReflectedType : ee.Eer.Target.GetType();
+                    eventTargetType = ee.Eer.Target?.GetType() ?? ee.Eer.Method.ReflectedType;
                 }
 
                 // We're comparing at the object level - we can't compare any higher, since we
                 // have no control over what kinds of objects we may be comparing. To avoid an
                 // invalid cast exception, we treat them both as objects.
-                //if ( object.Equals(eventTarget,m_target) ) {
-                if (eventTargetType.Equals(soughtTargetType)) {
+                if (eventTargetType != null && eventTargetType.Equals(soughtTargetType)) {
                     events.RemoveAt(i);
                 }
             }
         }
 
         private void FilterOnDelegateAll(ref SortedList events ) {
-
-            object eventTarget = null;
-            ExecEvent ee;
-            DetachableEvent de;
             IList keyList = events.GetKeyList();
             for( int i = keyList.Count-1 ; i >= 0 ;  i-- ) {
-                ee = (ExecEvent)keyList[i];
-                de = ee.Eer.Target as DetachableEvent;
-                if (de != null) {
-                    eventTarget = de.RootEvent.ExecEventReceiver.Target;
-                } else {
-                    eventTarget = ee.Eer;
-                }
-                    
+                ExecEvent ee = (ExecEvent)keyList[i];
+                DetachableEvent de = ee.Eer.Target as DetachableEvent;
+                object eventTarget = (de != null) ? de.RootEvent.ExecEventReceiver.Target : ee.Eer;               
                 if ( ((Delegate)eventTarget).Equals((Delegate)m_target) ) {
                     events.RemoveAt(i);
                 }

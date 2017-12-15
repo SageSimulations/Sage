@@ -110,6 +110,11 @@
             The single threaded executive obtains highest performance through a limited feature set.
             </summary>
         </member>
+        <member name="F:Highpoint.Sage.SimCore.ExecType.SingleThreadedWithRollback">
+            <summary>
+            This single threaded executive also offers rollback capability for parallel simulation.
+            </summary>
+        </member>
         <member name="T:Highpoint.Sage.SimCore.ExecFactory">
             <summary>
             ExecFactory produces instances of objects that implement IExecutive.
@@ -527,16 +532,6 @@
             A code that can subsequently be used to identify the request, e.g. for removal.
             </returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.RequestImmediateEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
-            <summary>
-            Requests that the executive queue up an event to be serviced at the current executive time and
-            priority.
-            </summary>
-            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
-            <param name="userData">Object data to be provided in the callback.</param>
-            <param name="eet">The EventType that declares how the event is to be served by the executive.</param>
-            <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
-        </member>
         <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time and
@@ -550,7 +545,7 @@
             A code that can subsequently be used to identify the request, e.g. for removal.
             </returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Highpoint#Sage#SimCore#IExecutive#RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
+        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Highpoint#Sage#SimCore#IExecutiveLight#RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time and
             priority.
@@ -564,36 +559,6 @@
             A code that can subsequently be used to identify the request, e.g. for removal.
             </returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.UnRequestEvent(System.Int64)">
-            <summary>
-            This executive does not support unrequesting already-submitted event requests.
-            </summary>
-            <param name="eventHashCode">The code that identifies the event request to be removed.</param>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.UnRequestEvents(Highpoint.Sage.SimCore.IExecEventSelector)">
-            <summary>
-            This executive does not support unrequesting already-submitted event requests.
-            </summary>
-            <param name="ees">An object that will be used to select the events to remove.</param>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Highpoint#Sage#SimCore#IExecutive#UnRequestEvents(System.Object)">
-            <summary>
-            This executive does not support unrequesting already-submitted event requests.
-            </summary>
-            <param name="execEventReceiverTarget">The callback target for which all queued events are to be removed.</param>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Highpoint#Sage#SimCore#IExecutive#UnRequestEvents(System.Delegate)">
-            <summary>
-            This executive does not support unrequesting already-submitted event requests.
-            </summary>
-            <param name="execEventReceiverMethod">The callback method for which all queued events are to be removed.</param>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Join(System.Int64[])">
-            <summary>
-            This high performance exec does not support Joining on events.
-            </summary>
-            <param name="eventCodes">The event codes.</param>
-        </member>
         <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Start">
             <summary>
             Starts the executive. 
@@ -604,47 +569,14 @@
             Stops the executive. This may be a pause or a stop, depending on if events are queued or running at the time of call.
             </summary>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Pause">
-            <summary>
-            If running, pauses the executive and transitions its state to 'Paused'.
-            </summary>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Abort">
-            <summary>
-            If running, pauses the executive and transitions its state to 'Paused'.
-            </summary>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Resume">
-            <summary>
-            If paused, unpauses the executive and transitions its state to 'Running'.
-            </summary>
-        </member>
         <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Reset">
             <summary>
             Resets the executive - this clears the event list and resets now to 1/1/01, 12:00 AM
             </summary>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.ClearVolatiles(System.Collections.IDictionary)">
-            <summary>
-            This high performance exec does not support volatiles.
-            </summary>
-            <param name="dictionary">The task graph context to be 'reset'.</param>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.ExecutiveFastLight.CurrentEventController">
-            <summary>
-            This high performance exec does not support detached events.
-            </summary>
-            <value></value>
-        </member>
         <member name="P:Highpoint.Sage.SimCore.ExecutiveFastLight.CurrentEventType">
             <summary>
             The type of event currently being serviced by the executive. This executive services only Synchronous events.
-            </summary>
-            <value></value>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.ExecutiveFastLight.LiveDetachableEvents">
-            <summary>
-            Returns a list of the detachable events that are currently running. As this high performance exec does not support detached events, this list will always be empty.
             </summary>
             <value></value>
         </member>
@@ -667,16 +599,6 @@
             </summary>
             <value></value>
         </member>
-        <member name="E:Highpoint.Sage.SimCore.ExecutiveFastLight.ExecutivePaused">
-            <summary>
-            Fired when this executive pauses.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.ExecutiveFastLight.ExecutiveResumed">
-            <summary>
-            Fired when this executive resumes.
-            </summary>
-        </member>
         <member name="E:Highpoint.Sage.SimCore.ExecutiveFastLight.EventAboutToFire">
             <summary>
             Fired after an event has been selected to be fired, but before it actually fires.
@@ -687,27 +609,14 @@
             Fired after an event has been selected to be fired, and after it actually fires.
             </summary>
         </member>
-        <member name="E:Highpoint.Sage.SimCore.ExecutiveFastLight.ExecutiveReset">
-            <summary>
-            Resetting is not supported by this high performance executive.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.ExecutiveFastLight.ExecutiveAborted">
-            <summary>
-            This fires when the executive has been aborted. This high performance executive does not support being aborted. Call Stop instead.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.ExecutiveFastLight.ClockAboutToChange">
-            <summary>
-            Fired after service of the last event scheduled in the executive to fire at a specific time,
-            assuming that there are more non-daemon events to fire.
-            </summary>
-        </member>
         <member name="M:Highpoint.Sage.SimCore.ExecutiveFastLight.Dispose">
             <summary>
             This high performance exec does nothing on Dispose.
             </summary>
             <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.ExecutiveFastLight.SupportsRollback">
+            True if this executive is to support runtime rollbacks.
         </member>
         <member name="T:Highpoint.Sage.SimCore.ExecEventReceiver">
             <summary>
@@ -926,48 +835,54 @@
             </summary>
             <returns>The name of this key.</returns>
         </member>
-        <member name="T:Highpoint.Sage.SimCore.IExecutive">
-            <summary>
-            Interface that is implemented by an executive.
-            </summary>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.Guid">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.Guid">
             <summary>
             The Guid by which this executive is known.
             </summary>
         </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.Now">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.Now">
             <summary>
             The current DateTime being managed by this executive. This is the 'Now' point of a
             simulation being run by this executive.
             </summary>
         </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.LastEventServed">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.LastEventServed">
             <summary>
             If this executive has been run, this holds the DateTime of the last event serviced. May be from a previous run.
             </summary>
         </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.CurrentPriorityLevel">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.CurrentPriorityLevel">
             <summary>
             The priority of the event currently being serviced.
             </summary>
         </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.State">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.State">
             <summary>
             The current state of this executive (running, stopped, paused, finished)
             </summary>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestImmediateEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.CurrentEventType">
             <summary>
-            Requests that the executive queue up an event to be serviced at the current executive time and
-            priority.
+            The type of event currently being serviced by the executive.
             </summary>
-            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
-            <param name="userData">Object data to be provided in the callback.</param>
-            <param name="execEventType">The way the event is to be served by the executive.</param>
-            <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestDaemonEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.EventList">
+            <summary>
+            Returns a read-only list of the ExecEvents currently in queue for execution.
+            Cast the elements in the list to IExecEvent to access the items' field values.
+            </summary>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.RunNumber">
+            <summary>
+            The integer count of the number of times this executive has been run.
+            </summary>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.IExecutiveLight.EventCount">
+            <summary>
+            The number of events that have been serviced on this run.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.RequestDaemonEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
             <summary>
             Requests that the executive queue up a daemon event to be serviced at a specific time and
             priority. If only daemon events are enqueued, the executive will not be kept alive.
@@ -978,7 +893,7 @@
             <param name="userData">Object data to be provided in the callback.</param>
             <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime)">
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
             to be zero, and the userData object is assumed to be null.
@@ -987,7 +902,7 @@
             <param name="when">The date &amp; time at which the callback is to be made.</param>
             <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Object)">
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Object)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
             to be zero.
@@ -997,7 +912,7 @@
             <param name="userData">Object data to be provided in the callback.</param>
             <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time and
             priority.
@@ -1008,7 +923,7 @@
             <param name="userData">Object data to be provided in the callback.</param>
             <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
             <summary>
             Requests that the executive queue up an event to be serviced at a specific time and
             priority.
@@ -1016,6 +931,76 @@
             <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
             <param name="when">The date &amp; time at which the callback is to be made.</param>
             <param name="priority">The priority of the callback. Higher numbers mean higher priorities.</param>
+            <param name="userData">Object data to be provided in the callback.</param>
+            <param name="execEventType">The way the event is to be served by the executive.</param>
+            <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.Start">
+            <summary>
+            Starts the executive. The calling thread will be the primary execution thread, and will not return until
+            execution is completed (via completion of all non-daemon events or the Abort method.)
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.Stop">
+            <summary>
+            Stops the executive. This may be a pause or a stop, depending on if events are queued or running at the time of call.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.IExecutiveLight.Reset">
+            <summary>
+            Resets the executive - this clears the event list and resets now to 1/1/01, 12:00 AM
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.ExecutiveStarted_SingleShot">
+            <summary>
+            Fired when this executive starts. All events are fired once, and then cleared.
+            This enables the designer to register this event on starting the model, to
+            set up the simulation model when the executive starts. If it was not then cleared,
+            it would be re-registered and then called twice on the second start, three times
+            on the third call, etc.
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.ExecutiveStarted">
+            <summary>
+            Fired when this executive starts.
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.ExecutiveStopped">
+            <summary>
+            Fired when this executive stops.
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.ExecutiveFinished">
+            <summary>
+            Fired when this executive finishes (including after an abort).
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.ExecutiveReset">
+            <summary>
+            Fired when this executive is reset.
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.EventAboutToFire">
+            <summary>
+            Fired after an event has been selected to be fired, but before it actually fires.
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.IExecutiveLight.EventHasCompleted">
+            <summary>
+            Fired after an event has been selected to be fired, and after it actually fires.
+            </summary>
+        </member>
+        <member name="T:Highpoint.Sage.SimCore.IExecutive">
+            <summary>
+            Interface that is implemented by an executive.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.IExecutive.RequestImmediateEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
+            <summary>
+            Requests that the executive queue up an event to be serviced at the current executive time and
+            priority.
+            </summary>
+            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
             <param name="userData">Object data to be provided in the callback.</param>
             <param name="execEventType">The way the event is to be served by the executive.</param>
             <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
@@ -1052,12 +1037,6 @@
             </summary>
             <param name="eventCodes">The event codes.</param>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.Start">
-            <summary>
-            Starts the executive. The calling thread will be the primary execution thread, and will not return until
-            execution is completed (via completion of all non-daemon events or the Abort method.)
-            </summary>
-        </member>
         <member name="M:Highpoint.Sage.SimCore.IExecutive.Pause">
             <summary>
             If running, pauses the executive and transitions its state to 'Paused'.
@@ -1068,19 +1047,9 @@
             If paused, unpauses the executive and transitions its state to 'Running'.
             </summary>
         </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.Stop">
-            <summary>
-            Stops the executive. This may be a pause or a stop, depending on if events are queued or running at the time of call.
-            </summary>
-        </member>
         <member name="M:Highpoint.Sage.SimCore.IExecutive.Abort">
             <summary>
             Aborts the executive. This always flushes the event queue and terminates all running events.
-            </summary>
-        </member>
-        <member name="M:Highpoint.Sage.SimCore.IExecutive.Reset">
-            <summary>
-            Resets the executive - this clears the event list and resets now to 1/1/01, 12:00 AM
             </summary>
         </member>
         <member name="M:Highpoint.Sage.SimCore.IExecutive.Detach(System.Object)">
@@ -1102,44 +1071,9 @@
             launched as a detachable event. Otherwise, it returns null.
             </summary>
         </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.CurrentEventType">
-            <summary>
-            The type of event currently being serviced by the executive.
-            </summary>
-        </member>
         <member name="P:Highpoint.Sage.SimCore.IExecutive.LiveDetachableEvents">
             <summary>
             Returns a list of the detachable events that are currently running.
-            </summary>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.EventList">
-            <summary>
-            Returns a read-only list of the ExecEvents currently in queue for execution.
-            Cast the elements in the list to IExecEvent to access the items' field values.
-            </summary>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.RunNumber">
-            <summary>
-            The integer count of the number of times this executive has been run.
-            </summary>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.IExecutive.EventCount">
-            <summary>
-            The number of events that have been serviced on this run.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutiveStarted_SingleShot">
-            <summary>
-            Fired when this executive starts. All events are fired once, and then cleared.
-            This enables the designer to register this event on starting the model, to
-            set up the simulation model when the executive starts. If it was not then cleared,
-            it would be re-registered and then called twice on the second start, three times
-            on the third call, etc.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutiveStarted">
-            <summary>
-            Fired when this executive starts.
             </summary>
         </member>
         <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutivePaused">
@@ -1152,21 +1086,6 @@
             Fired when this executive resumes.
             </summary>
         </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutiveStopped">
-            <summary>
-            Fired when this executive stops.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutiveFinished">
-            <summary>
-            Fired when this executive finishes (including after an abort).
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutiveReset">
-            <summary>
-            Fired when this executive is reset.
-            </summary>
-        </member>
         <member name="E:Highpoint.Sage.SimCore.IExecutive.ExecutiveAborted">
             <summary>
             Fired when this executive has been aborted.
@@ -1176,16 +1095,6 @@
             <summary>
             Fired after service of the last event scheduled in the executive to fire at a specific time,
             assuming that there are more non-daemon events to fire.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.EventAboutToFire">
-            <summary>
-            Fired after an event has been selected to be fired, but before it actually fires.
-            </summary>
-        </member>
-        <member name="E:Highpoint.Sage.SimCore.IExecutive.EventHasCompleted">
-            <summary>
-            Fired after an event has been selected to be fired, and after it actually fires.
             </summary>
         </member>
         <member name="T:Highpoint.Sage.SimCore.WarningEvent">
@@ -29078,8 +28987,9 @@
         </member>
         <member name="T:Highpoint.Sage.Utility.XmlTimeSpan">
             <summary>
-            Class XmlTimeSpan. Unbelievable that TimeSpan STILL isn't serializable. To use in serializing a timespan,
-            add this attribute to the property. 
+            Class XmlTimeSpan. Unbelievable that TimeSpan STILL isn't xml serializable.
+            (What am I missing? Why isn't it?)
+            To use in serializing a timespan, add this attribute to the property. 
             [XmlElement(Type = typeof(Highpoint.Sage.Utility.XmlTimeSpan))]
             </summary>
         </member>

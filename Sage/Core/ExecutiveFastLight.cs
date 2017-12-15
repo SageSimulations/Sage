@@ -1,9 +1,17 @@
 /* This source code licensed under the GNU Affero General Public License */
+//#define USE_TEMPORAL_DEBUGGING
 
 using System;
 using System.Collections;
-
+using System.Collections.Generic;
+using System.Management.Instrumentation;
+using System.Threading;
 using NameValueCollection=System.Collections.Specialized.NameValueCollection;
+
+// TODO: ExecEvent and ExecEventReceiver need to become generics, with the type of the exec supplied with
+// the declaration, so that an IExecutiveLight's events, for example, emit references to an IExecutiveLight,
+// but an IExecutive's events still emit references to an IExecutive.
+// This will allow me to remove all shunted APIs in IExecutiveLight.
 
 namespace Highpoint.Sage.SimCore {
 
@@ -15,7 +23,8 @@ namespace Highpoint.Sage.SimCore {
     /// sacrifice a little bit of speed to get them. Note that if you are doing anything non-trivial in your
     /// event handlers, this 'sacrifice' quickly becomes unnoticeable.
     /// </summary>
-    internal sealed class ExecutiveFastLight : IExecutive {
+    internal class ExecutiveFastLight : IExecutive, ISupportsRollback
+    {
 
         static ExecutiveFastLight() {
 #if LICENSING_ENABLED
@@ -24,15 +33,6 @@ namespace Highpoint.Sage.SimCore {
             }
 #endif
         }
-
-        ///// <summary>
-        ///// Beeps for the specified duration at the specified frequency.
-        ///// </summary>
-        ///// <param name="freq">The frequency in hertz.</param>
-        ///// <param name="duration">The duration in milliseconds.</param>
-        ///// <returns></returns>
-        //[ System.Runtime.InteropServices.DllImport("kernel32.dll")]
-        //public static extern bool Beep(int freq,int duration);
 
 		private class ExecEventCache {
 			private int m_head = 0;
@@ -66,7 +66,7 @@ namespace Highpoint.Sage.SimCore {
 				retval.Eer = eer;
 				retval.Key = key;
 				retval.UserData = userData;
-				retval.When = when.Ticks;
+				retval.WhenToServe = when.Ticks;
 				retval.IsDaemon = isDaemon;
 
 				return retval;
@@ -79,33 +79,67 @@ namespace Highpoint.Sage.SimCore {
 				execEvent.Key = -1;
 				execEvent.UserData = null;
 				execEvent.Eer = null;
-				execEvent.When = 0L;
+				execEvent.WhenToServe = 0L;
 
 				if ( m_tail == m_numExecEvents ) m_tail = 0;
 			}
 		}
 		
-		private class _ExecEvent {
-			public ExecEventReceiver Eer;
-			public long When;
+		private class _ExecEvent
+		{
+		    public ExecEventReceiver Eer;
+			public long WhenToServe;
 			public object UserData;
 			public long Key;
 			public bool IsDaemon;
-			public _ExecEvent(){
+            public long WhenSubmitted;
+            public bool Ignore;
+
+            public _ExecEvent(){
 				Eer = null;
-				When = 0L;
+				WhenToServe = 0L;
 				UserData = null;
 				Key = 0L;
 				IsDaemon = false;
-			}
+                Ignore = false;
+            }
 
-			public _ExecEvent(ExecEventReceiver eer, DateTime when, object userData, long key, bool isDaemon){
+            public _ExecEvent(ExecEventReceiver eer, DateTime whenToServe, DateTime whenSubmitted, object userData, long key, bool isDaemon){
 				Eer = eer;
-				When = when.Ticks;
+				WhenToServe = whenToServe.Ticks;
+			    WhenSubmitted = whenSubmitted.Ticks;
 				UserData = userData;
 				Key = key;
 				IsDaemon = isDaemon;
+			    Ignore = false;
 			}
+
+            public _ExecEvent(_ExecEvent anEvent)
+            {
+                Eer = anEvent.Eer;
+                WhenToServe = anEvent.WhenToServe;
+                WhenSubmitted = anEvent.WhenSubmitted;
+                UserData = anEvent.UserData;
+                Key = anEvent.Key;
+                IsDaemon = anEvent.IsDaemon;
+                Ignore = anEvent.Ignore;
+            }
+
+            public void CopyFrom(_ExecEvent anEvent)
+            {
+                Eer = anEvent.Eer;
+                WhenToServe = anEvent.WhenToServe;
+                WhenSubmitted = anEvent.WhenSubmitted;
+                UserData = anEvent.UserData;
+                Key = anEvent.Key;
+                IsDaemon = anEvent.IsDaemon;
+                Ignore = anEvent.Ignore;
+            }
+
+            public override bool Equals(object obj)
+		    {
+		        return GetHashCode().Equals(obj?.GetHashCode());
+		    }
 		}
 
         /// <summary>
@@ -116,7 +150,10 @@ namespace Highpoint.Sage.SimCore {
 #region Private Fields
         private ExecEventCache m_execEventCache;
         private Guid m_execGuid;
+        private bool m_supportRollback;
 
+        private DateTime m_startTime = DateTime.MinValue;
+        private _ExecEvent m_parentEvent;
         private _ExecEvent[] m_eventArray;
         private int m_eventArraySize;
         private int m_numEventsPending;
@@ -133,22 +170,20 @@ namespace Highpoint.Sage.SimCore {
         private static ArrayList _emptyList = ArrayList.ReadOnly(new ArrayList());
         private static bool _ignoreCausalityViolations = true;
 
-		private _ExecEvent m_parentEvent;
-
-#endregion Private Fields
+        #endregion Private Fields
 
         /// <summary>
         /// Creates a new instance of the <see cref="T:Executive3"/> class.
         /// </summary>
         /// <param name="execGuid">The GUID by which this executive will be known.</param>
-        public ExecutiveFastLight(Guid execGuid) {
+        internal ExecutiveFastLight(Guid execGuid) {
             NameValueCollection nvc = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("Sage");
             if (nvc != null)
             {
                 if (nvc["IgnoreCausalityViolations"] != null)
                     _ignoreCausalityViolations = bool.Parse(nvc["IgnoreCausalityViolations"]);
 
-
+#if USE_TEMPORAL_DEBUGGING
                 nvc = (NameValueCollection) System.Configuration.ConfigurationManager.GetSection("diagnostics");
                 string strEba = nvc["ExecBreakAt"];
                 if (!m_hasTarget && strEba != null && strEba.Length > 0)
@@ -157,6 +192,7 @@ namespace Highpoint.Sage.SimCore {
                     m_targetdate = DateTime.Parse(_targetdatestr);
                     m_hasTarget = true;
                 }
+#endif
             }
             else
             {
@@ -234,15 +270,14 @@ namespace Highpoint.Sage.SimCore {
 					if ( eer.Target is IHasName ) who = ((IHasName)eer.Target).Name;
 					string method = eer.Method.Name + "(...)";
 					string msg = string.Format("Executive was asked to service an event prior to current time. This is a causality violation. The call was made from {0}.{1}.",who,method);
-					//throw new ApplicationException(msg);
-					Console.WriteLine(msg);
+					throw new ApplicationException(msg);
 				} else {
 					when = m_now;
 				}
 			}
 			m_key++;
 
-			Enqueue(new _ExecEvent(eer,when,userData,m_key,true));
+            Enqueue(new _ExecEvent(eer, when, m_now, userData, m_key, true));
 			//Enqueue(m_execEventCache.Take(eer,when,userData,m_key));
 			return m_key;
 		}
@@ -275,18 +310,6 @@ namespace Highpoint.Sage.SimCore {
         }
 
         /// <summary>
-        /// Requests that the executive queue up an event to be serviced at the current executive time and
-        /// priority.
-        /// </summary>
-        /// <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
-        /// <param name="userData">Object data to be provided in the callback.</param>
-        /// <param name="eet">The EventType that declares how the event is to be served by the executive.</param>
-        /// <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
-        public long RequestImmediateEvent(ExecEventReceiver eer, object userData, ExecEventType eet) {
-            throw new NotSupportedException("The selected executive type does not support contemporaneous enqueueing.");
-        }
-
-        /// <summary>
         /// Requests that the executive queue up an event to be serviced at a specific time and
         /// priority.
         /// </summary>
@@ -311,7 +334,7 @@ namespace Highpoint.Sage.SimCore {
 				}
 			}
 			m_key++;
-			Enqueue(new _ExecEvent(eer,when,userData,m_key,false));
+            Enqueue(new _ExecEvent(eer, when, m_now, userData, m_key, false));
 			//Enqueue(m_execEventCache.Take(eer,when,userData,m_key));
 			return m_key;
 		}
@@ -328,55 +351,11 @@ namespace Highpoint.Sage.SimCore {
         /// <returns>
         /// A code that can subsequently be used to identify the request, e.g. for removal.
         /// </returns>
-		long IExecutive.RequestEvent(ExecEventReceiver eer, DateTime when, double priority, object userData, ExecEventType execEventType) {
+		long IExecutiveLight.RequestEvent(ExecEventReceiver eer, DateTime when, double priority, object userData, ExecEventType execEventType) {
 			//if ( !execEventType.Equals(ExecEventType.Synchronous) ) throw new ApplicationException("This high performance exec can currently only handler synchronous events.");
 			return RequestEvent(eer,when,priority,userData);
 		}
 
-#region Unrequest Events - not supported
-        /// <summary>
-        /// This executive does not support unrequesting already-submitted event requests.
-        /// </summary>
-        /// <param name="eventHashCode">The code that identifies the event request to be removed.</param>
-		public void UnRequestEvent(long eventHashCode) {
-			throw new ApplicationException("This high performance exec does not support unrequesting events.");
-		}
-
-        /// <summary>
-        /// This executive does not support unrequesting already-submitted event requests.
-        /// </summary>
-        /// <param name="ees">An object that will be used to select the events to remove.</param>
-		public void UnRequestEvents(IExecEventSelector ees) {
-			throw new ApplicationException("This high performance exec does not support unrequesting events.");
-		}
-
-        /// <summary>
-        /// This executive does not support unrequesting already-submitted event requests.
-        /// </summary>
-        /// <param name="execEventReceiverTarget">The callback target for which all queued events are to be removed.</param>
-		void IExecutive.UnRequestEvents(object execEventReceiverTarget) {
-			throw new ApplicationException("This high performance exec does not support unrequesting events.");
-		}
-
-        /// <summary>
-        /// This executive does not support unrequesting already-submitted event requests.
-        /// </summary>
-        /// <param name="execEventReceiverMethod">The callback method for which all queued events are to be removed.</param>
-		void IExecutive.UnRequestEvents(Delegate execEventReceiverMethod) {
-			throw new ApplicationException("This high performance exec does not support unrequesting events.");
-		}
-
-        /// <summary>
-        /// This high performance exec does not support Joining on events.
-        /// </summary>
-        /// <param name="eventCodes">The event codes.</param>
-        public void Join(params long[] eventCodes) {
-            throw new ApplicationException("This high performance exec does not support Joining on events.");
-        }
-
-#endregion
-
-        private DateTime m_startTime = DateTime.MinValue;
         public void SetStartTime(DateTime startTime) {
             m_startTime = startTime;
         }
@@ -387,92 +366,96 @@ namespace Highpoint.Sage.SimCore {
         public void Start() {
             lock (this) {
                 m_now = m_startTime;
-                if (m_executiveStarted != null)
-                    m_executiveStarted(this);
+                m_executiveStarted?.Invoke(this);
 
-                if (ExecutiveStartedSingleShot != null) {
-                    ExecutiveStartedSingleShot(this);
-                    ExecutiveStartedSingleShot = (ExecutiveEvent)Delegate.RemoveAll(ExecutiveStartedSingleShot, ExecutiveStartedSingleShot);
+                if (m_executiveStartedSingleShot != null) {
+                    m_executiveStartedSingleShot(this);
+                    m_executiveStartedSingleShot = (ExecutiveEvent)Delegate.RemoveAll(m_executiveStartedSingleShot, m_executiveStartedSingleShot);
                 }
 
                 if (_ignoreCausalityViolations)
                     StartWocv();
-                else
-                    StartWcv();
+                //else
+                //    StartWcv();
                 if (m_stopRequested) {
-                    if (m_executiveStopped != null)
-                        m_executiveStopped(this);
+                    m_executiveStopped?.Invoke(this);
                     m_stopRequested = false;
                 }
 
-                if (m_executiveFinished != null)
-                    m_executiveFinished(this);
+                m_executiveFinished?.Invoke(this);
             }
         }
 
-		private void StartWcv() {
-			m_runNumber++;
-            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
-                m_currentEvent = Dequeue();
-                m_eventCount++;
-                if (m_now.Ticks > m_currentEvent.When) {
-                    string who = m_currentEvent.Eer.Target.GetType().FullName;
-                    if (m_currentEvent.Eer.Target is IHasName) {
-                        who = ((IHasName)m_currentEvent.Eer.Target).Name;
-                    }
-                    string method = m_currentEvent.Eer.Method.Name + "(...)";
-                    if (true) {
-                        m_currentEvent.When = m_now.Ticks;// System.Diagnostics.Debugger.Break();
-                    } else {
-                        //						throw new ApplicationException(msg);
-                    }
-                }
-                m_lastEventServiceTime = m_now;
-                m_now = new DateTime(m_currentEvent.When);
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
-                m_currentEvent.Eer(this, m_currentEvent.UserData);
-                if (m_eventHasCompleted != null) {
-                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
-                m_execEventCache.Return(m_currentEvent);
-            }
-		}
+		//private void StartWcv() {
+		//	m_runNumber++;
+  //          while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
+  //              m_currentEvent = Dequeue();
+  //              m_eventCount++;
+  //              if (m_now.Ticks > m_currentEvent.WhenToServe) {
+  //                  string who = m_currentEvent.Eer.Target.GetType().FullName;
+  //                  if (m_currentEvent.Eer.Target is IHasName) {
+  //                      who = ((IHasName)m_currentEvent.Eer.Target).Name;
+  //                  }
+  //                  string method = m_currentEvent.Eer.Method.Name + "(...)";
+  //                  if (true) {
+  //                      m_currentEvent.WhenToServe = m_now.Ticks;// System.Diagnostics.Debugger.Break();
+  //                  } else {
+  //                      //						throw new ApplicationException(msg);
+  //                  }
+  //              }
+  //              m_lastEventServiceTime = m_now;
+  //              m_now = new DateTime(m_currentEvent.WhenToServe);
+  //              m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+  //              m_currentEvent.Eer(this, m_currentEvent.UserData);
+  //              m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+  //              m_execEventCache.Return(m_currentEvent);
+  //          }
+		//}
 
+#if USE_TEMPORAL_DEBUGGING
 #region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
         static string _targetdatestr = new DateTime(1999, 7, 15, 3, 51, 21).ToString("r");
         DateTime m_targetdate = DateTime.Parse(_targetdatestr);
         bool m_hasTarget = false;
         bool m_hasFired = false;
         string m_hoverHere;
-
 #endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+#endif
 
 		private void StartWocv() {
 			m_runNumber++;
 			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
-				m_currentEvent = Dequeue();
+                m_currentEvent = Dequeue();
 				m_eventCount++;
-				m_now = new DateTime(m_currentEvent.When);
+				m_now = new DateTime(m_currentEvent.WhenToServe);
 
+#if USE_TEMPORAL_DEBUGGING
 #region TEMPORAL DEBUGGING
-
                 if (m_hasTarget && (m_now.ToString().Equals(_targetdatestr) || (!m_hasFired && m_now > m_targetdate))) {
                     m_hasFired = true;
                     m_hoverHere = m_now.ToString();
                     System.Diagnostics.Debugger.Break();
                 }
-
 #endregion TEMPORAL DEBUGGING
+#endif
 
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+			    if (m_supportRollback)
+			    {
+			        if (!m_currentEvent.Ignore)
+			        {
+			            m_currentEvent.Eer(this, m_currentEvent.UserData);
+                        if (m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
+                        m_rollbackList.Add(new _ExecEvent(m_currentEvent));
+                        if (m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
+                    }
                 }
-				m_currentEvent.Eer(this,m_currentEvent.UserData);
-                if (m_eventHasCompleted != null) {
-                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+			    else
+			    {
+                    m_currentEvent.Eer(this, m_currentEvent.UserData);
                 }
+                m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                if ( m_supportRollback && m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
                 m_execEventCache.Return(m_currentEvent);
 			}
 		}
@@ -483,20 +466,6 @@ namespace Highpoint.Sage.SimCore {
 		public void Stop() {
 			m_stopRequested = true;
 		}
-
-        /// <summary>
-        /// If running, pauses the executive and transitions its state to 'Paused'.
-        /// </summary>
-        public void Pause() { throw new NotSupportedException("The selected executive type does not support pause, resume or abort."); }
-        /// <summary>
-        /// If running, pauses the executive and transitions its state to 'Paused'.
-        /// </summary>
-        public void Abort() { throw new NotSupportedException("The selected executive type does not support pause, resume or abort."); }
-        /// <summary>
-        /// If paused, unpauses the executive and transitions its state to 'Running'.
-        /// </summary>
-        public void Resume() { throw new NotSupportedException("The selected executive type does not support pause, resume or abort."); }
-
 
         /// <summary>
         /// Resets the executive - this clears the event list and resets now to 1/1/01, 12:00 AM
@@ -513,29 +482,8 @@ namespace Highpoint.Sage.SimCore {
 			m_eventCount = 0;
 			m_stopRequested = false;
 			m_key = 0;
-
-		}
-
-        public void Detach(object target) {
-            throw new NotSupportedException("The selected executive type does not support automated object detachment.");
-        }
-
-        /// <summary>
-        /// This high performance exec does not support volatiles.
-        /// </summary>
-        /// <param name="dictionary">The task graph context to be 'reset'.</param>
-		public void ClearVolatiles(IDictionary dictionary) {
-			throw new ApplicationException("This high performance exec does not support volatiles.");
-		}
-
-        /// <summary>
-        /// This high performance exec does not support detached events.
-        /// </summary>
-        /// <value></value>
-		public IDetachableEventController CurrentEventController {
-			get {
-				throw new ApplicationException("This high performance exec does not support detached events.");
-			}
+            m_rollbackList?.Clear();
+            m_executiveReset?.Invoke(this);
 		}
 
         /// <summary>
@@ -547,17 +495,6 @@ namespace Highpoint.Sage.SimCore {
 				return ExecEventType.Synchronous;
 			}
 		}
-
-        /// <summary>
-        /// Returns a list of the detachable events that are currently running. As this high performance exec does not support detached events, this list will always be empty.
-        /// </summary>
-        /// <value></value>
-		public ArrayList LiveDetachableEvents {
-			get {
-				return _emptyList;
-			}
-		}
-
 
         /// <summary>
         /// Returns a read-only list of the ExecEvents currently in queue for execution.
@@ -598,7 +535,8 @@ namespace Highpoint.Sage.SimCore {
         // event members are methods with add {} and remove {} that defer to private event members. This
         // does not cause the aforementioned lockup.
         private event ExecutiveEvent m_executiveStarted;
-        private event ExecutiveEvent ExecutiveStartedSingleShot;
+        private event ExecutiveEvent m_executiveStartedSingleShot;
+        private event ExecutiveEvent m_executiveReset;
         private event ExecutiveEvent m_executiveStopped;
         private event ExecutiveEvent m_executiveFinished;
         private event EventMonitor m_eventAboutToFire;
@@ -609,28 +547,13 @@ namespace Highpoint.Sage.SimCore {
 
 
         public event ExecutiveEvent ExecutiveStarted_SingleShot {
-            add { ExecutiveStartedSingleShot += value; }
-            remove { ExecutiveStartedSingleShot -= value; }
+            add { m_executiveStartedSingleShot += value; }
+            remove { m_executiveStartedSingleShot -= value; }
         }
 
         public event ExecutiveEvent ExecutiveStarted {
             add { m_executiveStarted += value; }
             remove { m_executiveStarted -= value; }
-        }
-
-        /// <summary>
-        /// Fired when this executive pauses.
-        /// </summary>
-        public event ExecutiveEvent ExecutivePaused {
-            add { throw new NotImplementedException("This executive does not support Pausing and Resuming."); }
-            remove { throw new NotImplementedException("This executive does not support Pausing and Resuming."); }
-        }
-        /// <summary>
-        /// Fired when this executive resumes.
-        /// </summary>
-        public event ExecutiveEvent ExecutiveResumed {
-            add { throw new NotImplementedException("This executive does not support Pausing and Resuming."); }
-            remove { throw new NotImplementedException("This executive does not support Pausing and Resuming."); }
         }
 
         public event ExecutiveEvent ExecutiveStopped {
@@ -640,6 +563,12 @@ namespace Highpoint.Sage.SimCore {
         public event ExecutiveEvent ExecutiveFinished {
             add { m_executiveFinished += value; }
             remove { m_executiveFinished -= value; }
+        }
+
+        public event ExecutiveEvent ExecutiveReset
+        {
+            add { m_executiveReset += value; }
+            remove { m_executiveReset -= value; }
         }
 
         /// <summary>
@@ -658,26 +587,6 @@ namespace Highpoint.Sage.SimCore {
             remove { m_eventHasCompleted -= value; }
         }
 
-        /// <summary>
-        /// Resetting is not supported by this high performance executive.
-        /// </summary>
-        public event ExecutiveEvent ExecutiveReset { add { throw new NotSupportedException(); } remove { throw new NotSupportedException(); } }
-
-        /// <summary>
-        /// This fires when the executive has been aborted. This high performance executive does not support being aborted. Call Stop instead.
-        /// </summary>
-        public event ExecutiveEvent ExecutiveAborted { add { throw new NotSupportedException(); } remove { throw new NotSupportedException(); } }
-        /// <summary>
-        /// Fired after service of the last event scheduled in the executive to fire at a specific time,
-        /// assuming that there are more non-daemon events to fire.
-        /// </summary>
-        public event ExecutiveEvent ClockAboutToChange {
-            add { throw new NotSupportedException(); }
-            remove { throw new NotSupportedException(); }
-        }
-
-        //TODO: Reconcile Abort versus Stop. What's the difference?
-
 #endregion
 
         /// <summary>
@@ -688,51 +597,66 @@ namespace Highpoint.Sage.SimCore {
 
 #endregion // IExecutive members.
 
-        private void Enqueue(_ExecEvent ee) {
-			//Console.WriteLine("Enqueueing #" + ee.m_key + ", its time is " + (new DateTime(ee.m_when)).ToString());
-			int ndx = 1;
-			if ( m_numEventsPending == m_eventArraySize ) GrowArray();
-			m_numEventsPending++;
-			if ( !ee.IsDaemon ) m_numNonDaemonEventsPending++;
+        private object synclock = new object();
+        private List<_ExecEvent> m_rollbackList;
 
-			ndx = m_numEventsPending;
-			int parentNdx = ndx/2;
-			m_parentEvent = m_eventArray[parentNdx];
-			while ( parentNdx > 0 && ee.When < m_parentEvent.When ) { // HEAP PROPERTY - root is lowest.
-				m_eventArray[ndx] = m_parentEvent;
-				ndx = parentNdx;
-				parentNdx /= 2;
-				m_parentEvent = m_eventArray[parentNdx];
-			}
-			
-			m_eventArray[ndx] = ee;
-		}
+        private void Enqueue(_ExecEvent ee)
+        {
+            lock (synclock)
+            {
+                //Console.WriteLine("Enqueueing #{0} on {1}, its time is {2}", ee.Key,
+                //    Thread.CurrentThread.ManagedThreadId, (new DateTime(ee.When)));
 
-		private _ExecEvent Dequeue(){
-			if ( m_numEventsPending == 0 ) return null;
-			_ExecEvent leastEvent = m_eventArray[1];
-			_ExecEvent relocatee  = m_eventArray[m_numEventsPending];
-			m_numEventsPending--;
-			int ndx = 1;
-			int child = 2;
-			while ( child <= m_numEventsPending ) {
-				if ( child < m_numEventsPending && m_eventArray[child].When > m_eventArray[child+1].When ) child++;
-				// m_entryArray[child] is the (e.g. in a minTree) lesser of the two children.
-				// Therefore, if m_entryArray[child] is greater than relocatee, put Relocatee
-				// in at ndx, and we're done. Otherwise, swap and drill down some more.
-				if ( m_eventArray[child].When > relocatee.When ) break;
-				m_eventArray[ndx] = m_eventArray[child];
-				ndx = child;
-				child *= 2;
-			}
+                int ndx = 1;
+                if (m_numEventsPending == m_eventArraySize) GrowArray();
+                m_numEventsPending++;
+                if (!ee.IsDaemon) m_numNonDaemonEventsPending++;
 
-			m_eventArray[ndx] = relocatee;
+                ndx = m_numEventsPending;
+                int parentNdx = ndx/2;
+                m_parentEvent = m_eventArray[parentNdx];
+                while (parentNdx > 0 && ee.WhenToServe < m_parentEvent.WhenToServe)
+                {
+                    // HEAP PROPERTY - root is lowest.
+                    m_eventArray[ndx] = m_parentEvent;
+                    ndx = parentNdx;
+                    parentNdx /= 2;
+                    m_parentEvent = m_eventArray[parentNdx];
+                }
 
-			//Console.WriteLine("Dequeueing #" + leastEvent.m_key + ", its time is " + (new DateTime(leastEvent.m_when)).ToString());
-			if ( !leastEvent.IsDaemon ) m_numNonDaemonEventsPending--;
+                m_eventArray[ndx] = ee;
+            }
+        }
 
-			return leastEvent;
-		}
+        private _ExecEvent Dequeue(){
+            lock (synclock)
+            {
+                if (m_numEventsPending == 0) return null;
+                _ExecEvent leastEvent = m_eventArray[1];
+                _ExecEvent relocatee = m_eventArray[m_numEventsPending];
+                m_numEventsPending--;
+                int ndx = 1;
+                int child = 2;
+                while (child <= m_numEventsPending)
+                {
+                    if (child < m_numEventsPending && m_eventArray[child].WhenToServe > m_eventArray[child + 1].WhenToServe) child++;
+                    // m_entryArray[child] is the (e.g. in a minTree) lesser of the two children.
+                    // Therefore, if m_entryArray[child] is greater than relocatee, put Relocatee
+                    // in at ndx, and we're done. Otherwise, swap and drill down some more.
+                    if (m_eventArray[child].WhenToServe > relocatee.WhenToServe) break;
+                    m_eventArray[ndx] = m_eventArray[child];
+                    ndx = child;
+                    child *= 2;
+                }
+
+                m_eventArray[ndx] = relocatee;
+
+                //Console.WriteLine("Dequeueing #" + leastEvent.m_key + ", its time is " + (new DateTime(leastEvent.m_when)).ToString());
+                if (!leastEvent.IsDaemon) m_numNonDaemonEventsPending--;
+
+                return leastEvent;
+            }
+        }
 
 		private void GrowArray(){
 			_ExecEvent[] tmp = m_eventArray;
@@ -745,9 +669,131 @@ namespace Highpoint.Sage.SimCore {
 		private void Dump(){
 			Console.WriteLine(m_numEventsPending);
 			for ( int i = 0 ; i <= m_numEventsPending ; i++ ) {
-				string when = (m_eventArray[i] == null)?"<null>":(new DateTime(m_eventArray[i].When)).ToString();
+				string when = (m_eventArray[i] == null)?"<null>":(new DateTime(m_eventArray[i].WhenToServe)).ToString();
 				Console.WriteLine("(" + i + ") " + when);
 			}
 		}
-	}
+
+#region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
+
+        public long RequestImmediateEvent(ExecEventReceiver eer, object userData, ExecEventType execEventType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvent(long eventHashCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvents(IExecEventSelector ees)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvents(object execEventReceiverTarget)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvents(Delegate execEventReceiverMethod)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Join(params long[] eventCodes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Resume()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Abort()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Detach(object target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearVolatiles(IDictionary dictionary)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDetachableEventController CurrentEventController { get; }
+        public ArrayList LiveDetachableEvents { get; }
+
+        /// True if this executive is to support runtime rollbacks.
+        public bool SupportsRollback {
+            get { return m_supportRollback; }
+            internal set {
+                m_supportRollback = value;
+                m_rollbackList = new List<_ExecEvent>();
+            }
+        }
+
+        public event ExecutiveEvent ExecutivePaused;
+        public event ExecutiveEvent ExecutiveResumed;
+        public event ExecutiveEvent ExecutiveAborted;
+        public event ExecutiveEvent ClockAboutToChange; 
+#endregion
+
+        public void Rollback(DateTime toWhen)
+        {
+            long toWhenTicks = toWhen.Ticks;
+            foreach (_ExecEvent execEvent in m_eventArray)
+            {
+                // Any event that is in the event list, but was submitted AFTER the rollback-to time, will be ignored.
+                if (execEvent != null && execEvent.WhenSubmitted > toWhenTicks)
+                {
+                    Console.WriteLine("Setting event that was scheduled for {0} to \"Ignore.\"", new DateTime(execEvent.WhenToServe));
+                    execEvent.Ignore = true;
+                }
+            }
+
+            List<_ExecEvent> tmp = new List<_ExecEvent>(m_rollbackList.Count);
+            int n = 0;
+            // Higher the index, the later in the simulation.
+            foreach (_ExecEvent execEvent in m_rollbackList)
+            {
+                // Any event that is in the history list, but was submitted AFTER the rollback-to time, will be ignored.
+                if (execEvent.WhenSubmitted < toWhenTicks)
+                {
+                    if (execEvent.WhenToServe > toWhenTicks)
+                    {
+                        Console.WriteLine("Rescheduling event that was scheduled at {0} for {1}",
+                            new DateTime(execEvent.WhenSubmitted), new DateTime(execEvent.WhenToServe));
+
+                        _ExecEvent ee = m_execEventCache.Take(execEvent.Eer, new DateTime(execEvent.WhenToServe),
+                            execEvent.UserData, execEvent.Key, execEvent.IsDaemon);
+                        ee.WhenSubmitted = execEvent.WhenSubmitted;
+                        Enqueue(ee);
+                    }
+                    else
+                    {
+                        tmp.Add(execEvent);
+                    }
+                }
+                m_rollbackList = tmp;
+            }
+
+            m_now = toWhen;
+
+
+            OnRollback?.Invoke(m_now);
+        }
+
+        public event TimeEvent OnRollback;
+    }
 }

@@ -1,5 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
+using System.Runtime.CompilerServices;
+
 namespace Highpoint.Sage.Randoms {
     /// <summary>
     /// This is a port of Takuji Nishimura and Makoto Matsumoto's famous
@@ -104,22 +106,27 @@ namespace Highpoint.Sage.Randoms {
         private static readonly ulong[] s_mt = new ulong[s_n]; /* the array for the state vector  */
         private static ulong _mti=s_n + 1; /* mti==N+1 means mt[N] is not initialized */
 
+        private object syncLock = new object();
         /// <summary>
         /// Initializes this Mersenne Twister with the specified seed.
         /// </summary>
         /// <param name="s">The s.</param>
 		public void Initialize(ulong s) {
-				s_mt[0]= s & 0xffffffffUL;
-			for (_mti=1; _mti<s_n; _mti++) {
-				s_mt[_mti] = 
-					(1812433253UL * (s_mt[_mti-1] ^ (s_mt[_mti-1] >> 30)) + _mti); 
-				/* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
-				/* In the previous versions, MSBs of the seed affect   */
-				/* only MSBs of the array mt[].                        */
-				/* 2002/01/09 modified by Makoto Matsumoto             */
-				s_mt[_mti] &= 0xffffffffUL;
-				/* for >32 bit machines */
-			}
+            lock (this.GetType())
+            {
+                s_mt[0] = s & 0xffffffffUL;
+                for (_mti = 1; _mti < s_n; _mti++)
+                {
+                    s_mt[_mti] =
+                        (1812433253UL*(s_mt[_mti - 1] ^ (s_mt[_mti - 1] >> 30)) + _mti);
+                    /* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
+                    /* In the previous versions, MSBs of the seed affect   */
+                    /* only MSBs of the array mt[].                        */
+                    /* 2002/01/09 modified by Makoto Matsumoto             */
+                    s_mt[_mti] &= 0xffffffffUL;
+                    /* for >32 bit machines */
+                }
+            }
 		}
 
         /// <summary>
@@ -127,27 +134,42 @@ namespace Highpoint.Sage.Randoms {
         /// </summary>
         /// <param name="initKey">The initialization key.</param>
 		public void Initialize(ulong[] initKey) {
-			ulong keyLength = (ulong)initKey.Length;
-            Initialize(19650218UL);
-			ulong i = 1; ulong j = 0;
-			ulong k = (s_n>keyLength ? s_n : keyLength);
-			for (; (k!=0); k--) {
-				s_mt[i] = (s_mt[i] ^ ((s_mt[i-1] ^ (s_mt[i-1] >> 30)) * 1664525UL))
-					+ initKey[j] + j; /* non linear */
-				s_mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
-				i++; j++;
-				if (i>=s_n) { s_mt[0] = s_mt[s_n-1]; i=1; }
-				if (j>=keyLength) j=0;
-			}
-			for (k=s_n-1; (k!=0); k--) {
-				s_mt[i] = (s_mt[i] ^ ((s_mt[i-1] ^ (s_mt[i-1] >> 30)) * 1566083941UL))
-					- i; /* non linear */
-				s_mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
-				i++;
-				if (i>=s_n) { s_mt[0] = s_mt[s_n-1]; i=1; }
-			}
+            lock (this.GetType())
+            {
+                ulong keyLength = (ulong) initKey.Length;
+                Initialize(19650218UL);
+                ulong i = 1;
+                ulong j = 0;
+                ulong k = (s_n > keyLength ? s_n : keyLength);
+                for (; (k != 0); k--)
+                {
+                    s_mt[i] = (s_mt[i] ^ ((s_mt[i - 1] ^ (s_mt[i - 1] >> 30))*1664525UL))
+                              + initKey[j] + j; /* non linear */
+                    s_mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
+                    i++;
+                    j++;
+                    if (i >= s_n)
+                    {
+                        s_mt[0] = s_mt[s_n - 1];
+                        i = 1;
+                    }
+                    if (j >= keyLength) j = 0;
+                }
+                for (k = s_n - 1; (k != 0); k--)
+                {
+                    s_mt[i] = (s_mt[i] ^ ((s_mt[i - 1] ^ (s_mt[i - 1] >> 30))*1566083941UL))
+                              - i; /* non linear */
+                    s_mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
+                    i++;
+                    if (i >= s_n)
+                    {
+                        s_mt[0] = s_mt[s_n - 1];
+                        i = 1;
+                    }
+                }
 
-			s_mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */ 
+                s_mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
+            }
 		}
 
         /// <summary>
@@ -155,41 +177,50 @@ namespace Highpoint.Sage.Randoms {
         /// </summary>
         /// <returns>A random number on the [0,0xffffffff] interval.</returns>
 		public ulong genrand_int32(){
-			ulong y;
-			unchecked {
-				/* mag01[x] = x * MATRIX_A  for x=0,1 */
+            lock (this.GetType())
+            {
 
-				if (_mti >= s_n) { /* generate N words at one time */
-					ulong kk;
+                ulong y;
+                unchecked
+                {
+                    /* mag01[x] = x * MATRIX_A  for x=0,1 */
 
-					if (_mti == s_n+1)   /* if init_genrand() has not been called, */
-						Initialize(5489UL); /* a default initial seed is used */
+                    if (_mti >= s_n)
+                    {
+                        /* generate N words at one time */
+                        ulong kk;
 
-					for (kk=0;kk<s_n-s_m;kk++) {
-						y = (s_mt[kk]&s_upper_Mask)|(s_mt[kk+1]&s_lower_Mask);
-						s_mt[kk] = s_mt[kk+s_m] ^ (y >> 1) ^ s_mag01[y & 0x1UL];
-					}
-					for (;kk<s_n-1;kk++) {
-						y = (s_mt[kk]&s_upper_Mask)|(s_mt[kk+1]&s_lower_Mask);
-						s_mt[kk] = s_mt[kk+(s_m-s_n)] ^ (y >> 1) ^ s_mag01[y & 0x1UL];
-					}
-					y = (s_mt[s_n-1]&s_upper_Mask)|(s_mt[0]&s_lower_Mask);
-					s_mt[s_n-1] = s_mt[s_m-1] ^ (y >> 1) ^ s_mag01[y & 0x1UL];
+                        if (_mti == s_n + 1) /* if init_genrand() has not been called, */
+                            Initialize(5489UL); /* a default initial seed is used */
 
-					_mti = 0;
-				}
+                        for (kk = 0; kk < s_n - s_m; kk++)
+                        {
+                            y = (s_mt[kk] & s_upper_Mask) | (s_mt[kk + 1] & s_lower_Mask);
+                            s_mt[kk] = s_mt[kk + s_m] ^ (y >> 1) ^ s_mag01[y & 0x1UL];
+                        }
+                        for (; kk < s_n - 1; kk++)
+                        {
+                            y = (s_mt[kk] & s_upper_Mask) | (s_mt[kk + 1] & s_lower_Mask);
+                            s_mt[kk] = s_mt[kk + (s_m - s_n)] ^ (y >> 1) ^ s_mag01[y & 0x1UL];
+                        }
+                        y = (s_mt[s_n - 1] & s_upper_Mask) | (s_mt[0] & s_lower_Mask);
+                        s_mt[s_n - 1] = s_mt[s_m - 1] ^ (y >> 1) ^ s_mag01[y & 0x1UL];
+
+                        _mti = 0;
+                    }
 
 
-                y = s_mt[_mti++];
+                    y = s_mt[_mti++];
 
 
-				/* Tempering */
-				y ^= (y >> 11);
-				y ^= (y << 7) & 0x9d2c5680UL;
-				y ^= (y << 15) & 0xefc60000UL;
-				y ^= (y >> 18);
-			}
-			return y;
+                    /* Tempering */
+                    y ^= (y >> 11);
+                    y ^= (y << 7) & 0x9d2c5680UL;
+                    y ^= (y << 15) & 0xefc60000UL;
+                    y ^= (y >> 18);
+                }
+                return y;
+            }
 		}
 
         /// <summary>
