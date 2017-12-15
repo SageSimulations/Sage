@@ -19,7 +19,7 @@ namespace Highpoint.Sage.Randoms {
         private static int _bufferSize;
         private static int _globalRandomChannelBufferSize;
         private static IRandomChannel _globalRandomChannel;
-        private static ulong _globalRandomChannelSeed = 0;
+        private static ulong _globalRandomChannelSeed;
         #endregion
 
         /// <summary>
@@ -171,10 +171,8 @@ namespace Highpoint.Sage.Randoms {
         /// that do not have an explicit buffer size specified. This provides a good way
         /// to switch the entire model's buffering scheme on or off at one location.</param>
         // ReSharper disable once UnusedParameter.Local
-        public RandomServer(ulong hyperSeed, int defaultBufferSize = 0){
-            
-            // TODO : Fix the bug referenced below.
-            m_defaultBufferSize = 0;// defaultBufferSize; // Problem - test 210, run several hundred times, results in an OOBE that is a result of a multi-threaded race condition.
+        public RandomServer(ulong hyperSeed, int defaultBufferSize = 0){           
+            m_defaultBufferSize = 0;// defaultBufferSize;
 			m_seedGenerator = new MersenneTwisterFast();
 			m_seedGenerator.Initialize(hyperSeed);
 		}
@@ -183,7 +181,7 @@ namespace Highpoint.Sage.Randoms {
 		/// Creates a RandomServer with a zero buffer size (and therefore single-threaded
 		/// RandomChannels), and a hyperSeed that is based on the time of day.
 		/// </summary>
-		public RandomServer():this((ulong)DateTime.Now.Ticks,0){}
+		public RandomServer():this((ulong)DateTime.Now.Ticks){}
 
 		/// <summary>
 		/// Gets a RandomChannel with a specified seed and buffer size.
