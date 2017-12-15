@@ -3,6 +3,7 @@
 using System;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.IO;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,6 +23,8 @@ namespace SchedulerDemoMaterial {
 
 			string filename = Environment.GetEnvironmentVariable("SAGE_ROOT");
             Assert.IsNotNull(filename, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
+		    Assert.IsTrue(Directory.Exists(filename),
+		        string.Format("environment variable \"SAGE_ROOT\" points to nonexistent directory " + filename));
 
             filename += @"\Sage_Aux\SageTesting\PureComponentProperties.csv";
 
