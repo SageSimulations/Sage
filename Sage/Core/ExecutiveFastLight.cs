@@ -20,7 +20,7 @@ namespace Highpoint.Sage.SimCore {
         static ExecutiveFastLight() {
 #if LICENSING_ENABLED
             if (!Licensing.LicenseManager.Check()) {
-                System.Windows.Forms.MessageBox.Show("Sage® Simulation and Modeling Library license is invalid.","Licensing Error");
+                System.Windows.Forms.MessageBox.Show("Sageï¿½ Simulation and Modeling Library license is invalid.","Licensing Error");
             }
 #endif
         }
@@ -106,6 +106,22 @@ namespace Highpoint.Sage.SimCore {
 				Key = key;
 				IsDaemon = isDaemon;
 			}
+
+            public _ExecEvent(_ExecEvent anEvent)
+            {
+                Eer = anEvent.Eer;
+                WhenToServe = anEvent.WhenToServe;
+                WhenSubmitted = anEvent.WhenSubmitted;
+                UserData = anEvent.UserData;
+                Key = anEvent.Key;
+                IsDaemon = anEvent.IsDaemon;
+                Ignore = anEvent.Ignore;
+            }
+
+            public override bool Equals(object obj)
+		    {
+		        return GetHashCode().Equals(obj?.GetHashCode());
+		    }
 		}
 
         /// <summary>
@@ -410,51 +426,59 @@ namespace Highpoint.Sage.SimCore {
             }
         }
 
-		private void StartWcv() {
-			m_runNumber++;
-            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
+        private void StartWcv()
+        {
+            throw new NotImplementedException();
+            m_runNumber++;
+            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
+            {
                 m_currentEvent = Dequeue();
                 m_eventCount++;
-                if (m_now.Ticks > m_currentEvent.When) {
+                if (m_now.Ticks > m_currentEvent.WhenToServe)
+                {
                     string who = m_currentEvent.Eer.Target.GetType().FullName;
-                    if (m_currentEvent.Eer.Target is IHasName) {
+                    if (m_currentEvent.Eer.Target is IHasName)
+                    {
                         who = ((IHasName)m_currentEvent.Eer.Target).Name;
                     }
                     string method = m_currentEvent.Eer.Method.Name + "(...)";
-                    if (true) {
-                        m_currentEvent.When = m_now.Ticks;// System.Diagnostics.Debugger.Break();
-                    } else {
+                    if (true)
+                    {
+                        m_currentEvent.WhenToServe = m_now.Ticks;// System.Diagnostics.Debugger.Break();
+                    }
+                    else
+                    {
                         //						throw new ApplicationException(msg);
                     }
                 }
                 m_lastEventServiceTime = m_now;
-                m_now = new DateTime(m_currentEvent.When);
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
+                m_now = new DateTime(m_currentEvent.WhenToServe);
+                m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 m_currentEvent.Eer(this, m_currentEvent.UserData);
-                if (m_eventHasCompleted != null) {
-                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
+                m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 m_execEventCache.Return(m_currentEvent);
             }
-		}
+        }
 
-#region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+#if USE_TEMPORAL_DEBUGGING
+        #region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
         static string _targetdatestr = new DateTime(1999, 7, 15, 3, 51, 21).ToString("r");
         DateTime m_targetdate = DateTime.Parse(_targetdatestr);
         bool m_hasTarget = false;
         bool m_hasFired = false;
         string m_hoverHere;
+        #endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+#endif
 
-#endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
-
-		private void StartWocv() {
+        private void StartWocv() {
 			m_runNumber++;
-			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
-				m_currentEvent = Dequeue();
-				m_eventCount++;
-				m_now = new DateTime(m_currentEvent.When);
+            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
+            {
+                lock (m_rollbackLock)
+                {
+                    m_currentEvent = Dequeue();
+                    m_eventCount++;
+                    m_now = new DateTime(m_currentEvent.WhenToServe);
 
 #region TEMPORAL DEBUGGING
 
@@ -466,16 +490,30 @@ namespace Highpoint.Sage.SimCore {
 
 #endregion TEMPORAL DEBUGGING
 
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                    m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
+                        m_currentEvent.UserData, ExecEventType.Synchronous);
+                    if (m_supportRollback)
+                    {
+                        if (!m_currentEvent.Ignore)
+                        {
+                            m_currentEvent.Eer(this, m_currentEvent.UserData);
+                            if (m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break(); // GOOBER
+                            m_rollbackList.Add(new _ExecEvent(m_currentEvent));
+                            if (m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break(); // GOOBER
+                        }
+                    }
+                    else
+                    {
+                        m_currentEvent.Eer(this, m_currentEvent.UserData);
+                    }
+                    m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
+                        m_currentEvent.UserData, ExecEventType.Synchronous);
+                    if (m_supportRollback && m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break(); // GOOBER
+                    m_execEventCache.Return(m_currentEvent);
                 }
-				m_currentEvent.Eer(this,m_currentEvent.UserData);
-                if (m_eventHasCompleted != null) {
-                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
-                m_execEventCache.Return(m_currentEvent);
-			}
-		}
+                Monitor.Pulse(m_rollbackLock); // This is the ONLY place we want the local thread to be when a rollback is being processed.
+            }
+        }
 
         /// <summary>
         /// Stops the executive. This may be a pause or a stop, depending on if events are queued or running at the time of call.
@@ -749,5 +787,137 @@ namespace Highpoint.Sage.SimCore {
 				Console.WriteLine("(" + i + ") " + when);
 			}
 		}
-	}
+
+#region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
+
+        public long RequestImmediateEvent(ExecEventReceiver eer, object userData, ExecEventType execEventType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvent(long eventHashCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvents(IExecEventSelector ees)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvents(object execEventReceiverTarget)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnRequestEvents(Delegate execEventReceiverMethod)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Join(params long[] eventCodes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Pause()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Resume()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Abort()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Detach(object target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearVolatiles(IDictionary dictionary)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDetachableEventController CurrentEventController { get; }
+        public ArrayList LiveDetachableEvents { get; }
+
+        /// True if this executive is to support runtime rollbacks.
+        public bool SupportsRollback {
+            get { return m_supportRollback; }
+            internal set {
+                m_supportRollback = value;
+                m_rollbackList = new List<_ExecEvent>();
+            }
+        }
+
+        public event ExecutiveEvent ExecutivePaused;
+        public event ExecutiveEvent ExecutiveResumed;
+        public event ExecutiveEvent ExecutiveAborted;
+        public event ExecutiveEvent ClockAboutToChange; 
+#endregion
+
+        private object m_rollbackLock = new object();
+        public void Rollback(DateTime toWhen)
+        {
+            // We want to hold up any thread that is not the one owned by this executive, and not release it until
+            // this executive is done processing the current event, so that the rollback that occurs, occurs from
+            // a consistent state, and does not have any remaining event processing to do from the future timeslice
+            // when the past timeslice is finally reached. So...
+            lock (m_rollbackLock)
+            {
+
+                long toWhenTicks = toWhen.Ticks;
+                foreach (_ExecEvent execEvent in m_eventArray)
+                {
+                    // Any event that is in the event list, but was submitted AFTER the rollback-to time, will be ignored.
+                    if (execEvent != null && execEvent.WhenSubmitted > toWhenTicks)
+                    {
+                        Console.WriteLine("Setting event that was scheduled for {0} to \"Ignore.\"",
+                            new DateTime(execEvent.WhenToServe));
+                        execEvent.Ignore = true;
+                    }
+                }
+
+                List<_ExecEvent> tmp = new List<_ExecEvent>(m_rollbackList.Count);
+                int n = 0;
+                // Higher the index, the later in the simulation.
+                foreach (_ExecEvent execEvent in m_rollbackList)
+                {
+                    // Any event that is in the history list, but was submitted AFTER the rollback-to time, will be ignored.
+                    if (execEvent.WhenSubmitted < toWhenTicks)
+                    {
+                        if (execEvent.WhenToServe > toWhenTicks)
+                        {
+                            Console.WriteLine("Rescheduling event that was scheduled at {0} for {1}",
+                                new DateTime(execEvent.WhenSubmitted), new DateTime(execEvent.WhenToServe));
+
+                            _ExecEvent ee = m_execEventCache.Take(execEvent.Eer, new DateTime(execEvent.WhenToServe),
+                                execEvent.UserData, execEvent.Key, execEvent.IsDaemon);
+                            ee.WhenSubmitted = execEvent.WhenSubmitted;
+                            Enqueue(ee);
+                        }
+                        else
+                        {
+                            tmp.Add(execEvent);
+                        }
+                    }
+                    m_rollbackList = tmp;
+                }
+
+                m_now = toWhen;
+
+
+                OnRollback?.Invoke(m_now);
+            }
+        }
+
+        public event TimeEvent OnRollback;
+    }
 }
