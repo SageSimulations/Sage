@@ -114,6 +114,7 @@ namespace Highpoint.Sage.SimCore {
 			    Ignore = false;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             public _ExecEvent(_ExecEvent anEvent)
             {
@@ -141,6 +142,8 @@ namespace Highpoint.Sage.SimCore {
 		    {
 		        return GetHashCode().Equals(obj?.GetHashCode());
 		    }
+=======
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 =======
 >>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 		}
@@ -390,6 +393,7 @@ namespace Highpoint.Sage.SimCore {
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		//private void StartWcv() {
 		//	m_runNumber++;
   //          while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
@@ -418,6 +422,8 @@ namespace Highpoint.Sage.SimCore {
 
 #if USE_TEMPORAL_DEBUGGING
 =======
+=======
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 		private void StartWcv() {
 			m_runNumber++;
             while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
@@ -448,6 +454,9 @@ namespace Highpoint.Sage.SimCore {
             }
 		}
 
+<<<<<<< HEAD
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
+=======
 >>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 #region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
         static string _targetdatestr = new DateTime(1999, 7, 15, 3, 51, 21).ToString("r");
@@ -455,6 +464,7 @@ namespace Highpoint.Sage.SimCore {
         bool m_hasTarget = false;
         bool m_hasFired = false;
         string m_hoverHere;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
 #endif
@@ -466,6 +476,17 @@ namespace Highpoint.Sage.SimCore {
 				m_eventCount++;
 				m_now = new DateTime(m_currentEvent.WhenToServe);
 =======
+=======
+
+#endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+
+		private void StartWocv() {
+			m_runNumber++;
+			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
+				m_currentEvent = Dequeue();
+				m_eventCount++;
+				m_now = new DateTime(m_currentEvent.When);
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 
 #endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
 
@@ -488,6 +509,7 @@ namespace Highpoint.Sage.SimCore {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
 			    if (m_supportRollback)
 			    {
@@ -509,10 +531,18 @@ namespace Highpoint.Sage.SimCore {
                 if (m_eventAboutToFire != null) {
                     m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 }
+=======
+                if (m_eventAboutToFire != null) {
+                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                }
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 				m_currentEvent.Eer(this,m_currentEvent.UserData);
                 if (m_eventHasCompleted != null) {
                     m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 }
+<<<<<<< HEAD
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
+=======
 >>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
                 m_execEventCache.Return(m_currentEvent);
 			}
@@ -732,6 +762,7 @@ namespace Highpoint.Sage.SimCore {
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
 
@@ -855,6 +886,9 @@ namespace Highpoint.Sage.SimCore {
 
         public event TimeEvent OnRollback;
     }
+=======
+	}
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 =======
 	}
 >>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
