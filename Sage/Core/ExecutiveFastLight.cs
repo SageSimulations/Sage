@@ -113,6 +113,7 @@ namespace Highpoint.Sage.SimCore {
 				IsDaemon = isDaemon;
 			    Ignore = false;
 			}
+<<<<<<< HEAD
 
             public _ExecEvent(_ExecEvent anEvent)
             {
@@ -140,6 +141,8 @@ namespace Highpoint.Sage.SimCore {
 		    {
 		        return GetHashCode().Equals(obj?.GetHashCode());
 		    }
+=======
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 		}
 
         /// <summary>
@@ -386,6 +389,7 @@ namespace Highpoint.Sage.SimCore {
             }
         }
 
+<<<<<<< HEAD
 		//private void StartWcv() {
 		//	m_runNumber++;
   //          while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
@@ -413,12 +417,45 @@ namespace Highpoint.Sage.SimCore {
 		//}
 
 #if USE_TEMPORAL_DEBUGGING
+=======
+		private void StartWcv() {
+			m_runNumber++;
+            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
+                m_currentEvent = Dequeue();
+                m_eventCount++;
+                if (m_now.Ticks > m_currentEvent.When) {
+                    string who = m_currentEvent.Eer.Target.GetType().FullName;
+                    if (m_currentEvent.Eer.Target is IHasName) {
+                        who = ((IHasName)m_currentEvent.Eer.Target).Name;
+                    }
+                    string method = m_currentEvent.Eer.Method.Name + "(...)";
+                    if (true) {
+                        m_currentEvent.When = m_now.Ticks;// System.Diagnostics.Debugger.Break();
+                    } else {
+                        //						throw new ApplicationException(msg);
+                    }
+                }
+                m_lastEventServiceTime = m_now;
+                m_now = new DateTime(m_currentEvent.When);
+                if (m_eventAboutToFire != null) {
+                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                }
+                m_currentEvent.Eer(this, m_currentEvent.UserData);
+                if (m_eventHasCompleted != null) {
+                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                }
+                m_execEventCache.Return(m_currentEvent);
+            }
+		}
+
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 #region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
         static string _targetdatestr = new DateTime(1999, 7, 15, 3, 51, 21).ToString("r");
         DateTime m_targetdate = DateTime.Parse(_targetdatestr);
         bool m_hasTarget = false;
         bool m_hasFired = false;
         string m_hoverHere;
+<<<<<<< HEAD
 #endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
 #endif
 
@@ -428,6 +465,17 @@ namespace Highpoint.Sage.SimCore {
                 m_currentEvent = Dequeue();
 				m_eventCount++;
 				m_now = new DateTime(m_currentEvent.WhenToServe);
+=======
+
+#endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+
+		private void StartWocv() {
+			m_runNumber++;
+			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
+				m_currentEvent = Dequeue();
+				m_eventCount++;
+				m_now = new DateTime(m_currentEvent.When);
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 
 #if USE_TEMPORAL_DEBUGGING
 #region TEMPORAL DEBUGGING
@@ -439,6 +487,7 @@ namespace Highpoint.Sage.SimCore {
 #endregion TEMPORAL DEBUGGING
 #endif
 
+<<<<<<< HEAD
                 m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
 			    if (m_supportRollback)
 			    {
@@ -456,6 +505,15 @@ namespace Highpoint.Sage.SimCore {
                 }
                 m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 if ( m_supportRollback && m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
+=======
+                if (m_eventAboutToFire != null) {
+                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                }
+				m_currentEvent.Eer(this,m_currentEvent.UserData);
+                if (m_eventHasCompleted != null) {
+                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+                }
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
                 m_execEventCache.Return(m_currentEvent);
 			}
 		}
@@ -673,6 +731,7 @@ namespace Highpoint.Sage.SimCore {
 				Console.WriteLine("(" + i + ") " + when);
 			}
 		}
+<<<<<<< HEAD
 
 #region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
 
@@ -796,4 +855,7 @@ namespace Highpoint.Sage.SimCore {
 
         public event TimeEvent OnRollback;
     }
+=======
+	}
+>>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 }
