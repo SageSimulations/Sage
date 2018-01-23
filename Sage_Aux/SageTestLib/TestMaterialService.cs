@@ -41,8 +41,8 @@ namespace Highpoint.Sage.Materials  {
             TestClient tc = new TestClient(model, source, sink, mcat["Ammonia"], 1000, mcat["Ammonia"], 750);
 
             model.Executive.RequestEvent(
-                new ExecEventReceiver(tc.Run), 
-                DateTime.Parse("2/16/2009 12:59:28 PM"), 0.0, new Hashtable(), ExecEventType.Detachable);
+                new ExecEventReceiver(tc.Run),
+                new DateTime(2009, 2, 16, 12, 59, 28), 0.0, new Hashtable(), ExecEventType.Detachable);
 
             model.Start();
         }
