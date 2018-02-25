@@ -4,9 +4,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Instrumentation;
+using System.Runtime.Serialization;
 using System.Threading;
-using NameValueCollection=System.Collections.Specialized.NameValueCollection;
+using Highpoint.Sage.Utility;
+using NameValueCollection = System.Collections.Specialized.NameValueCollection;
 
 // TODO: ExecEvent and ExecEventReceiver need to become generics, with the type of the exec supplied with
 // the declaration, so that an IExecutiveLight's events, for example, emit references to an IExecutiveLight,
@@ -23,7 +26,7 @@ namespace Highpoint.Sage.SimCore {
     /// sacrifice a little bit of speed to get them. Note that if you are doing anything non-trivial in your
     /// event handlers, this 'sacrifice' quickly becomes unnoticeable.
     /// </summary>
-    internal class ExecutiveFastLight : IExecutive, ISupportsRollback
+    internal class ExecutiveFastLight : IExecutive
     {
 
         static ExecutiveFastLight() {
@@ -113,8 +116,6 @@ namespace Highpoint.Sage.SimCore {
 				IsDaemon = isDaemon;
 			    Ignore = false;
 			}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
             public _ExecEvent(_ExecEvent anEvent)
             {
@@ -127,25 +128,36 @@ namespace Highpoint.Sage.SimCore {
                 Ignore = anEvent.Ignore;
             }
 
-            public void CopyFrom(_ExecEvent anEvent)
-            {
-                Eer = anEvent.Eer;
-                WhenToServe = anEvent.WhenToServe;
-                WhenSubmitted = anEvent.WhenSubmitted;
-                UserData = anEvent.UserData;
-                Key = anEvent.Key;
-                IsDaemon = anEvent.IsDaemon;
-                Ignore = anEvent.Ignore;
-            }
-
             public override bool Equals(object obj)
 		    {
-		        return GetHashCode().Equals(obj?.GetHashCode());
+		        return Equals(obj as _ExecEvent);
+            }
+
+		    protected bool Equals(_ExecEvent other)
+		    {
+		        return this == other;
+		        //   GetHashCode() == other.GetHashCode() &&
+		        //WhenToServe == other.WhenToServe &&
+		        //Equals(UserData, other.UserData) &&
+		        //Key == other.Key &&
+		        //IsDaemon == other.IsDaemon &&
+		        //WhenSubmitted == other.WhenSubmitted &&
+		        //Ignore == other.Ignore;
 		    }
-=======
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-=======
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
+
+		    public override int GetHashCode()
+		    {
+		        unchecked
+		        {
+		            int hashCode = WhenToServe.GetHashCode();
+		            hashCode = (hashCode*397) ^ (UserData != null ? UserData.GetHashCode() : 0);
+		            hashCode = (hashCode*397) ^ Key.GetHashCode();
+		            hashCode = (hashCode*397) ^ IsDaemon.GetHashCode();
+		            hashCode = (hashCode*397) ^ WhenSubmitted.GetHashCode();
+		            hashCode = (hashCode*397) ^ Ignore.GetHashCode();
+		            return hashCode;
+		        }
+		    }
 		}
 
         /// <summary>
@@ -156,7 +168,6 @@ namespace Highpoint.Sage.SimCore {
 #region Private Fields
         private ExecEventCache m_execEventCache;
         private Guid m_execGuid;
-        private bool m_supportRollback;
 
         private DateTime m_startTime = DateTime.MinValue;
         private _ExecEvent m_parentEvent;
@@ -175,6 +186,8 @@ namespace Highpoint.Sage.SimCore {
         private _ExecEvent m_currentEvent;
         private static ArrayList _emptyList = ArrayList.ReadOnly(new ArrayList());
         private static bool _ignoreCausalityViolations = true;
+
+        private readonly object m_queuelock = new object();
 
         #endregion Private Fields
 
@@ -370,7 +383,7 @@ namespace Highpoint.Sage.SimCore {
         /// Starts the executive. 
         /// </summary>
         public void Start() {
-            lock (this) {
+            //lock (this) {
                 m_now = m_startTime;
                 m_executiveStarted?.Invoke(this);
 
@@ -381,122 +394,78 @@ namespace Highpoint.Sage.SimCore {
 
                 if (_ignoreCausalityViolations)
                     StartWocv();
-                //else
-                //    StartWcv();
+                else
+                    StartWcv();
                 if (m_stopRequested) {
                     m_executiveStopped?.Invoke(this);
                     m_stopRequested = false;
                 }
 
                 m_executiveFinished?.Invoke(this);
-            }
+            //}
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-		//private void StartWcv() {
-		//	m_runNumber++;
-  //          while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
-  //              m_currentEvent = Dequeue();
-  //              m_eventCount++;
-  //              if (m_now.Ticks > m_currentEvent.WhenToServe) {
-  //                  string who = m_currentEvent.Eer.Target.GetType().FullName;
-  //                  if (m_currentEvent.Eer.Target is IHasName) {
-  //                      who = ((IHasName)m_currentEvent.Eer.Target).Name;
-  //                  }
-  //                  string method = m_currentEvent.Eer.Method.Name + "(...)";
-  //                  if (true) {
-  //                      m_currentEvent.WhenToServe = m_now.Ticks;// System.Diagnostics.Debugger.Break();
-  //                  } else {
-  //                      //						throw new ApplicationException(msg);
-  //                  }
-  //              }
-  //              m_lastEventServiceTime = m_now;
-  //              m_now = new DateTime(m_currentEvent.WhenToServe);
-  //              m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-  //              m_currentEvent.Eer(this, m_currentEvent.UserData);
-  //              m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-  //              m_execEventCache.Return(m_currentEvent);
-  //          }
-		//}
-
-#if USE_TEMPORAL_DEBUGGING
-=======
-=======
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-		private void StartWcv() {
-			m_runNumber++;
-            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested) {
+        private void StartWcv()
+        {
+            throw new NotImplementedException();
+            m_runNumber++;
+            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
+            {
                 m_currentEvent = Dequeue();
                 m_eventCount++;
-                if (m_now.Ticks > m_currentEvent.When) {
+                if (m_now.Ticks > m_currentEvent.WhenToServe)
+                {
                     string who = m_currentEvent.Eer.Target.GetType().FullName;
-                    if (m_currentEvent.Eer.Target is IHasName) {
+                    if (m_currentEvent.Eer.Target is IHasName)
+                    {
                         who = ((IHasName)m_currentEvent.Eer.Target).Name;
                     }
                     string method = m_currentEvent.Eer.Method.Name + "(...)";
-                    if (true) {
-                        m_currentEvent.When = m_now.Ticks;// System.Diagnostics.Debugger.Break();
-                    } else {
+                    if (true)
+                    {
+                        m_currentEvent.WhenToServe = m_now.Ticks;// System.Diagnostics.Debugger.Break();
+                    }
+                    else
+                    {
                         //						throw new ApplicationException(msg);
                     }
                 }
                 m_lastEventServiceTime = m_now;
-                m_now = new DateTime(m_currentEvent.When);
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
+                m_now = new DateTime(m_currentEvent.WhenToServe);
+                m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 m_currentEvent.Eer(this, m_currentEvent.UserData);
-                if (m_eventHasCompleted != null) {
-                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
+                m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
                 m_execEventCache.Return(m_currentEvent);
             }
-		}
+        }
 
-<<<<<<< HEAD
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-=======
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-#region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+#if USE_TEMPORAL_DEBUGGING
+        #region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
         static string _targetdatestr = new DateTime(1999, 7, 15, 3, 51, 21).ToString("r");
         DateTime m_targetdate = DateTime.Parse(_targetdatestr);
         bool m_hasTarget = false;
         bool m_hasFired = false;
         string m_hoverHere;
-<<<<<<< HEAD
-<<<<<<< HEAD
-#endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+        #endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
 #endif
 
-		private void StartWocv() {
-			m_runNumber++;
-			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
-                m_currentEvent = Dequeue();
-				m_eventCount++;
-				m_now = new DateTime(m_currentEvent.WhenToServe);
-=======
-=======
+        private void StartWocv()
+        {
+            m_runNumber++;
 
-#endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
+            try
+            {
 
-		private void StartWocv() {
-			m_runNumber++;
-			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
-				m_currentEvent = Dequeue();
-				m_eventCount++;
-				m_now = new DateTime(m_currentEvent.When);
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
+                while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
+                {
+                    {
+                        m_currentEvent = Dequeue();
+                        m_eventCount++;
 
-#endregion ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
-
-		private void StartWocv() {
-			m_runNumber++;
-			while ( m_numNonDaemonEventsPending > 0 && !m_stopRequested ) {
-				m_currentEvent = Dequeue();
-				m_eventCount++;
-				m_now = new DateTime(m_currentEvent.When);
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
+                        if (m_currentEvent.WhenToServe > m_now.Ticks)
+                        {
+                            ClockAboutToChange?.Invoke(this);
+                            m_now = new DateTime(m_currentEvent.WhenToServe);
 
 #if USE_TEMPORAL_DEBUGGING
 #region TEMPORAL DEBUGGING
@@ -507,46 +476,23 @@ namespace Highpoint.Sage.SimCore {
                 }
 #endregion TEMPORAL DEBUGGING
 #endif
+                            m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
+                                m_currentEvent.UserData, ExecEventType.Synchronous);
+                            m_currentEvent.Eer(this, m_currentEvent.UserData);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-                m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-			    if (m_supportRollback)
-			    {
-			        if (!m_currentEvent.Ignore)
-			        {
-			            m_currentEvent.Eer(this, m_currentEvent.UserData);
-                        if (m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
-                        m_rollbackList.Add(new _ExecEvent(m_currentEvent));
-                        if (m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
+                            m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
+                                m_currentEvent.UserData, ExecEventType.Synchronous);
+
+                            m_execEventCache.Return(m_currentEvent);
+                        }
                     }
                 }
-			    else
-			    {
-                    m_currentEvent.Eer(this, m_currentEvent.UserData);
-                }
-                m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                if ( m_supportRollback && m_rollbackList.Contains(m_currentEvent)) System.Diagnostics.Debugger.Break();
-=======
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
-=======
-                if (m_eventAboutToFire != null) {
-                    m_eventAboutToFire(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-				m_currentEvent.Eer(this,m_currentEvent.UserData);
-                if (m_eventHasCompleted != null) {
-                    m_eventHasCompleted(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                }
-<<<<<<< HEAD
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-=======
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-                m_execEventCache.Return(m_currentEvent);
-			}
-		}
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
 
         /// <summary>
         /// Stops the executive. This may be a pause or a stop, depending on if events are queued or running at the time of call.
@@ -570,7 +516,6 @@ namespace Highpoint.Sage.SimCore {
 			m_eventCount = 0;
 			m_stopRequested = false;
 			m_key = 0;
-            m_rollbackList?.Clear();
             m_executiveReset?.Invoke(this);
 		}
 
@@ -685,12 +630,9 @@ namespace Highpoint.Sage.SimCore {
 
 #endregion // IExecutive members.
 
-        private object synclock = new object();
-        private List<_ExecEvent> m_rollbackList;
-
         private void Enqueue(_ExecEvent ee)
         {
-            lock (synclock)
+            lock (m_queuelock)
             {
                 //Console.WriteLine("Enqueueing #{0} on {1}, its time is {2}", ee.Key,
                 //    Thread.CurrentThread.ManagedThreadId, (new DateTime(ee.When)));
@@ -717,7 +659,7 @@ namespace Highpoint.Sage.SimCore {
         }
 
         private _ExecEvent Dequeue(){
-            lock (synclock)
+            lock (m_queuelock)
             {
                 if (m_numEventsPending == 0) return null;
                 _ExecEvent leastEvent = m_eventArray[1];
@@ -761,10 +703,9 @@ namespace Highpoint.Sage.SimCore {
 				Console.WriteLine("(" + i + ") " + when);
 			}
 		}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-#region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
+        public string Name { get; set; }
+        #region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
 
         public long RequestImmediateEvent(ExecEventReceiver eer, object userData, ExecEventType execEventType)
         {
@@ -824,72 +765,31 @@ namespace Highpoint.Sage.SimCore {
         public IDetachableEventController CurrentEventController { get; }
         public ArrayList LiveDetachableEvents { get; }
 
-        /// True if this executive is to support runtime rollbacks.
-        public bool SupportsRollback {
-            get { return m_supportRollback; }
-            internal set {
-                m_supportRollback = value;
-                m_rollbackList = new List<_ExecEvent>();
-            }
-        }
-
         public event ExecutiveEvent ExecutivePaused;
         public event ExecutiveEvent ExecutiveResumed;
         public event ExecutiveEvent ExecutiveAborted;
-        public event ExecutiveEvent ClockAboutToChange; 
-#endregion
+        public event ExecutiveEvent ClockAboutToChange;
+        #endregion
 
-        public void Rollback(DateTime toWhen)
+    }
+
+    [Serializable]
+    public class DeadlockException : Exception
+    {
+        public DeadlockException()
         {
-            long toWhenTicks = toWhen.Ticks;
-            foreach (_ExecEvent execEvent in m_eventArray)
-            {
-                // Any event that is in the event list, but was submitted AFTER the rollback-to time, will be ignored.
-                if (execEvent != null && execEvent.WhenSubmitted > toWhenTicks)
-                {
-                    Console.WriteLine("Setting event that was scheduled for {0} to \"Ignore.\"", new DateTime(execEvent.WhenToServe));
-                    execEvent.Ignore = true;
-                }
-            }
-
-            List<_ExecEvent> tmp = new List<_ExecEvent>(m_rollbackList.Count);
-            int n = 0;
-            // Higher the index, the later in the simulation.
-            foreach (_ExecEvent execEvent in m_rollbackList)
-            {
-                // Any event that is in the history list, but was submitted AFTER the rollback-to time, will be ignored.
-                if (execEvent.WhenSubmitted < toWhenTicks)
-                {
-                    if (execEvent.WhenToServe > toWhenTicks)
-                    {
-                        Console.WriteLine("Rescheduling event that was scheduled at {0} for {1}",
-                            new DateTime(execEvent.WhenSubmitted), new DateTime(execEvent.WhenToServe));
-
-                        _ExecEvent ee = m_execEventCache.Take(execEvent.Eer, new DateTime(execEvent.WhenToServe),
-                            execEvent.UserData, execEvent.Key, execEvent.IsDaemon);
-                        ee.WhenSubmitted = execEvent.WhenSubmitted;
-                        Enqueue(ee);
-                    }
-                    else
-                    {
-                        tmp.Add(execEvent);
-                    }
-                }
-                m_rollbackList = tmp;
-            }
-
-            m_now = toWhen;
-
-
-            OnRollback?.Invoke(m_now);
         }
 
-        public event TimeEvent OnRollback;
+        public DeadlockException(string message) : base(message)
+        {
+        }
+
+        public DeadlockException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected DeadlockException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
-=======
-	}
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
-=======
-	}
->>>>>>> parent of 885e8a3... Added Rollback code to ExecutiveFastLight
 }

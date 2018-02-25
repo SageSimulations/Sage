@@ -3,11 +3,11 @@
 #define TIME_BOUNDED
 
 using System;
-using System.CodeDom;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics;
 using System.Reflection;
+using Highpoint.Sage.SimCore.Parallel;
 #if LICENSING_ENABLED
 using Highpoint.Sage.Licensing;
 #endif // LICENSING_ENABLED
@@ -29,7 +29,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This single threaded executive also offers rollback capability for parallel simulation.
         /// </summary>
-        SingleThreadedWithRollback
+        ParallelSimulation
     }
 
     /// <summary>
@@ -114,21 +114,17 @@ namespace Highpoint.Sage.SimCore {
         /// <returns>IExecutive.</returns>
         public IExecutive CreateExecutive(ExecType execType, Guid guid)
         {
-            IExecutive exec = null;
+            IExecutive exec;
             switch(execType)
             {
                 case ExecType.FullFeatured:
-                    exec = CreateExecutive(typeof (Highpoint.Sage.SimCore.Executive).FullName, guid);
+                    exec = CreateExecutive(typeof (Executive).FullName, guid);
                     break;
                 case ExecType.SingleThreaded:
-                    exec = CreateExecutive(typeof(Highpoint.Sage.SimCore.ExecutiveFastLight).FullName, guid);
+                    exec = CreateExecutive(typeof(ExecutiveFastLight).FullName, guid);
                     break;
-                case ExecType.SingleThreadedWithRollback:
-                    exec = CreateExecutive(typeof(Highpoint.Sage.SimCore.ExecutiveFastLight).FullName, guid);
-                    if (exec != null)
-                    {
-                        ((ExecutiveFastLight)exec).SupportsRollback = true;
-                    }
+                case ExecType.ParallelSimulation:
+                    exec = CreateExecutive(typeof(ParallelExecutive).FullName, guid);
                     break;
                 default:
                     throw new ApplicationException("Attempt to create an instance of an unsupported executive (" + execType + ").");
@@ -140,16 +136,19 @@ namespace Highpoint.Sage.SimCore {
 
             Type type = Type.GetType(typeName);
             if ( type == null ) throw new ApplicationException("Attempt to create an executive of type \"" + typeName + "\", but that type does not exist.");
-            BindingFlags bindingAttr = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             //Binder binder = null;
             //ParameterModifier[] modifiers = null;
 
-            ConstructorInfo ci = type.GetConstructor(bindingAttr, null, new[] { typeof(Guid) }, null);
-            object objExec = ci.Invoke(new object[] { guid });
-            IExecutive exec = (IExecutive)objExec;
+            ConstructorInfo ci = type.GetConstructor(bindingFlags, null, new[] { typeof(Guid) }, null);
+            if (ci != null)
+            {
+                object objExec = ci.Invoke(new object[] { guid });
+                IExecutive exec = (IExecutive)objExec;
 
-            return exec;
-
+                return exec;
+            }
+            return null;
         }
 
 

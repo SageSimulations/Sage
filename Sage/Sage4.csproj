@@ -97,6 +97,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -218,6 +219,8 @@
     <Compile Include="Core\ModelObjectDictionary.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\Parallel\CoExecutor.cs" />
+    <Compile Include="Core\Parallel\ParallelExecutive.cs" />
     <Compile Include="Core\StateMachine.cs">
       <SubType>Code</SubType>
     </Compile>

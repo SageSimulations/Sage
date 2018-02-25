@@ -5,6 +5,8 @@ using System.Diagnostics;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Security.RightsManagement;
+using System.Threading;
+using Highpoint.Sage.SimCore.Parallel;
 
 namespace Highpoint.Sage.SimCore {
 
@@ -390,10 +392,14 @@ namespace Highpoint.Sage.SimCore {
     }
 
     public delegate void TimeEvent(DateTime dt);
-    public interface ISupportsRollback
+    public interface IParallelExec
     {
+        string Name { get; set; }
+
         void Rollback(DateTime toWhen);
         event TimeEvent OnRollback;
+        void WakeMeAt(DateTime @when);
+        void SetCoexecutor(CoExecutor executor);
     }
 
     /// <summary>

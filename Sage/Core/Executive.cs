@@ -502,7 +502,6 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     if (m_clockAboutToChange != null) {
                         if (m_numEventsInQueue > m_numDaemonEventsInQueue ) {
                             DateTime nextEventTime = ( (ExecEvent)m_events.GetKey(0) ).m_when;
-                            //DateTime nextEventTime = ((ExecEvent)m_events[0]).m_when;
                             if (nextEventTime > m_now) {
                             m_clockAboutToChange(this);
                             }
@@ -1125,8 +1124,8 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
     }
 
     internal class ExecEvent : IExecEvent {
-        private static bool _usePool = false;
-        private static Queue<ExecEvent> _pool = new Queue<ExecEvent>();
+        protected static bool _usePool = false;
+        protected static Queue<ExecEvent> _pool = new Queue<ExecEvent>();
         public static ExecEvent Get(ExecEventReceiver eer, DateTime when, double priority, object userData, ExecEventType eet, long key, bool isDaemon) {
             ExecEvent retval;
             if (_pool.Count == 0) {
@@ -1138,7 +1137,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             return retval;
         }
 
-        private ExecEvent(ExecEventReceiver eer,DateTime when,double priority,object userData, ExecEventType eet, long key, bool isDaemon){
+        protected ExecEvent(ExecEventReceiver eer,DateTime when,double priority,object userData, ExecEventType eet, long key, bool isDaemon){
             Initialize(eer, when, priority, userData, eet, key, isDaemon);
         }
 

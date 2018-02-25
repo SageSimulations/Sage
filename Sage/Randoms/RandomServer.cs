@@ -189,7 +189,7 @@ namespace Highpoint.Sage.Randoms {
 		/// <param name="seed">The seed value for the PRNG behind this channel.</param>
 		/// <param name="bufferSize">The buffer size for this channel. Non-zero enables double-buffering.</param>
 		/// <returns>The random channel from which random numbers may be obtained in a repeatable sequence.</returns>
-		public IRandomChannel GetRandomChannel(ulong seed, int bufferSize){
+		public IRandomChannel GetRandomChannel(ulong seed, int bufferSize=0){
 			if ( bufferSize == 0 ) {
 				return new RandomChannel(seed);
 			} else {

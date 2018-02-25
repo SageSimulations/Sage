@@ -110,7 +110,7 @@
             The single threaded executive obtains highest performance through a limited feature set.
             </summary>
         </member>
-        <member name="F:Highpoint.Sage.SimCore.ExecType.SingleThreadedWithRollback">
+        <member name="F:Highpoint.Sage.SimCore.ExecType.ParallelSimulation">
             <summary>
             This single threaded executive also offers rollback capability for parallel simulation.
             </summary>
@@ -614,9 +614,6 @@
             This high performance exec does nothing on Dispose.
             </summary>
             <value></value>
-        </member>
-        <member name="P:Highpoint.Sage.SimCore.ExecutiveFastLight.SupportsRollback">
-            True if this executive is to support runtime rollbacks.
         </member>
         <member name="T:Highpoint.Sage.SimCore.ExecEventReceiver">
             <summary>
@@ -2549,6 +2546,171 @@
             <returns>
             An <see cref="T:Highpoint.Sage.SimCore.ModelObjectDictionary"></see> object that can be used to iterate through the collection.
             </returns>
+        </member>
+        <member name="T:Highpoint.Sage.SimCore.Parallel.ParallelExecutive">
+            <summary>
+            This is a stripped-down executive, designed for applications in which parallel operation is the 
+            overriding concern. This executive does not support rescindable or detachable events,
+            pause and resume, or detection of causality violations. However, multiple executives can be run 
+            in the same process, with limited temporal crosstalk supported by "WaitUntil(when)" and 
+            "Rollback(toWhen)" APIs.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.#ctor(System.Guid)">
+            <summary>
+            Creates a new instance of the <see cref="T:Executive3"/> class.
+            </summary>
+            <param name="execGuid">The GUID by which this executive will be known.</param>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Guid">
+            <summary>
+            The Guid by which this executive is known.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Now">
+            <summary>
+            The current DateTime being managed by this executive. This is the 'Now' point of a
+            simulation being run by this executive.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.LastEventServed">
+            <summary>
+            If this executive has been run, this holds the DateTime of the last event serviced. May be from a previous run.
+            </summary>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.CurrentPriorityLevel">
+            <summary>
+            The priority of the event currently being serviced. This executive forces all priorities to zero.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.State">
+            <summary>
+            The current <see cref="T:Highpoint.Sage.SimCore.ExecState"/> of this executive (running, stopped, paused, finished)...
+            Proceeds from 'Stopped' before being 'Started,' and finally transitioning to 'Finished.'
+            </summary>
+            <value></value>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.RequestDaemonEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
+            <summary>
+            Requests that the executive queue up a daemon event to be serviced at a specific time and
+            priority. If only daemon events are enqueued, the executive will not be kept alive.
+            </summary>
+            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
+            <param name="when">The date &amp; time at which the callback is to be made.</param>
+            <param name="priority">The priority of the callback. This executive forces all priorities to zero.</param>
+            <param name="userData">Object data to be provided in the callback.</param>
+            <returns>
+            A code that can subsequently be used to identify the request, e.g. for removal.
+            </returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime)">
+            <summary>
+            Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
+            to be zero, and the userData object is assumed to be null.
+            </summary>
+            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
+            <param name="when">The date &amp; time at which the callback is to be made.</param>
+            <returns>
+            A code that can subsequently be used to identify the request, e.g. for removal.
+            </returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Object)">
+            <summary>
+            Requests that the executive queue up an event to be serviced at a specific time. Priority is assumed
+            to be zero.
+            </summary>
+            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
+            <param name="when">The date &amp; time at which the callback is to be made.</param>
+            <param name="userData">Object data to be provided in the callback.</param>
+            <returns>
+            A code that can subsequently be used to identify the request, e.g. for removal.
+            </returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object)">
+            <summary>
+            Requests that the executive queue up an event to be serviced at a specific time and
+            priority.
+            </summary>
+            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
+            <param name="when">The date &amp; time at which the callback is to be made.</param>
+            <param name="priority">The priority of the callback. This executive forces all priorities to zero.</param>
+            <param name="userData">Object data to be provided in the callback.</param>
+            <returns>
+            A code that can subsequently be used to identify the request, e.g. for removal.
+            </returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Highpoint#Sage#SimCore#IExecutiveLight#RequestEvent(Highpoint.Sage.SimCore.ExecEventReceiver,System.DateTime,System.Double,System.Object,Highpoint.Sage.SimCore.ExecEventType)">
+            <summary>
+            Requests that the executive queue up an event to be serviced at a specific time and
+            priority.
+            </summary>
+            <param name="eer">The ExecEventReceiver callback that is to receive the callback.</param>
+            <param name="when">The date &amp; time at which the callback is to be made.</param>
+            <param name="priority">The priority of the callback. This executive forces all priorities to zero.</param>
+            <param name="userData">Object data to be provided in the callback.</param>
+            <param name="execEventType">The way the event is to be served by the executive.</param>
+            <returns>
+            A code that can subsequently be used to identify the request, e.g. for removal.
+            </returns>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Start">
+            <summary>
+            Starts the executive. 
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Stop">
+            <summary>
+            Stops the executive. This may be a pause or a stop, depending on if events are queued or running at the time of call.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Reset">
+            <summary>
+            Resets the executive - this clears the event list and resets now to 1/1/01, 12:00 AM
+            </summary>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.CurrentEventType">
+            <summary>
+            The type of event currently being serviced by the executive. This executive services only Synchronous events.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.EventList">
+            <summary>
+            Returns a read-only list of the ExecEvents currently in queue for execution.
+            Cast the elements in the list to IExecEvent to access the items' field values.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.RunNumber">
+            <summary>
+            The integer count of the number of times this executive has been run.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.EventCount">
+            <summary>
+            The number of events that have been serviced on this run.
+            </summary>
+            <value></value>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.EventAboutToFire">
+            <summary>
+            Fired after an event has been selected to be fired, but before it actually fires.
+            </summary>
+        </member>
+        <member name="E:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.EventHasCompleted">
+            <summary>
+            Fired after an event has been selected to be fired, and after it actually fires.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.Dispose">
+            <summary>
+            This high performance exec does nothing on Dispose.
+            </summary>
+            <value></value>
         </member>
         <member name="T:Highpoint.Sage.SimCore.PrepareTransitionEvent">
             <summary>

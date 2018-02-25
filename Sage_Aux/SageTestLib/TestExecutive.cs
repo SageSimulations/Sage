@@ -7,6 +7,8 @@ using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
 using System.Collections.Generic;
+using System.Text;
+using Highpoint.Sage.SimCore.Parallel;
 
 namespace Highpoint.Sage.SimCore {
 
@@ -58,7 +60,7 @@ namespace Highpoint.Sage.SimCore {
 				priority = m_random.NextDouble();
 				++m_validateCount;
 				_Debug.WriteLine("Primary requesting event number " + m_validateCount);
-				exec.RequestEvent(new ExecEventReceiver(ExecEventRecieverCount),when,priority,null,m_execEventType);
+				exec.RequestEvent(new ExecEventReceiver(ExecEventReceiverCount),when,priority,null,m_execEventType);
 			}
 
 			if (m_validateCount != NUM_EVENTS) {
@@ -75,7 +77,7 @@ namespace Highpoint.Sage.SimCore {
 			_Debug.WriteLine("");
 		}
 
-		private void ExecEventRecieverCount(IExecutive exec, object userData) {
+		private void ExecEventReceiverCount(IExecutive exec, object userData) {
 			--m_validateCount;
 		}
 
@@ -872,7 +874,7 @@ namespace Highpoint.Sage.SimCore {
             IExecutive exec1 = ExecFactory.Instance.CreateExecutive("Highpoint.Sage.SimCore.Executive",Guid.NewGuid());
             DateTime setupTime = new DateTime(2008, 11, 24, 12, 15, 44);
             ExecEventType eet = ExecEventType.Detachable; // Don't change this one. Join must be done on a detachable event.
-            exec1.RequestEvent(new ExecEventReceiver(JoinDetachableSetup), setupTime, 0.0, null, eet);
+            exec1.RequestEvent(JoinDetachableSetup, setupTime, 0.0, null, eet);
             exec1.Start();
 
         }
@@ -886,9 +888,9 @@ namespace Highpoint.Sage.SimCore {
             ExecEventType eet = ExecEventType.Synchronous;
             for (int i = 0 ; i < 3 ; i++) {
                 if (eet == ExecEventType.Synchronous) {
-                    eventKeys.Add(exec.RequestEvent(new ExecEventReceiver(DoItWithoutSuspension), whens[i], 0.0, null, eet));
+                    eventKeys.Add(exec.RequestEvent(DoItWithoutSuspension, whens[i], 0.0, null, eet));
                 } else if (eet == ExecEventType.Detachable) {
-                    eventKeys.Add(exec.RequestEvent(new ExecEventReceiver(DoItWithSuspension), whens[i], 0.0, null, eet));
+                    eventKeys.Add(exec.RequestEvent(DoItWithSuspension, whens[i], 0.0, null, eet));
                 }
             }
             Console.WriteLine(exec.Now + " : Waiting to join.");
@@ -944,7 +946,62 @@ namespace Highpoint.Sage.SimCore {
 		#endregion
 	}
 
-	public class OtherTarget {
+    [TestClass]
+    public class ParallelTester
+    {
+        public ParallelTester() { Init(); }
+
+        [TestInitialize]
+        public void Init()
+        {
+        }
+        [TestCleanup]
+        public void destroy()
+        {
+            _Debug.WriteLine("Done.");
+        }
+
+        /// <summary>
+        /// Checks to see that an executive can store & service all submitted events.
+        /// </summary>
+        [TestMethod]
+        [Highpoint.Sage.Utility.FieldDescription("Checks to see that three executives can run in parallel and that halting occurs only once all are completed.")]
+        public void TestCoTermination()
+        {
+            IExecutive exec1 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            IExecutive exec2 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            IExecutive exec3 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+
+            StringBuilder sb = new StringBuilder();
+
+            exec1.RequestEvent((exec, data) =>
+            {
+                Thread.Sleep(1000);
+                lock (sb) sb.Append("A");
+            }, new DateTime(2017, 12, 17));
+
+            exec2.RequestEvent((exec, data) =>
+            {
+                Thread.Sleep(500);
+                lock (sb) sb.Append("B");
+            }, new DateTime(2017, 12, 19));
+
+            exec3.RequestEvent((exec, data) =>
+            {
+                Thread.Sleep(100);
+                lock (sb) sb.Append("C");
+            }, new DateTime(2017, 12, 21));
+
+            CoExecutor.CoStart(new[] { exec1, exec2, exec3 }, terminateAt: new DateTime(2018, 1, 1));
+
+            Console.WriteLine(sb.ToString());
+            _Debug.Assert(sb.ToString() == "CBA", "Executives did not run properly.");
+
+        }
+
+    }
+
+    public class OtherTarget {
 
 		ArrayList m_validateUnRequest;
 		bool m_error;
