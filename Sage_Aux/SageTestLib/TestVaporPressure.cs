@@ -2,6 +2,7 @@
 using System;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using K = Highpoint.Sage.Materials.Chemistry.VaporPressure.VaporPressureTester.Constants;
 
@@ -30,14 +31,11 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureInPascals = new Hashtable();
 
-            string filename = Environment.GetEnvironmentVariable("SAGE_ROOT");
-            Assert.IsNotNull(filename, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
+            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".";
+            string propertiesFile = directory + @"\..\..\..\SageTesting\PureComponentProperties.csv";
+            Assert.IsTrue(File.Exists(propertiesFile), "Properties data file not found - " + propertiesFile);
 
-            filename += @"\Sage_Aux\SageTesting\PureComponentProperties.csv";
-
-            Assert.IsTrue(System.IO.File.Exists(filename), "Test data file not found - " + filename);
-
-            string[][] data = Load(filename);
+            string[][] data = Load(propertiesFile);
 			
 			foreach ( string[] row in data ) {
 				string name = row[0];
@@ -70,7 +68,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 		}
 
 		[TestCleanup]
-		public void destroy() {
+		public void Destroy() {
 			_Debug.WriteLine( "Done." );
 		}
 

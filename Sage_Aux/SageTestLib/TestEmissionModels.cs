@@ -3,6 +3,7 @@ using System;
 using System.Xml;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Materials.Chemistry.Emissions;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
@@ -25,8 +26,8 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 			public static double cubicFtPerCubicMeter = 35.314667;
 		}
 
-        public static string TEST_FILE;
-        public static string PROP_FILE;
+        public static string _testDataFile;
+        private static string _propertiesFile;
 		private BasicReactionSupporter m_brs;
 		private Hashtable m_computedVaporPressureIn;
 
@@ -38,16 +39,15 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureIn = new Hashtable();
 
-            string devRoot = Environment.GetEnvironmentVariable("SAGE_ROOT");
-            Assert.IsNotNull(devRoot, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
+            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".";
+            _propertiesFile = directory + @"\..\..\..\SageTesting\PureComponentProperties.csv";
+            Assert.IsTrue(File.Exists(_propertiesFile), "Properties data file not found - " + _propertiesFile);
 
-            TEST_FILE = devRoot + @"\Sage_Aux\SageTesting\emissionTest_12345-10.xml";
-            PROP_FILE = devRoot + @"\Sage_Aux\SageTesting\PureComponentProperties.csv";
-            Assert.IsTrue(System.IO.File.Exists(TEST_FILE), "Test data file not found - " + TEST_FILE);
-            Assert.IsTrue(System.IO.File.Exists(PROP_FILE), "Properties data file not found - " + PROP_FILE);
+            _testDataFile = directory + @"\..\..\..\SageTesting\emissionTest_12345-10.xml";
+            Assert.IsTrue(File.Exists(_testDataFile), "Test data file not found - " + _testDataFile);
 
 
-            string[][] data = Load(PROP_FILE);
+            string[][] data = Load(_propertiesFile);
 			
 			foreach ( string[] row in data ) {
 				string name = row[0];
@@ -95,7 +95,7 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 			EmissionsService es = EmissionsService.Instance;
 
 			XmlDocument doc = new XmlDocument();
-			doc.Load(TEST_FILE);
+			doc.Load(_testDataFile);
 
 			ArrayList avgErrors = new ArrayList();
 			foreach ( XmlNode testNode in doc.SelectNodes("/EmissionTests/Test") ) {

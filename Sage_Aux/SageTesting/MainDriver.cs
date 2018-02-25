@@ -848,7 +848,7 @@ namespace Highpoint.Sage.Testing
                         break;
 
                     case 1200:
-                        new SchedulerDemoMaterial.BoilingPointTester().TestBoilingPoints3();
+                        new Materials.Chemistry.BoilingPoints.BoilingPointTester().TestBoilingPoints3();
                         break;
 
                     //////////////////////  PORTS AND CONNECTORS ///////////////////

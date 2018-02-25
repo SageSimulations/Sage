@@ -7,8 +7,9 @@ using System.IO;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+// ReSharper disable UnusedVariable
 
-namespace SchedulerDemoMaterial {
+namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 
     [TestClass]
     public class BoilingPointTester {
@@ -21,18 +22,13 @@ namespace SchedulerDemoMaterial {
 		public void Init() {
 			m_brs = new BasicReactionSupporter();
 
-			string filename = Environment.GetEnvironmentVariable("SAGE_ROOT");
-            Assert.IsNotNull(filename, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
-		    Assert.IsTrue(Directory.Exists(filename),
-		        string.Format("environment variable \"SAGE_ROOT\" points to nonexistent directory " + filename));
-
-            filename += @"\Sage_Aux\SageTesting\PureComponentProperties.csv";
-
-		    Assert.IsTrue(System.IO.File.Exists(filename), "Test data file not found - " + filename);
+            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)??".";
+            string filename = directory + @"\..\..\..\SageTesting\PureComponentProperties.csv";
+            Assert.IsTrue(File.Exists(filename), "Test data file not found - " + filename);
 
             string[][] data = Load(filename);
-			
-			foreach ( string[] row in data ) {
+
+            foreach ( string[] row in data ) {
 				string name = row[0];
 				string chemAbstractNum = row[1];
 				string classification = row[2];
