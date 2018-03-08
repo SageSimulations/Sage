@@ -12,6 +12,7 @@ using PfcAnalyst = Highpoint.Sage.Graphs.PFC.PfcAnalyst;
 using Highpoint.Sage.Utility;
 using pfcs = SageTestLib.TestPfcRepository;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 
 namespace PFCDemoMaterial {
@@ -790,7 +791,8 @@ namespace PFCDemoMaterial {
         [TestMethod]
         public void Test_LoopbackWithinAParallelBranchFromSavedPFC_Passes()
         {
-            ProcedureFunctionChart pfc = getProcedureFunctionChartFromFile("../../TestData/RightPFC.xml");
+            string testDataDir = (Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".") + @"\TestData\";
+            ProcedureFunctionChart pfc = getProcedureFunctionChartFromFile(testDataDir + "RightPFC.xml");
 
             //IPfcNode startStep = pfc.Steps.FirstOrDefault(x => x.Name == "START");
             //IPfcNode step1 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP1");
@@ -812,7 +814,8 @@ namespace PFCDemoMaterial {
         [TestMethod]
         public void Test_LoopbackWithinAParallelBranchFromSavedPFC_UsedToFail()
         {
-            ProcedureFunctionChart pfc = getProcedureFunctionChartFromFile("../../TestData/WrongPFC.xml");
+            string testDataDir = (Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".") + @"\TestData\";
+            ProcedureFunctionChart pfc = getProcedureFunctionChartFromFile(testDataDir + "WrongPFC.xml");
 
             //IPfcNode startStep = pfc.Steps.FirstOrDefault(x => x.Name == "START");
             //IPfcNode step1 = pfc.Steps.FirstOrDefault(x => x.Name == "STEP1");

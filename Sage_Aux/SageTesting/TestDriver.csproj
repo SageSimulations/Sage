@@ -134,13 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="PureComponentProperties.csv" />
     <Content Include="App.ico" />
-    <Content Include="emissionTest_12345-10.xml" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainDriver.cs">
+    <Compile Include="Driver.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

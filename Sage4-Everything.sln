@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sage4", "Sage\Sage4.csproj"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sage_SampleCode", "Sage_SampleCode\Sage_SampleCode.csproj", "{4A8519F0-871E-4CF9-9E90-21ECEF2BD2DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SageTestMaterial", "Sage_Aux\SageTesting\SageTestMaterial.csproj", "{4217951C-5A48-4262-B107-6213A7A327A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDriver", "Sage_Aux\SageTesting\TestDriver.csproj", "{4217951C-5A48-4262-B107-6213A7A327A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SageTestLib", "Sage_Aux\SageTestLib\SageTestLib.csproj", "{36127A0C-D659-4834-937B-8E16FAA8C4D4}"
 EndProject

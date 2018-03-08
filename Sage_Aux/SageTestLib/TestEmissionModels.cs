@@ -4,6 +4,7 @@ using System.Xml;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Materials.Chemistry.Emissions;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
@@ -39,11 +40,11 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureIn = new Hashtable();
 
-            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? ".";
-            _propertiesFile = directory + @"\..\..\..\SageTesting\PureComponentProperties.csv";
+            string testDataDir = (Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".") + @"\TestData\";
+            _propertiesFile = testDataDir + @"\PureComponentProperties.csv";
             Assert.IsTrue(File.Exists(_propertiesFile), "Properties data file not found - " + _propertiesFile);
 
-            _testDataFile = directory + @"\..\..\..\SageTesting\emissionTest_12345-10.xml";
+            _testDataFile = testDataDir + @"\emissionTest_12345-10.xml";
             Assert.IsTrue(File.Exists(_testDataFile), "Test data file not found - " + _testDataFile);
 
 

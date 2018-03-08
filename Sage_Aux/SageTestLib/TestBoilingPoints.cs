@@ -4,6 +4,7 @@ using System;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,8 +23,8 @@ namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 		public void Init() {
 			m_brs = new BasicReactionSupporter();
 
-            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)??".";
-            string filename = directory + @"\..\..\..\SageTesting\PureComponentProperties.csv";
+            string testDataDir = (Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".") + @"\TestData\";
+            string filename = testDataDir + @"\PureComponentProperties.csv";
             Assert.IsTrue(File.Exists(filename), "Test data file not found - " + filename);
 
             string[][] data = Load(filename);
