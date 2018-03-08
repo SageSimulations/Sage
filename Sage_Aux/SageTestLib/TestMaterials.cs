@@ -729,7 +729,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
             MaterialTransferrer mxfr = new MaterialTransferrer(model, ref from, ref to, what, duration);
 
             // Create the start event for the transfer.
-            DateTime startAt = DateTime.Parse("2/23/2009 3:00:00 PM");
+            DateTime startAt = new DateTime(2009, 2, 23, 3, 0, 0);
             model.Executive.RequestEvent(delegate(IExecutive exec, object userData) { mxfr.Start(); }, startAt, 0.0, null);
             
             // Create a pause-til-start event.

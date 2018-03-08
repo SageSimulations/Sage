@@ -787,16 +787,20 @@ namespace Highpoint.Sage.SimCore {
 
             Console.WriteLine(m_result);
 
-            _Debug.Assert(m_result.Equals("5/16/2007 12:34:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:34:56 PM, is about to change.\r\n5/16/2007 12:35:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:35:56 PM, is about to change.\r\n5/16/2007 12:37:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:37:56 PM, is about to change.\r\n5/16/2007 12:40:56 PM : Event is firing.\r\n5/16/2007 12:40:56 PM : Event is firing.\r\n5/16/2007 12:40:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:40:56 PM, is about to change.\r\n5/16/2007 12:42:56 PM : Event is firing.\r\n5/16/2007 12:42:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:42:56 PM, is about to change.\r\n5/16/2007 12:44:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:44:56 PM, is about to change.\r\n5/16/2007 12:47:56 PM : Event is firing.\r\n5/16/2007 12:47:56 PM : Event is firing.\r\n5/16/2007 12:47:56 PM : Event is firing.\r\n5/16/2007 12:47:56 PM : Event is firing.\r\n\tClock, currently at 5/16/2007 12:47:56 PM, is about to change.\r\n5/16/2007 12:51:56 PM : Event is firing.\r\n"));
+            _Debug.Assert(m_result.Equals("16/05/2007 12:34:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:34:56 PM, is about to change.\r\n16/05/2007 12:35:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:35:56 PM, is about to change.\r\n16/05/2007 12:37:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:37:56 PM, is about to change.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:40:56 PM, is about to change.\r\n16/05/2007 12:42:56 PM : Event is firing.\r\n16/05/2007 12:42:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:42:56 PM, is about to change.\r\n16/05/2007 12:44:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:44:56 PM, is about to change.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:47:56 PM, is about to change.\r\n16/05/2007 12:51:56 PM : Event is firing.\r\n"));
         }
 
         private string m_result = null;
         void exec1_ClockAboutToChange(IExecutive exec) {
-            m_result += ( "\tClock, currently at " + exec.Now + ", is about to change.\r\n" );
+            m_result += ( "\tClock, currently at " + getExecNow(exec) + ", is about to change.\r\n" );
         }
 
         void MyExecEventReceiver2(IExecutive exec, object userData) {
-            m_result += ( exec.Now + " : Event is firing.\r\n" );
+            m_result += (getExecNow(exec) + " : Event is firing.\r\n" );
+        }
+
+        private string getExecNow(IExecutive exec) {
+            return exec.Now.ToString("dd/MM/yyyy hh:mm:ss tt");
         }
 
         private int m_exec1_ExecutiveStarted_SingleShot_Count = 0;
