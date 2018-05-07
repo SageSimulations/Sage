@@ -4,11 +4,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Threading;
+using Highpoint.Sage.Utility;
 using NameValueCollection = System.Collections.Specialized.NameValueCollection;
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedVariable
+// ReSharper disable RedundantDefaultMemberInitializer
+#pragma warning disable 414
 
 // TODO: ExecEvent and ExecEventReceiver need to become generics, with the type of the exec supplied with
 // the declaration, so that an IExecutiveLight's events, for example, emit references to an IExecutiveLight,
@@ -19,13 +22,14 @@ namespace Highpoint.Sage.SimCore.Parallel
 {
 
     /// <summary>
-    /// This is a stripped-down executive, designed for applications in which parallel operation is the 
+    /// This is a stripped-down executive, designed for applications in which parallel operation is the
     /// overriding concern. This executive does not support rescindable or detachable events,
-    /// pause and resume, or detection of causality violations. However, multiple executives can be run 
-    /// in the same process, with limited temporal crosstalk supported by "WaitUntil(when)" and 
+    /// pause and resume, or detection of causality violations. However, multiple executives can be run
+    /// in the same process, with limited temporal crosstalk supported by "WaitUntil(when)" and
     /// "Rollback(toWhen)" APIs.
     /// </summary>
-    internal class ParallelExecutive : IExecutive, IParallelExec
+    /// <seealso cref="Highpoint.Sage.SimCore.IParallelExec" />
+    internal class ParallelExecutive : IParallelExec
     {
 
         static ParallelExecutive()
@@ -39,10 +43,10 @@ namespace Highpoint.Sage.SimCore.Parallel
 
         #region Private Fields
 
-        private Guid m_execGuid;
+        private readonly Guid m_execGuid;
         private DateTime m_startTime = DateTime.MinValue;
-        private SortedList<ParallelExecEvent, DateTime> m_futureEvents;
-        private SortedList<ParallelExecEvent, DateTime> m_pastEvents;
+        private SortedDictionary<ParallelExecEvent, DateTime> m_futureEvents;
+        private SortedDictionary<ParallelExecEvent, DateTime> m_pastEvents;
         private int m_numNonDaemonEventsPending;
         private DateTime? m_lastEventServiceTime;
         private DateTime m_now;
@@ -50,10 +54,17 @@ namespace Highpoint.Sage.SimCore.Parallel
         private int m_runNumber;
         private UInt32 m_eventCount;
         private bool m_stopRequested;
-        private long m_key;
         private ParallelExecEvent m_currentEvent;
         private static bool _ignoreCausalityViolations = true;
         private Thread m_execThread;
+        private readonly Queue<ParallelExecEvent> m_execEventBuffer = new Queue<ParallelExecEvent>();
+
+
+        #region Rollback support elements
+
+        private readonly List<Action> m_actionsOnRollback;
+
+        #endregion
 
         #endregion Private Fields
 
@@ -63,7 +74,7 @@ namespace Highpoint.Sage.SimCore.Parallel
         /// <param name="execGuid">The GUID by which this executive will be known.</param>
         internal ParallelExecutive(Guid execGuid)
         {
-            NameValueCollection nvc = (NameValueCollection) System.Configuration.ConfigurationManager.GetSection("Sage");
+            NameValueCollection nvc = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("Sage");
             if (nvc != null)
             {
                 if (nvc["IgnoreCausalityViolations"] != null)
@@ -85,8 +96,9 @@ namespace Highpoint.Sage.SimCore.Parallel
                 Console.WriteLine("No Sage initialization section found in app.config.");
             }
 
-            m_futureEvents = new SortedList<ParallelExecEvent, DateTime>(new ParExecEventComparer());
-            m_pastEvents = new SortedList<ParallelExecEvent, DateTime>(new ParExecEventComparer());
+            m_futureEvents = new SortedDictionary<ParallelExecEvent, DateTime>(new ParExecEventComparer());
+            m_pastEvents = new SortedDictionary<ParallelExecEvent, DateTime>(new ParExecEventComparer());
+            m_actionsOnRollback = new List<Action>();
             m_execGuid = execGuid;
             m_runNumber = 0;
             Reset();
@@ -140,6 +152,8 @@ namespace Highpoint.Sage.SimCore.Parallel
             get { return m_execState; } // TODO: Is this supported in Parallel Exec?
         }
 
+        #region Event Request mechanisms.
+
         /// <summary>
         /// Requests that the executive queue up a daemon event to be serviced at a specific time and
         /// priority. If only daemon events are enqueued, the executive will not be kept alive.
@@ -173,7 +187,15 @@ namespace Highpoint.Sage.SimCore.Parallel
                 }
             }
 
-            return Enqueue(new ParallelExecEvent(eer, when, priority, userData, m_key, true, m_now));
+            ParallelExecEvent pee = new ParallelExecEvent(eer, when, priority, userData, false, m_now);
+            lock (m_execEventBuffer) m_execEventBuffer.Enqueue(pee);
+            return pee.Key;
+        }
+
+        public long RequestEventAtOrAfter(ExecEventReceiver eer, DateTime when, Action onRevocation)
+        {
+            lock (m_execEventBuffer) m_execEventBuffer.Enqueue(new ParallelExecEvent(eer, when, 0.0, null, false, DateTimeOperations.Max(m_now, when), onRevocation));
+            return 0L;
         }
 
         /// <summary>
@@ -223,7 +245,7 @@ namespace Highpoint.Sage.SimCore.Parallel
                 if (!_ignoreCausalityViolations)
                 {
                     string who = eer.Target.GetType().FullName;
-                    if (eer.Target is IHasName) who = ((IHasName) eer.Target).Name;
+                    if (eer.Target is IHasName) who = ((IHasName)eer.Target).Name;
                     string method = eer.Method.Name + "(...)";
                     string msg =
                         string.Format(
@@ -238,7 +260,10 @@ namespace Highpoint.Sage.SimCore.Parallel
                 }
             }
 
-            return Enqueue(new ParallelExecEvent(eer, when, priority, userData, m_key, false, m_now));
+            ParallelExecEvent pee = new ParallelExecEvent(eer, when, priority, userData, false, m_now);
+            lock (m_execEventBuffer) m_execEventBuffer.Enqueue(pee);
+
+            return pee.Key;
         }
 
         /// <summary>
@@ -256,136 +281,153 @@ namespace Highpoint.Sage.SimCore.Parallel
         long IExecutiveLight.RequestEvent(ExecEventReceiver eer, DateTime when, double priority, object userData,
             ExecEventType execEventType)
         {
-            //if ( !execEventType.Equals(ExecEventType.Synchronous) ) throw new ApplicationException("This high performance exec can currently only handler synchronous events.");
+            if ( !execEventType.Equals(ExecEventType.Synchronous) ) throw new ApplicationException("This parallel exec can currently only handle synchronous events.");
             return RequestEvent(eer, when, priority, userData);
         }
 
         private long Enqueue(ParallelExecEvent pee)
         {
-            if ( !pee.IsDaemon ) m_numNonDaemonEventsPending++;
             if (pee.When < m_now)
             {
-                IHasName ihn = pee.ExecEventReceiver.Target as IHasName;
-                string msg =
-                    string.Format(
-                        "At {0}, an event was requested added to queue for (past) time {1} requesting call-in to {3}.{2}",
-                        m_now, pee.When, pee.ExecEventReceiver.Method.Name,
-                        ihn?.Name ?? pee.ExecEventReceiver.Target);
-                if (_ignoreCausalityViolations)
-                {
-                    Console.WriteLine(msg);
-                    return -1;
-                }
-                else
-                {
-                    throw new CausalityException(msg);
-                }
+                InitiateRollback(pee.When, () => Enqueue(pee));
+                return pee.Key;
             }
             else
             {
-                m_futureEvents.Add(pee, pee.When);
-                return m_key++;
+                if (!pee.IsDaemon) Interlocked.Increment(ref m_numNonDaemonEventsPending);
+                lock (m_futureEvents) m_futureEvents.Add(pee, pee.When);
+                return pee.Key;
             }
         }
+
+        #endregion
 
         public void SetStartTime(DateTime startTime)
         {
             m_startTime = startTime;
         }
 
+        public bool IsBlockedInEventCall { get; set; }
+        public bool IsBlockedAtRollbackBlock { get; set; }
+
+        private readonly ManualResetEvent m_rollbackSynchronizer = new ManualResetEvent(true);
+        public ManualResetEvent RollbackBlock => m_rollbackSynchronizer;
+        public AutoResetEvent FutureReadBlock => m_eventCallBlock;
+
         /// <summary>
         /// Starts the executive. 
         /// </summary>
         public void Start()
         {
-            m_execState = ExecState.Running;
-            m_execThread = Thread.CurrentThread;
-            while (m_futureEvents.Keys[0].When < m_startTime) { 
-                if (!m_futureEvents.Keys[0].IsDaemon) m_numNonDaemonEventsPending--;
-                m_futureEvents.RemoveAt(0);
-            }
-            m_now = m_startTime;
-            m_executiveStarted?.Invoke(this);
 
+            // If there are events in the future event queue that predate the start of the
+            // simulation, we will remove them from earliest to latest, before starting.
+            lock (m_futureEvents)
+            {
+                while (m_futureEvents.Any() && m_futureEvents.First().Value < m_startTime)
+                {
+                    ParallelExecEvent pee = m_futureEvents.First().Key;
+                    if (!pee.IsDaemon) Interlocked.Decrement(ref m_numNonDaemonEventsPending);
+                    m_futureEvents.Remove(pee);
+                }
+
+                m_execState = ExecState.Running;
+                m_execThread = Thread.CurrentThread;
+                m_now = m_startTime;
+                m_executiveStarted?.Invoke(this);
+                m_runNumber++;
+            }
+
+            // Fire and remove any events that are supposed to fire once, at the start of the first
+            // run of this executive. (This is only interesting if the executive supports resetting
+            // and re-running.)
             if (m_executiveStartedSingleShot != null)
             {
                 m_executiveStartedSingleShot(this);
                 m_executiveStartedSingleShot =
-                    (ExecutiveEvent) Delegate.RemoveAll(m_executiveStartedSingleShot, m_executiveStartedSingleShot);
+                    (ExecutiveEvent)Delegate.RemoveAll(m_executiveStartedSingleShot, m_executiveStartedSingleShot);
             }
-
-            m_runNumber++;
 
             try
             {
-                Monitor.Enter(this);
+                //Monitor.Enter(this);
 
-                while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
+                // Make the currently-filling (background) buffer be the currently-loading (foreground) buffer,
+                // And then load any events into the future events queue. This only loads execEvents provisioned
+                // before the simulation began.
+                lock (m_execEventBuffer)
                 {
+                    while (m_execEventBuffer.Any()) Enqueue(m_execEventBuffer.Dequeue());
+                }
 
-                    //int tmp = 0;
-                    //foreach (ParallelExecEvent parallelExecEvent in m_futureEvents.Keys)
-                    //{
-                    //    if (!parallelExecEvent.IsDaemon) tmp++;
-                    //}
-                    //if ( m_numNonDaemonEventsPending != tmp ) System.Diagnostics.Debugger.Break();
-
-                    m_currentEvent = m_futureEvents.Keys[0];
-                    m_futureEvents.RemoveAt(0);
-                    m_eventCount++;
-
-                    if (m_currentEvent.When.Ticks > m_now.Ticks)
+                lock (m_execTimeBlock)
+                {
+                    while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
                     {
-                        ClockAboutToChange?.Invoke(this);
+                        m_currentEvent = m_futureEvents.First().Key;
 
-                        Monitor.Exit(this);
-                        lock (this)
+                        if (m_currentEvent.When.Ticks < m_now.Ticks)
                         {
-                            Monitor.PulseAll(this);
-                            Monitor.Wait(this, 0);
+                            // If an event sneaked into the queue at a past time (race condition between
+                            // local and remote clock) then just log the current event, and do a roll back.
+                            Console.WriteLine("Race condition rollback of {0} from {1} to {2}.", Name, m_now,
+                                m_currentEvent.When);
+                            InitiateRollback(m_currentEvent.When);
                         }
-                        while (m_parallelWaiters > 0) Thread.Yield();
+                        else
+                        {
+                            m_futureEvents.Remove(m_currentEvent);
+                            m_eventCount++;
 
-                        Monitor.Enter(this);
+                            if (m_currentEvent.When.Ticks > m_now.Ticks)
+                            {
+                                ClockAboutToChange?.Invoke(this);
+                                m_now = m_currentEvent.When;
+                            }
 
-                        //if (m_now < new DateTime(2018, 1, 1, 5, 30, 00) &&
-                        //    m_currentEvent.When >= new DateTime(2018, 1, 1, 5, 30, 00))
-                        //{
-                        //    Dump(Console.Out);
-                        //}
-                        //if (m_now == new DateTime(2018, 1, 1, 5, 30, 00))
-                        //{
-                        //    Dump(Console.Out);
-                        //}
+                            m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
+                                m_currentEvent.UserData, ExecEventType.Synchronous);
 
-                        m_now = m_currentEvent.When;
-                    }
+                            // Want to allow others to get
+                            Monitor.Exit(m_execTimeBlock); 
+                            m_currentEvent.Eer(this, m_currentEvent.UserData);
+                            Monitor.Enter(m_execTimeBlock);
+                            try
+                            {
+                                m_pastEvents.Add(m_currentEvent, m_currentEvent.When);
+                            }
+                            catch (ArgumentException ae)
+                            {
+                                Console.WriteLine("Past Events given an event it's already seen. {0} future events.",
+                                    m_futureEvents.Count);
+                            }
+                            if (!m_currentEvent.IsDaemon) Interlocked.Decrement(ref m_numNonDaemonEventsPending);
 
-                    m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
-                        m_currentEvent.UserData, ExecEventType.Synchronous);
+                            m_lastEventServiceTime = m_now;
 
-                    m_currentEvent.Eer(this, m_currentEvent.UserData);
-                    m_pastEvents.Add(m_currentEvent, m_currentEvent.When);
+                            m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
+                                m_currentEvent.UserData, ExecEventType.Synchronous);
+                        }
+                        lock (m_execEventBuffer)
+                        {
+                            while (m_execEventBuffer.Any()) Enqueue(m_execEventBuffer.Dequeue());
+                        }
 
-                    m_lastEventServiceTime = m_now;
-                    if (!m_currentEvent.IsDaemon) m_numNonDaemonEventsPending--;
 
-                    m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now,
-                        m_currentEvent.UserData, ExecEventType.Synchronous);
-
-                    if (m_rollBack)
-                    {
-                        DoRollback(m_rollbackToWhen);
+                        Monitor.Exit(m_execTimeBlock);
+                        // GOOBER: This is a race condition.
+                        IsBlockedAtRollbackBlock = true;
+                        RollbackBlock.WaitOne();
+                        IsBlockedAtRollbackBlock = false;
+                        Thread.Yield(); // GOOBER: DONT THINK THIS IS A GOOD THING.
+                        m_execTimeBlock.WaitOne();
+                        Monitor.Enter(m_execTimeBlock);
                     }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-            }
-            finally
-            {
-                Monitor.Exit(this);
             }
 
             if (m_stopRequested)
@@ -398,21 +440,23 @@ namespace Highpoint.Sage.SimCore.Parallel
 
             m_execState = ExecState.Finished;
 
+            Console.WriteLine("{0} finished at {1}", Name, Now);
+
         }
 
-        private void Dump(TextWriter @out)
-        {
-            @out.WriteLine("Past List");
-            foreach (ParallelExecEvent key in m_pastEvents.Keys)
-            {
-                @out.WriteLine(key);
-            }
-            @out.WriteLine("Future List ({0} non-daemon events.)", m_numNonDaemonEventsPending);
-            foreach (ParallelExecEvent key in m_futureEvents.Keys)
-            {
-                @out.WriteLine(key);
-            }
-        }
+        //private void Dump(TextWriter @out)
+        //{
+        //    @out.WriteLine("Past List");
+        //    foreach (ParallelExecEvent key in m_pastEvents.Keys)
+        //    {
+        //        @out.WriteLine(key);
+        //    }
+        //    @out.WriteLine("Future List ({0} non-daemon events.)", m_numNonDaemonEventsPending);
+        //    foreach (ParallelExecEvent key in m_futureEvents.Keys)
+        //    {
+        //        @out.WriteLine(key);
+        //    }
+        //}
 
 #if USE_TEMPORAL_DEBUGGING
         #region ELEMENTS IN SUPPORT OF TEMPORAL DEBUGGING
@@ -444,7 +488,6 @@ namespace Highpoint.Sage.SimCore.Parallel
             m_execState = ExecState.Stopped;
             m_eventCount = 0;
             m_stopRequested = false;
-            m_key = 0;
             m_executiveReset?.Invoke(this);
         }
 
@@ -464,7 +507,7 @@ namespace Highpoint.Sage.SimCore.Parallel
         /// <value></value>
         public IList EventList
         {
-            get { return ArrayList.ReadOnly(new ArrayList(((ICollection) m_futureEvents.Keys))); }
+            get { return ArrayList.ReadOnly(new ArrayList(m_futureEvents.Keys)); }
         }
 
         /// <summary>
@@ -563,120 +606,195 @@ namespace Highpoint.Sage.SimCore.Parallel
         }
 
         #endregion // IExecutive members.
+
         public string Name { get; set; }
 
+        //private int m_parallelWaiters;
+        //public void AddWaiter() => Interlocked.Increment(ref m_parallelWaiters);
+        //public void RemoveWaiter() => Interlocked.Decrement(ref m_parallelWaiters);
+        private static readonly string s_dleMessage =
+            "WakeCallerAt(...) called on executive's own thread. must only be called on another executive's thread.";
 
-        private int m_parallelWaiters;
-        public void AddWaiter() => Interlocked.Increment(ref m_parallelWaiters);
-        public void RemoveWaiter() => Interlocked.Decrement(ref m_parallelWaiters);
+        public Thread ExecThread { get { return m_execThread; } set { m_execThread = value; } }
 
-        public void WakeMeAt(DateTime when)
+        public void WakeCallerAt(IParallelExec callingExec, DateTime when, Action andDoThis)
         {
-            bool doLog = (m_eventCount % 99 == 0);
-            if (Thread.CurrentThread == m_execThread)
-                throw new DeadlockException(
-                    "WakeMeAt(...) called on executive's own thread. must only be called on another executive's thread.");
+            if (Thread.CurrentThread == m_execThread) throw new DeadlockException(s_dleMessage);
 
-            if (doLog)
-                Console.WriteLine(
-                    "Other exec wants value at {0}, but locally, it is only {1}, so other exec will wait.", when, Now);
-            AutoResetEvent are = new AutoResetEvent(false);
-            RequestEvent((exec, data) =>
+            DateTime execTime = ObtainExecTimeWithLock();
+            if (execTime >= when)
             {
-                are.Set();
-                AddWaiter(); /*Console.WriteLine("Starting to wait."); Console.Out.Flush();*/
-            }, when);
-            Monitor.Exit(this);
-            // This is necessary so that the local exec can continue running while the remote one waits.
-            are.WaitOne(); // This triggers when the local executive calls the event above.
-            Monitor.Enter(this);
-            // This holds the remote exec until the local exec is about to change the clock - or later.
-            //Console.WriteLine("Wait complete at {0}.", Now); Console.Out.Flush();
-            RemoveWaiter();
-            if (doLog) Console.WriteLine("Other exec, after calling into the local, is resuming at {0}.", Now);
-            System.Diagnostics.Debug.Assert(Now == when);
+                andDoThis();
+                ReleaseExecTime();
+                return;
+            }
 
-        }
-
-        private CoExecutor m_coExecutor;
-        public void SetCoexecutor(CoExecutor coExecutor)
-        {
-            m_coExecutor = coExecutor;
-        }
-
-        private bool m_rollBack;
-        private DateTime m_rollbackToWhen;
-
-        public void Rollback(DateTime toWhen)
-        {
-            m_rollBack = true;
-            m_rollbackToWhen = toWhen;
-        }
-
-        private void DoRollback(DateTime toWhen)
-        {
-            // If there are multiple executives coexecuting, then we will delete any rollback targets prior
-            // to the earliest-running executive.
-            DateTime dawnOfHistory = m_coExecutor?.GetEarliestDateTime()??DateTime.MinValue;
-            Console.WriteLine("Rolling back {0} from {1} to {2}, and erasing anything before {3}.", this.Name, this.Now, toWhen, dawnOfHistory);
-
-            m_numNonDaemonEventsPending = 0;
-            SortedList<ParallelExecEvent, DateTime> futureEvents = new SortedList<ParallelExecEvent, DateTime>(new ParExecEventComparer());
-            SortedList<ParallelExecEvent, DateTime> pastEvents = new SortedList<ParallelExecEvent, DateTime>(new ParExecEventComparer());
-
-            foreach (KeyValuePair<ParallelExecEvent, DateTime> keyValuePair in m_futureEvents)
+            callingExec.IsBlockedInEventCall = true; // TODO: THIS IS A RACE CONDITION WAITING TO HAPPEN!
+            RequestEventAtOrAfter((exec, data) =>
             {
-                if (keyValuePair.Key.AddedWhen < toWhen)
+                //Console.Out.WriteLine("{0} unblocked in function call.", Name);
+                andDoThis?.Invoke();
+                callingExec.FutureReadBlock.Set();
+
+            }, when, () => {
+                //Console.Out.WriteLine("{0} unblocked in function call.", Name);
+                callingExec.FutureReadBlock.Set();
+            });
+            ReleaseExecTime();
+
+            callingExec.FutureReadBlock.WaitOne();
+            callingExec.IsBlockedInEventCall = false;
+        }
+
+        private readonly ManualResetEvent m_execTimeBlock = new ManualResetEvent(true);
+        private int m_execTimeLocks;
+
+        private void ReleaseExecTime()
+        {
+            lock (m_execTimeBlock)
+            {
+                if (Interlocked.Decrement(ref m_execTimeLocks) == 0) m_execTimeBlock.Set();
+            }
+        }
+
+        private DateTime ObtainExecTimeWithLock()
+        {
+            lock (m_execTimeBlock)
+            {
+                if ( Interlocked.Increment(ref m_execTimeLocks) == 1) m_execTimeBlock.Reset();
+            }
+            return m_now;
+        }
+
+        public CoExecutor Coexecutor { get; set; }
+        /// <summary>
+        /// Called when another executive (which is behind this one) wants this one to roll back to
+        /// its time point, so it can effect a change on this executive's world-chunk.
+        /// </summary>
+        /// <param name="toWhen">To when.</param>
+        /// <param name="thenDoThis">The then do this.</param>
+        public void InitiateRollback(DateTime toWhen, Action thenDoThis = null)
+        {
+            //if (m_inPostRollbackActions) System.Diagnostics.Debugger.Break();
+            //Console.Out.WriteLine("{0} initiating a rollback to {1}.", this.Name, toWhen);
+            //Console.Out.Flush();
+            if (thenDoThis != null)
+            {
+                lock (m_actionsOnRollback)
                 {
-                    futureEvents.Add(keyValuePair.Key, keyValuePair.Value);
-                    if (!keyValuePair.Key.IsDaemon) m_numNonDaemonEventsPending++;
+                    //if ( m_iterating ) System.Diagnostics.Debugger.Break();
+                    //Console.Out.Write(".");
+                    m_actionsOnRollback.Add(thenDoThis);
                 }
             }
 
-            foreach(KeyValuePair<ParallelExecEvent, DateTime> keyValuePair in m_pastEvents)
+            Coexecutor.RollBack(toWhen);
+        }
+
+        public void PerformRollback(DateTime toWhen)
+        {
+            //Console.WriteLine("{0} BEGINNING a rollback to {1} with {2} PRAs.", this.Name, toWhen, m_actionsOnRollback.Count);
+
+            if (m_now > toWhen)
             {
-                if (keyValuePair.Key.When < dawnOfHistory) continue;
-                if (keyValuePair.Key.When >= toWhen)
+                lock (m_actionsOnRollback)
                 {
-                    if ( keyValuePair.Key.AddedWhen < toWhen)
+                    // If there are multiple executives coexecuting, then we will delete any rollback targets prior
+                    // to the earliest-running executive.
+                    DateTime earliestCurrentExecTime = Coexecutor?.GetEarliestExecDateTime() ?? DateTime.MinValue;
+                    //Console.WriteLine("{0} at {1} rollback to {2}.", Name, Now, toWhen, earliestCurrentExecTime);
+
+                    m_numNonDaemonEventsPending = 0;
+                    SortedDictionary<ParallelExecEvent, DateTime> futureEvents =
+                        new SortedDictionary<ParallelExecEvent, DateTime>(new ParExecEventComparer());
+                    SortedDictionary<ParallelExecEvent, DateTime> pastEvents =
+                        new SortedDictionary<ParallelExecEvent, DateTime>(new ParExecEventComparer());
+
+                    lock (m_futureEvents)
                     {
-                        futureEvents.Add(keyValuePair.Key, keyValuePair.Value);
-                        if (!keyValuePair.Key.IsDaemon) m_numNonDaemonEventsPending++;
+                        foreach (KeyValuePair<ParallelExecEvent, DateTime> keyValuePair in m_futureEvents)
+                        {
+                            if (keyValuePair.Key.AddedWhen < toWhen)
+                            {
+                                futureEvents.Add(keyValuePair.Key, keyValuePair.Value);
+                                if (!keyValuePair.Key.IsDaemon) Interlocked.Increment(ref m_numNonDaemonEventsPending);
+                            }
+                            else
+                            {
+                                keyValuePair.Key.RevocationAction?.Invoke();
+                            }
+                        }
                     }
+
+                    foreach (KeyValuePair<ParallelExecEvent, DateTime> keyValuePair in m_pastEvents)
+                    {
+                        if (keyValuePair.Key.When < earliestCurrentExecTime) continue;
+                        if (keyValuePair.Key.When >= toWhen)
+                        {
+                            if (keyValuePair.Key.AddedWhen < toWhen)
+                            {
+                                futureEvents.Add(keyValuePair.Key, keyValuePair.Value);
+                                if (!keyValuePair.Key.IsDaemon) Interlocked.Increment(ref m_numNonDaemonEventsPending);
+                            }
+                        }
+
+                        else if (keyValuePair.Key.When < toWhen)
+                            pastEvents.Add(keyValuePair.Key, keyValuePair.Value);
+
+                    }
+
+                    //Console.WriteLine("Rescheduled {0} of {1} events as a result of a rollback.", futureEvents.Count,
+                    //    m_futureEvents.Count);
+                    m_pastEvents = pastEvents;
+                    m_futureEvents = futureEvents;
+
+                    m_now = toWhen;
+
+                    m_iterating = true;
+                    //Console.Out.WriteLine("{0} performing {1} post-rollback actions.", Name, m_actionsOnRollback.Count);
+                    //Console.Out.Flush();
+                    foreach (Action action in m_actionsOnRollback)
+                    {
+                        action();
+                    }
+                    m_iterating = false;
+                    m_actionsOnRollback.Clear();
                 }
-
-                else if (keyValuePair.Key.When < toWhen)
-                    pastEvents.Add(keyValuePair.Key, keyValuePair.Value);                    
-
             }
+            //Console.WriteLine("{0} COMPLETING a rollback to {1}, with {2} PRAs remaining.", this.Name, toWhen, m_actionsOnRollback.Count);
 
-            m_pastEvents = pastEvents;
-            int nReschedules = futureEvents.Count - m_futureEvents.Count;
-            m_futureEvents = futureEvents;
+            m_inPostRollbackActions = true;
+            Rolledback?.Invoke(m_now);
+            m_inPostRollbackActions = false;
 
-            Console.WriteLine("Rescheduled {0} events as a result of a rollback.", nReschedules);
-
-            m_now = toWhen;
-
-            m_rollBack = false;
-
-            OnRollback?.Invoke(m_now);
-        }
-
-        public void PurgePastEvents(DateTime priorTo)
-        {
-            SortedList<ParallelExecEvent, DateTime> pastEvents = new SortedList<ParallelExecEvent, DateTime>(new ParExecEventComparer());
-            foreach (KeyValuePair<ParallelExecEvent, DateTime> keyValuePair in m_pastEvents)
+            if (m_actionsOnRollback.Count > 0)
             {
-                if (keyValuePair.Key.When >= priorTo) pastEvents.Add(keyValuePair.Key, keyValuePair.Value);
+                System.Diagnostics.Debugger.Break();
+                m_actionsOnRollback.First()();
             }
-            int nPurges = pastEvents.Count - m_pastEvents.Count;
-            m_pastEvents = pastEvents;
 
-            Console.WriteLine("Purged {0} historical events.", nPurges);
+            //Console.WriteLine("{0} COMPLETING a rollback to {1}, with {2} PRAs remaining.", this.Name, toWhen, m_actionsOnRollback.Count);
+
         }
 
-        public event TimeEvent OnRollback;
+        private bool m_inPostRollbackActions;
+        private bool m_iterating;
+        private readonly AutoResetEvent m_eventCallBlock = new AutoResetEvent(false);
+
+        //public void PurgePastEvents(DateTime priorTo)
+        //{
+        //    SortedDictionary<ParallelExecEvent, DateTime> pastEvents = new SortedDictionary<ParallelExecEvent, DateTime>(new ParExecEventComparer());
+        //    foreach (KeyValuePair<ParallelExecEvent, DateTime> keyValuePair in m_pastEvents)
+        //    {
+        //        if (keyValuePair.Key.When >= priorTo) pastEvents.Add(keyValuePair.Key, keyValuePair.Value);
+        //    }
+        //    int nPurges = pastEvents.Count - m_pastEvents.Count;
+        //    m_pastEvents = pastEvents;
+
+        //    Console.WriteLine("Purged {0} historical events.", nPurges);
+        //}
+
+        public event TimeEvent Rolledback;
 
         #region Ugliness. Because a large body of code relies on the IExecutive interface, and the events specified in it use that interface, this class must also implement that interface
 
@@ -735,8 +853,20 @@ namespace Highpoint.Sage.SimCore.Parallel
             throw new NotImplementedException();
         }
 
-        public IDetachableEventController CurrentEventController { get; }
-        public ArrayList LiveDetachableEvents { get; }
+        public IDetachableEventController CurrentEventController
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+        public ArrayList LiveDetachableEvents
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public event ExecutiveEvent ExecutivePaused;
         public event ExecutiveEvent ExecutiveResumed;
@@ -749,39 +879,50 @@ namespace Highpoint.Sage.SimCore.Parallel
         {
             return string.Format("{0} at {1} with {2} events waiting.", Name, Now, m_futureEvents.Count);
         }
+
     }
 
     internal class ParallelExecEvent : ExecEvent
     {
-        private static ExecEventType PARALLEL_ALWAYS_SYNCHRONOUS = ExecEventType.Synchronous;
+        private static readonly ExecEventType PARALLEL_ALWAYS_SYNCHRONOUS = ExecEventType.Synchronous;
+        private static int s_hcSeed = 0;
+        private readonly int m_hcode;
 
         public static ParallelExecEvent Get(ExecEventReceiver eer, DateTime serveWhen, double priority, object userData,
-            long key, bool isDaemon, DateTime addedWhen)
+            bool isDaemon, DateTime addedWhen)
         {
-            ParallelExecEvent retval = new ParallelExecEvent(eer, serveWhen, priority, userData, key, isDaemon,
+            ParallelExecEvent retval = new ParallelExecEvent(eer, serveWhen, priority, userData, isDaemon,
                 addedWhen);
             return retval;
         }
 
         public ParallelExecEvent(ExecEventReceiver eer, DateTime serveWhen, double priority, object userData,
-            long key, bool isDaemon, DateTime addedWhen) :
-                base(eer, serveWhen, priority, userData, PARALLEL_ALWAYS_SYNCHRONOUS, key, isDaemon)
+            bool isDaemon, DateTime addedWhen, Action revocationAction = null) :
+                base(eer, serveWhen, priority, userData, PARALLEL_ALWAYS_SYNCHRONOUS, 0L, isDaemon)
         {
+            RevocationAction = revocationAction;
             AddedWhen = addedWhen;
+            m_hcode = Interlocked.Increment(ref s_hcSeed);
         }
 
         public ParallelExecEvent(ParallelExecEvent currentEvent) :
-                this(currentEvent.Eer, currentEvent.When, currentEvent.Priority, currentEvent.UserData, currentEvent.Key, currentEvent.IsDaemon, currentEvent.AddedWhen)
+                this(currentEvent.Eer, currentEvent.When, currentEvent.Priority, currentEvent.UserData, currentEvent.IsDaemon, currentEvent.AddedWhen)
         {
         }
 
-        public DateTime AddedWhen { get; set; }
+        public override int GetHashCode()
+        {
+            return m_hcode;
+        }
+
+        public Action RevocationAction { get; }
+        public DateTime AddedWhen { get; }
 
         public override string ToString()
         {
             return string.Format("{0}, pri {1:N2}, call {2} with {3}. Added at {4}, {5} daemon.",
-                this.When, this.Priority, this.ExecEventReceiver.Method.Name, this.UserData, this.AddedWhen,
-                this.IsDaemon ? "is" : "is not");
+                When, Priority, ExecEventReceiver.Method.Name, UserData, AddedWhen,
+                IsDaemon ? "is" : "is not");
         }
     }
 
@@ -791,11 +932,11 @@ namespace Highpoint.Sage.SimCore.Parallel
         {
             if (ee1 == null || ee2 == null)
                 throw new ExecutiveException("ExecEventComparer called with one or more ExecEvents being null.");
+            if (ee1 == ee2) return 0;
             if (ee1.m_when < ee2.m_when) return -1;
             if (ee1.m_when > ee2.m_when) return 1;
             if (ee1.m_priority < ee2.m_priority) return 1;
-            if (ee1.m_key == ee2.m_key) return 0;
-            return -1;
+            return (ee1.GetHashCode() < ee2.GetHashCode()) ? -1 : 1;
         }
     }
 }

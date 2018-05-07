@@ -408,35 +408,35 @@ namespace Highpoint.Sage.SimCore {
         private void StartWcv()
         {
             throw new NotImplementedException();
-            m_runNumber++;
-            while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
-            {
-                m_currentEvent = Dequeue();
-                m_eventCount++;
-                if (m_now.Ticks > m_currentEvent.WhenToServe)
-                {
-                    string who = m_currentEvent.Eer.Target.GetType().FullName;
-                    if (m_currentEvent.Eer.Target is IHasName)
-                    {
-                        who = ((IHasName)m_currentEvent.Eer.Target).Name;
-                    }
-                    string method = m_currentEvent.Eer.Method.Name + "(...)";
-                    if (true)
-                    {
-                        m_currentEvent.WhenToServe = m_now.Ticks;// System.Diagnostics.Debugger.Break();
-                    }
-                    else
-                    {
-                        //						throw new ApplicationException(msg);
-                    }
-                }
-                m_lastEventServiceTime = m_now;
-                m_now = new DateTime(m_currentEvent.WhenToServe);
-                m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                m_currentEvent.Eer(this, m_currentEvent.UserData);
-                m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
-                m_execEventCache.Return(m_currentEvent);
-            }
+            //m_runNumber++;
+            //while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
+            //{
+            //    m_currentEvent = Dequeue();
+            //    m_eventCount++;
+            //    if (m_now.Ticks > m_currentEvent.WhenToServe)
+            //    {
+            //        string who = m_currentEvent.Eer.Target.GetType().FullName;
+            //        if (m_currentEvent.Eer.Target is IHasName)
+            //        {
+            //            who = ((IHasName)m_currentEvent.Eer.Target).Name;
+            //        }
+            //        string method = m_currentEvent.Eer.Method.Name + "(...)";
+            //        if (true)
+            //        {
+            //            m_currentEvent.WhenToServe = m_now.Ticks;// System.Diagnostics.Debugger.Break();
+            //        }
+            //        else
+            //        {
+            //            //						throw new ApplicationException(msg);
+            //        }
+            //    }
+            //    m_lastEventServiceTime = m_now;
+            //    m_now = new DateTime(m_currentEvent.WhenToServe);
+            //    m_eventAboutToFire?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+            //    m_currentEvent.Eer(this, m_currentEvent.UserData);
+            //    m_eventHasCompleted?.Invoke(m_currentEvent.Key, m_currentEvent.Eer, 0.0, m_now, m_currentEvent.UserData, ExecEventType.Synchronous);
+            //    m_execEventCache.Return(m_currentEvent);
+            //}
         }
 
 #if USE_TEMPORAL_DEBUGGING

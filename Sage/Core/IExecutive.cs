@@ -6,6 +6,7 @@ using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using System.Security.RightsManagement;
 using System.Threading;
+using System.Windows.Documents;
 using Highpoint.Sage.SimCore.Parallel;
 
 namespace Highpoint.Sage.SimCore {
@@ -392,14 +393,21 @@ namespace Highpoint.Sage.SimCore {
     }
 
     public delegate void TimeEvent(DateTime dt);
-    public interface IParallelExec
+
+    public interface IParallelExec : IExecutive
     {
         string Name { get; set; }
 
-        void Rollback(DateTime toWhen);
-        event TimeEvent OnRollback;
-        void WakeMeAt(DateTime @when);
-        void SetCoexecutor(CoExecutor executor);
+        void InitiateRollback(DateTime toWhen, Action doWhenRollbackCompletes = null);
+        void PerformRollback(DateTime toWhen);
+        event TimeEvent Rolledback;
+        void WakeCallerAt(IParallelExec callerExec, DateTime @when, Action thenDoThis);
+        CoExecutor Coexecutor { get; set; }
+        ManualResetEvent RollbackBlock { get; }
+        AutoResetEvent FutureReadBlock { get; }
+        Thread ExecThread { get; set; }
+        bool IsBlockedInEventCall { get; set; }
+        bool IsBlockedAtRollbackBlock { get; set; }
     }
 
     /// <summary>

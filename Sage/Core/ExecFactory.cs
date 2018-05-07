@@ -36,12 +36,9 @@ namespace Highpoint.Sage.SimCore {
     /// ExecFactory produces instances of objects that implement IExecutive.
     /// </summary>
     public class ExecFactory {
-
 #if LICENSING_ENABLED
         private static bool _licenseChecked = true;
 #endif // LICENSING_ENABLED
-        private static readonly object s_lock = new object();
-        private static volatile ExecFactory _instance;
 
         private ExecFactory() {
 #if LICENSING_ENABLED
@@ -74,19 +71,12 @@ namespace Highpoint.Sage.SimCore {
 #endif // TIME_BOUNDED
 #endif // LICENSING_ENABLED
 
-
         }
 
         /// <summary>
         /// Provides a reference to the one ExecFactory in the current Application Context.
         /// </summary>
-        public static ExecFactory Instance {
-            get {
-
-                lock (s_lock) { if (_instance == null) _instance = new ExecFactory(); }
-                return _instance;
-            }
-        }
+        public static ExecFactory Instance { get; } = new ExecFactory();
 
         /// <summary>
         /// Creates a copy of the default type of executive.

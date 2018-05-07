@@ -1191,9 +1191,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         #endregion
 
         public void OnServiceCompleted() {
-            if (ServiceCompleted != null) {
-                ServiceCompleted(Key, ExecEventReceiver, Priority, When, UserData, EventType);
-            }
+            ServiceCompleted?.Invoke(Key, ExecEventReceiver, Priority, When, UserData, EventType);
             if (_usePool) {
                 _pool.Enqueue(this);
             }

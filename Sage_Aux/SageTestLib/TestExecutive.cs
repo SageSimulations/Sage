@@ -968,9 +968,9 @@ namespace Highpoint.Sage.SimCore {
         [Highpoint.Sage.Utility.FieldDescription("Checks to see that three executives can run in parallel and that halting occurs only once all are completed.")]
         public void TestCoTermination()
         {
-            IExecutive exec1 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
-            IExecutive exec2 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
-            IExecutive exec3 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            IParallelExec exec1 = (IParallelExec)ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            IParallelExec exec2 = (IParallelExec)ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            IParallelExec exec3 = (IParallelExec)ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
 
             StringBuilder sb = new StringBuilder();
 

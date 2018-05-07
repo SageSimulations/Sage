@@ -2547,14 +2547,29 @@
             An <see cref="T:Highpoint.Sage.SimCore.ModelObjectDictionary"></see> object that can be used to iterate through the collection.
             </returns>
         </member>
+        <member name="T:Highpoint.Sage.SimCore.Parallel.CoExecutor">
+            <summary>
+            Class CoExecutor is responsible for starting, and maintaining running, a set of implementers of
+            IParallelExec until all have finished running their events.
+            </summary>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.CoExecutor.RollBack(System.DateTime)">
+            <summary>
+            1.) Pause all executives.
+            2.) For executives that are blocked at, or running after the rollback-to-time, unblock them, repeatedly, until all are waiting at the RollbackSynchronizer.
+            3.) Command each to roll back to time toWhen.
+            </summary>
+            <param name="toWhen">The time to which a rollback is desired.</param>
+        </member>
         <member name="T:Highpoint.Sage.SimCore.Parallel.ParallelExecutive">
             <summary>
-            This is a stripped-down executive, designed for applications in which parallel operation is the 
+            This is a stripped-down executive, designed for applications in which parallel operation is the
             overriding concern. This executive does not support rescindable or detachable events,
-            pause and resume, or detection of causality violations. However, multiple executives can be run 
-            in the same process, with limited temporal crosstalk supported by "WaitUntil(when)" and 
+            pause and resume, or detection of causality violations. However, multiple executives can be run
+            in the same process, with limited temporal crosstalk supported by "WaitUntil(when)" and
             "Rollback(toWhen)" APIs.
             </summary>
+            <seealso cref="T:Highpoint.Sage.SimCore.IParallelExec" />
         </member>
         <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.#ctor(System.Guid)">
             <summary>
@@ -2711,6 +2726,14 @@
             This high performance exec does nothing on Dispose.
             </summary>
             <value></value>
+        </member>
+        <member name="M:Highpoint.Sage.SimCore.Parallel.ParallelExecutive.InitiateRollback(System.DateTime,System.Action)">
+            <summary>
+            Called when another executive (which is behind this one) wants this one to roll back to
+            its time point, so it can effect a change on this executive's world-chunk.
+            </summary>
+            <param name="toWhen">To when.</param>
+            <param name="thenDoThis">The then do this.</param>
         </member>
         <member name="T:Highpoint.Sage.SimCore.PrepareTransitionEvent">
             <summary>
