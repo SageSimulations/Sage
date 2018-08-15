@@ -29,21 +29,21 @@ namespace Highpoint.Sage.ItemBased {
 		int lastResult = -1;
 		public BranchBlockTester() {}
 
-		private int [] m_expected = new int[]{1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,0,1,0,1,1,1,1,
-										   1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,0,1,
-										   1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,
-										   1,1,1,1,1,0,1};
+		private int [] m_expected = new int[]{1,1,0,1,0,1,0,0,1,1,1,1,1,0,1,1,0,0,0,1,0,1,1,0,1,1,1,0,1,1,1,1,0,
+		                                      1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,1,1,0,0,1,1,1,1,1,1,0,1,1,1,1,0,1,
+		                                      1,0,0,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,};
 		private int m_itemNumber;
 
 		[TestMethod]
 		public void TestStochasticBranchBlock(){
 			Model model = new Model();
-			StochTwoChoice ss2cbb = new StochTwoChoice(model,"s2c",Guid.NewGuid(),.2);
+		    model.RandomServer = new Randoms.RandomServer(12345, 100);
+
+            StochTwoChoice ss2cbb = new StochTwoChoice(model,"s2c",Guid.NewGuid(),.2);
 			ss2cbb.Outputs[0].PortDataPresented+=new PortDataEvent(Out0_PortDataPresented);
 			ss2cbb.Outputs[1].PortDataPresented+=new PortDataEvent(Out1_PortDataPresented);
-			Randoms.RandomServer rs = new Randoms.RandomServer(12345,100);
-			model.RandomServer = rs;
-			for ( m_itemNumber = 0 ; m_itemNumber < m_expected.Length ; m_itemNumber++ ) {
+	
+	        for ( m_itemNumber = 0 ; m_itemNumber < m_expected.Length ; m_itemNumber++ ) {
 				ss2cbb.Input.Put(new object());
 				_Debug.Write(lastResult + ",");
                 _Debug.Assert(lastResult == m_expected[m_itemNumber],"Unexpected choice.");
