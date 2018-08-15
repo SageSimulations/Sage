@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 // TODO: Debug failing tests.
@@ -39,7 +39,7 @@ namespace Highpoint.Sage.Scheduling {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]
@@ -47,7 +47,7 @@ namespace Highpoint.Sage.Scheduling {
 
 			TimePeriod tp;
 
-			_Debug.WriteLine("Now = " + Now);
+			Debug.WriteLine("Now = " + Now);
 
 #region Fixed Start Time
 			// Test creation of a fixed start time TimePeriod.

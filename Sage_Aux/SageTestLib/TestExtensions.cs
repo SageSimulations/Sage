@@ -2,11 +2,11 @@
 
 using System;
 using System.Linq;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Utility;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Highpoint.Sage.Utility {
 
@@ -22,7 +22,7 @@ namespace Highpoint.Sage.Utility {
         public void Init() { }
 
         [TestCleanup]
-        public void destroy() { _Debug.WriteLine("Done."); }
+        public void destroy() { Debug.WriteLine("Done."); }
 
         /// <summary>
         /// Tests the PercentileGetter extension.
@@ -61,7 +61,7 @@ namespace Highpoint.Sage.Utility {
                 List<string> tmp = new List<string>();
                 for (int i = 0; i < count; i++) { tmp.Add(strings[i]); }
                 string result = StringOperations.ToCommasAndAndedList(((IEnumerable<string>)tmp));
-                _Debug.Assert(result.Equals(results[count - 1]));
+                Assert.IsTrue(result.Equals(results[count - 1]));
                 Console.WriteLine(result);
 
             }
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Utility {
                 ArrayList tmp = new ArrayList();
                 for (int i = 0; i < count; i++) { tmp.Add(strings[i]); }
                 string result = StringOperations.ToCommasAndAndedList(tmp);
-                _Debug.Assert(result.Equals(results[count - 1]));
+                Assert.IsTrue(result.Equals(results[count - 1]));
                 Console.WriteLine(result);
             }
 
@@ -78,7 +78,7 @@ namespace Highpoint.Sage.Utility {
                 List<Thingy> tmp = new List<Thingy>();
                 for (int i = 0; i < count; i++) { tmp.Add(new Thingy(strings[i])); }
                 string result = StringOperations.ToCommasAndAndedListOfNames(tmp);
-                _Debug.Assert(result.Equals(results[count - 1]));
+                Assert.IsTrue(result.Equals(results[count - 1]));
                 Console.WriteLine(result);
             }
 
@@ -86,7 +86,7 @@ namespace Highpoint.Sage.Utility {
                 List<Thingy> tmp = new List<Thingy>();
                 for (int i = 0; i < count; i++) { tmp.Add(new Thingy(strings[i])); }
                 string result = StringOperations.ToCommasAndAndedList(tmp,n=>n.Name);
-                _Debug.Assert(result.Equals(results[count - 1]));
+                Assert.IsTrue(result.Equals(results[count - 1]));
                 Console.WriteLine(result);
             }
 
@@ -114,7 +114,7 @@ namespace Highpoint.Sage.Mathematics {
         public void Init() { }
 
         [TestCleanup]
-        public void destroy() { _Debug.WriteLine("Done."); }
+        public void destroy() { Debug.WriteLine("Done."); }
 
         /// <summary>
         /// Tests the PercentileGetter extension.

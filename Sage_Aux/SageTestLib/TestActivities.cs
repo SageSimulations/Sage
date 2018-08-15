@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 #if NYRFPT
 using System;
-using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.Utility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -58,7 +57,7 @@ namespace Highpoint.Sage.Scheduling {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 #endregion
 

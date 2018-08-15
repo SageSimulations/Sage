@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Mathematics;
@@ -27,7 +26,7 @@ namespace Highpoint.Sage.ItemBased.Queues {
         public void Init() { }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
         #endregion
 

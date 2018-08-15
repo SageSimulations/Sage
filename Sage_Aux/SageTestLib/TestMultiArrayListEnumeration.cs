@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Highpoint.Sage.Utility {
@@ -28,7 +28,7 @@ namespace Highpoint.Sage.Utility {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Highpoint.Sage.Utility {
 
 			string result = sb.ToString();
 			Console.WriteLine("Simple three list aggregation - " + result + ".");
-            _Debug.Assert(result.Equals(m_expected123),"MultiArrayListEnumerable basics","Failed test");
+            Assert.IsTrue(result.Equals(m_expected123),"MultiArrayListEnumerable basics","Failed test");
 		}
 		/// <summary>
 		/// Basic test.
@@ -62,7 +62,7 @@ namespace Highpoint.Sage.Utility {
 			foreach ( string s in male ) sb.Append(s);
 			string result = sb.ToString();
 			Console.WriteLine(name + "\r\n\texpected = \"" + expected + "\",\r\n\tresult   = \"" + result + "\".\r\n\t\t" + (result.Equals(expected)?"Passed.\r\n":"Failed.\r\n"));
-            _Debug.Assert(result.Equals(expected),"MultiArrayListEnumerable basics","Failed test");
+            Assert.IsTrue(result.Equals(expected),"MultiArrayListEnumerable basics","Failed test");
 		}
 	}
 }

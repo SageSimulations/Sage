@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.Graphs.PFC;
 using Highpoint.Sage.SimCore;
@@ -26,20 +25,20 @@ namespace PFCDemoMaterial {
             ProcedureFunctionChart pfc = pfcs.CreateTestPfc();
 
             IPfcLinkElement link = pfcs.nA.Successors[0]; // Link between node A and T_000
-            _Debug.Assert(!PfcAnalyst.IsPostTransitionLink(link), "Link between node A and T_000 shouldn't be a post-transition link, but was.");
-            _Debug.Assert(PfcAnalyst.IsPreTransitionLink(link), "Link between node A and T_000 should be a pre-transition link, but wasn't.");
+            Assert.IsTrue(!PfcAnalyst.IsPostTransitionLink(link), "Link between node A and T_000 shouldn't be a post-transition link, but was.");
+            Assert.IsTrue(PfcAnalyst.IsPreTransitionLink(link), "Link between node A and T_000 should be a pre-transition link, but wasn't.");
 
             link = pfcs.nG.Successors[0]; // Link between node G and T_006
-            _Debug.Assert(!PfcAnalyst.IsPostTransitionLink(link), "Link between node G and T_006 shouldn't be a post-transition link, but was.");
-            _Debug.Assert(PfcAnalyst.IsPreTransitionLink(link), "Link between node G and T_006 should be a pre-transition link, but wasn't.");
+            Assert.IsTrue(!PfcAnalyst.IsPostTransitionLink(link), "Link between node G and T_006 shouldn't be a post-transition link, but was.");
+            Assert.IsTrue(PfcAnalyst.IsPreTransitionLink(link), "Link between node G and T_006 should be a pre-transition link, but wasn't.");
 
             link = pfcs.nB.Predecessors[0]; // Link between T_000 and node B
-            _Debug.Assert(PfcAnalyst.IsPostTransitionLink(link), "Link between T_000 and node B should be a post-transition link, but wasn't.");
-            _Debug.Assert(!PfcAnalyst.IsPreTransitionLink(link), "Link between T_000 and node B shouldn't be a pre-transition link, but was.");
+            Assert.IsTrue(PfcAnalyst.IsPostTransitionLink(link), "Link between T_000 and node B should be a post-transition link, but wasn't.");
+            Assert.IsTrue(!PfcAnalyst.IsPreTransitionLink(link), "Link between T_000 and node B shouldn't be a pre-transition link, but was.");
 
             link = pfcs.nG.Predecessors[0]; // Link between T_005 and node G
-            _Debug.Assert(PfcAnalyst.IsPostTransitionLink(link), "Link between T_005 and node G should be a post-transition link, but wasn't.");
-            _Debug.Assert(!PfcAnalyst.IsPreTransitionLink(link), "Link between T_005 and node G shouldn't be a pre-transition link, but was.");
+            Assert.IsTrue(PfcAnalyst.IsPostTransitionLink(link), "Link between T_005 and node G should be a post-transition link, but wasn't.");
+            Assert.IsTrue(!PfcAnalyst.IsPreTransitionLink(link), "Link between T_005 and node G shouldn't be a pre-transition link, but was.");
 
         }
 
@@ -48,13 +47,13 @@ namespace PFCDemoMaterial {
 
             ProcedureFunctionChart pfc = pfcs.CreateTestPfc();
 
-            _Debug.Assert(!PfcAnalyst.IsSoleSuccessor(pfcs.nA));
-            _Debug.Assert(PfcAnalyst.IsSoleSuccessor(pfcs.nB));
-            _Debug.Assert(!PfcAnalyst.IsSoleSuccessor(pfcs.nH));
-            _Debug.Assert(PfcAnalyst.IsSoleSuccessor(pfcs.nJ));
+            Assert.IsTrue(!PfcAnalyst.IsSoleSuccessor(pfcs.nA));
+            Assert.IsTrue(PfcAnalyst.IsSoleSuccessor(pfcs.nB));
+            Assert.IsTrue(!PfcAnalyst.IsSoleSuccessor(pfcs.nH));
+            Assert.IsTrue(PfcAnalyst.IsSoleSuccessor(pfcs.nJ));
 
-            _Debug.Assert(PfcAnalyst.IsSoleSuccessor(pfcs.nG.SuccessorNodes[0]));
-            _Debug.Assert(!PfcAnalyst.IsSoleSuccessor(pfcs.nC.PredecessorNodes[0]));
+            Assert.IsTrue(PfcAnalyst.IsSoleSuccessor(pfcs.nG.SuccessorNodes[0]));
+            Assert.IsTrue(!PfcAnalyst.IsSoleSuccessor(pfcs.nC.PredecessorNodes[0]));
 
         }
 
@@ -63,11 +62,11 @@ namespace PFCDemoMaterial {
 
             ProcedureFunctionChart pfc = pfcs.CreateTestPfc();
 
-            _Debug.Assert(!PfcAnalyst.HasParallelPaths(pfcs.nC));
-            _Debug.Assert(PfcAnalyst.HasParallelPaths(pfcs.nH));
+            Assert.IsTrue(!PfcAnalyst.HasParallelPaths(pfcs.nC));
+            Assert.IsTrue(PfcAnalyst.HasParallelPaths(pfcs.nH));
 
-            _Debug.Assert(!PfcAnalyst.HasParallelPaths(pfcs.nC.SuccessorNodes[0]));
-            _Debug.Assert(PfcAnalyst.HasParallelPaths(pfcs.nI.SuccessorNodes[0]));
+            Assert.IsTrue(!PfcAnalyst.HasParallelPaths(pfcs.nC.SuccessorNodes[0]));
+            Assert.IsTrue(PfcAnalyst.HasParallelPaths(pfcs.nI.SuccessorNodes[0]));
 
         }
 
@@ -76,11 +75,11 @@ namespace PFCDemoMaterial {
 
             ProcedureFunctionChart pfc = pfcs.CreateTestPfc();
 
-            _Debug.Assert(PfcAnalyst.HasAlternatePaths(pfcs.nC));
-            _Debug.Assert(!PfcAnalyst.HasAlternatePaths(pfcs.nH));
+            Assert.IsTrue(PfcAnalyst.HasAlternatePaths(pfcs.nC));
+            Assert.IsTrue(!PfcAnalyst.HasAlternatePaths(pfcs.nH));
 
-            _Debug.Assert(PfcAnalyst.HasAlternatePaths(pfcs.nC.SuccessorNodes[0]));
-            _Debug.Assert(!PfcAnalyst.HasAlternatePaths(pfcs.nI.SuccessorNodes[0]));
+            Assert.IsTrue(PfcAnalyst.HasAlternatePaths(pfcs.nC.SuccessorNodes[0]));
+            Assert.IsTrue(!PfcAnalyst.HasAlternatePaths(pfcs.nI.SuccessorNodes[0]));
 
         }
 
@@ -105,23 +104,23 @@ namespace PFCDemoMaterial {
 
             #endregion Find the solo transition between nodes B and N.
 
-            _Debug.Assert(trans != null);
+            Assert.IsTrue(trans != null);
 
-            _Debug.Assert(PfcAnalyst.IsLastElementOnAlternatePath(trans));
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnParallelPath(trans));
-            _Debug.Assert(PfcAnalyst.IsLastElementOnPath(trans));
+            Assert.IsTrue(PfcAnalyst.IsLastElementOnAlternatePath(trans));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnParallelPath(trans));
+            Assert.IsTrue(PfcAnalyst.IsLastElementOnPath(trans));
 
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnAlternatePath(pfcs.nP));
-            _Debug.Assert(PfcAnalyst.IsLastElementOnParallelPath(pfcs.nP));
-            _Debug.Assert(PfcAnalyst.IsLastElementOnPath(pfcs.nP));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnAlternatePath(pfcs.nP));
+            Assert.IsTrue(PfcAnalyst.IsLastElementOnParallelPath(pfcs.nP));
+            Assert.IsTrue(PfcAnalyst.IsLastElementOnPath(pfcs.nP));
 
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnAlternatePath(pfcs.nE.PredecessorNodes[0]));
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnParallelPath(pfcs.nE.PredecessorNodes[0]));
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnPath(pfcs.nE.PredecessorNodes[0]));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnAlternatePath(pfcs.nE.PredecessorNodes[0]));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnParallelPath(pfcs.nE.PredecessorNodes[0]));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnPath(pfcs.nE.PredecessorNodes[0]));
 
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnAlternatePath(pfcs.nJ));
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnParallelPath(pfcs.nJ));
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnPath(pfcs.nJ));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnAlternatePath(pfcs.nJ));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnParallelPath(pfcs.nJ));
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnPath(pfcs.nJ));
 
             #endregion Loopback test segment.
 
@@ -132,9 +131,9 @@ namespace PFCDemoMaterial {
 
             trans = pfc.Transitions["T_002"];
 
-            _Debug.Assert(PfcAnalyst.IsLastElementOnAlternatePath(trans),"Loopback transition should be indicated as last element on an series-divergent path, but is not.");
-            _Debug.Assert(!PfcAnalyst.IsLastElementOnParallelPath(trans), "Loopback transition should not be indicated as last element on a parallel-divergent path, but is.");
-            _Debug.Assert(PfcAnalyst.IsLastElementOnPath(trans), "Loopback transition should be indicated as last element on an alternate path, but is not.");
+            Assert.IsTrue(PfcAnalyst.IsLastElementOnAlternatePath(trans),"Loopback transition should be indicated as last element on an series-divergent path, but is not.");
+            Assert.IsTrue(!PfcAnalyst.IsLastElementOnParallelPath(trans), "Loopback transition should not be indicated as last element on a parallel-divergent path, but is.");
+            Assert.IsTrue(PfcAnalyst.IsLastElementOnPath(trans), "Loopback transition should be indicated as last element on an alternate path, but is not.");
 
             #endregion Loopback test segment.
 
@@ -145,34 +144,34 @@ namespace PFCDemoMaterial {
 
             ProcedureFunctionChart pfc = pfcs.CreateTestPfc();
             IPfcElement element = PfcAnalyst.GetJoinNodeForParallelPath(pfcs.nJ);
-            _Debug.Assert(element != null && element.Equals(pfc.Transitions["T_009"]));
+            Assert.IsTrue(element != null && element.Equals(pfc.Transitions["T_009"]));
 
             element = PfcAnalyst.GetJoinNodeForParallelPath(pfcs.nD);
-            _Debug.Assert(element != null && element.Equals(pfcs.nN));
+            Assert.IsTrue(element != null && element.Equals(pfcs.nN));
 
             element = PfcAnalyst.GetJoinNodeForAlternatePaths(pfc.Transitions["T_004"]);
-            _Debug.Assert(element != null && element.Equals(pfcs.nN));
+            Assert.IsTrue(element != null && element.Equals(pfcs.nN));
 
             element = PfcAnalyst.GetJoinNodeForAlternatePaths(pfcs.nD);
-            _Debug.Assert(element != null && element.Equals(pfcs.nN));
+            Assert.IsTrue(element != null && element.Equals(pfcs.nN));
 
             element = PfcAnalyst.GetJoinTransitionForSimultaneousPaths(pfc.Transitions["T_007"]);
-            _Debug.Assert(element != null && element.Equals(pfc.Transitions["T_009"]));
+            Assert.IsTrue(element != null && element.Equals(pfc.Transitions["T_009"]));
 
             element = PfcAnalyst.GetJoinTransitionForSimultaneousPaths(pfcs.nK);
-            _Debug.Assert(element != null && element.Equals(pfc.Transitions["T_009"]));
+            Assert.IsTrue(element != null && element.Equals(pfc.Transitions["T_009"]));
 
             element = PfcAnalyst.GetJoinNodeForAlternatePaths(pfcs.nP);
-            _Debug.Assert(element == null);
+            Assert.IsTrue(element == null);
 
             element = PfcAnalyst.GetJoinNodeForAlternatePaths(pfc.Transitions["T_008"]);
-            _Debug.Assert(element == null);
+            Assert.IsTrue(element == null);
 
             element = PfcAnalyst.GetJoinTransitionForSimultaneousPaths(pfcs.nM);
-            _Debug.Assert(element == null);
+            Assert.IsTrue(element == null);
 
             element = PfcAnalyst.GetJoinTransitionForSimultaneousPaths(pfc.Transitions["T_004"]);
-            _Debug.Assert(element == null);
+            Assert.IsTrue(element == null);
 
 
         }
@@ -287,7 +286,7 @@ namespace PFCDemoMaterial {
             string result = PfcDiagnostics.GetStructure(pfc).ToString();
             Console.WriteLine(result);
 
-            _Debug.Assert(result.Equals("{START-->[L_000(SFC 1.Root)]-->T_000}\r\n{T_000-->[L_002(SFC 1.Root)]-->NEW_STEP}\r\n{NEW_STEP-->[L_003(SFC 1.Root)]-->T_001}\r\n{T_001-->[L_004(SFC 1.Root)]-->FINISH}\r\n"));
+            Assert.IsTrue(result.Equals("{START-->[L_000(SFC 1.Root)]-->T_000}\r\n{T_000-->[L_002(SFC 1.Root)]-->NEW_STEP}\r\n{NEW_STEP-->[L_003(SFC 1.Root)]-->T_001}\r\n{T_001-->[L_004(SFC 1.Root)]-->FINISH}\r\n"));
 
         }
 

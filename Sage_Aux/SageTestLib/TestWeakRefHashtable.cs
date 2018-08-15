@@ -1,9 +1,10 @@
 /* This source code licensed under the GNU Affero General Public License */
 
+using System.Diagnostics;
+
 namespace Highpoint.Sage.Utility {
 	using System;
-	using _Debug = System.Diagnostics.Debug;
-	using System.Collections;
+		using System.Collections;
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	/// <summary>
@@ -18,7 +19,7 @@ namespace Highpoint.Sage.Utility {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]

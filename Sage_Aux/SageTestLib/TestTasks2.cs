@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Graphs;
@@ -38,22 +38,22 @@ namespace SchedulerDemoMaterial  {
                 Task taskA = (Task)((Edge)childTasks[from[ndx]]);
                 Task taskB = (Task)((Edge)childTasks[to[ndx]]);
 
-                _Debug.WriteLine(String.Format("Considering a connection between {0} and {1}.",taskA.Name,taskB.Name));
+                Debug.WriteLine(String.Format("Considering a connection between {0} and {1}.",taskA.Name,taskB.Name));
 
                 int forward =  PathLength.ShortestPathLength(taskA,taskB);
                 int backward = PathLength.ShortestPathLength(taskB,taskA);
 
-                _Debug.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
+                Debug.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
 
                 if ( (forward==int.MaxValue) && (backward==int.MaxValue) ) {
                     taskA.AddSuccessor(taskB);
-                    _Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
+                    Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
                 } else if ( (forward!=int.MaxValue) && (backward==int.MaxValue) ) {
                     taskA.AddSuccessor(taskB);
-                    _Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
+                    Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
                 }else if ( (forward==int.MaxValue) && (backward!=int.MaxValue) ) {
                     taskB.AddSuccessor(taskA);
-                    _Debug.WriteLine(String.Format("{1} will follow {0}.",taskB.Name,taskA.Name));
+                    Debug.WriteLine(String.Format("{1} will follow {0}.",taskB.Name,taskA.Name));
                 }else {
                     throw new ApplicationException("Cycle exists between " + taskA.Name + " and " + taskB.Name + ".");
                 }
@@ -69,12 +69,12 @@ namespace SchedulerDemoMaterial  {
             
             model.Start();
             if ( model.StateMachine.State.Equals(StateMachine.GenericStates.Running) ) {
-                _Debug.WriteLine("Error attempting to transition to Started state.");
+                Debug.WriteLine("Error attempting to transition to Started state.");
             }
         }
 
         void OnModelStarting(IModel model, object userData) {
-            _Debug.WriteLine("Model " + model.Name + " starting.");
+            Debug.WriteLine("Model " + model.Name + " starting.");
         }
     
 
@@ -83,7 +83,7 @@ namespace SchedulerDemoMaterial  {
             public MyTask(IModel model, int i):base(model, "Task #"+i,Guid.NewGuid()){}
         
             protected override void DoTask(IDictionary graphContext){
-                _Debug.WriteLine(Name + " is of type \"MyTask\" and therefore reports that it is executing.");
+                Debug.WriteLine(Name + " is of type \"MyTask\" and therefore reports that it is executing.");
             }
         
         }

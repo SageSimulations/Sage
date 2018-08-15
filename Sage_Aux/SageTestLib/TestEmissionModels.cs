@@ -1,8 +1,8 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Xml;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -85,7 +85,7 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		#endregion
 		

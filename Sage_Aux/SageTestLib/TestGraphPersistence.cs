@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 #if NYRFPT
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Graphs;
@@ -21,7 +20,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		// Ta(4 hr) -> Tb(1 hr)
@@ -121,7 +120,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 			loadXML(ref tg2);
 
 			tg1.model.Start();
-			_Debug.WriteLine("Test 2");
+			Debug.WriteLine("Test 2");
 			tg2.model.Start();
 
 			// Test graph 1
@@ -174,7 +173,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 			Assert.AreEqual(tg1.td.GetStartTime(tg1.GraphContext), new DateTime(1,1,1,4,0,0), "Task D did not start at 4AM 1/1/1");
 
 			tg1.model.Start();
-			_Debug.WriteLine("Test 2");
+			Debug.WriteLine("Test 2");
 			tg2.model.Start();
 
 			// Test graph 2
@@ -269,7 +268,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 			ArrayList edges = new ArrayList();
 			for ( int i = 0 ; i < howManyTasks ; i++ ) {
 				TestTask task = new TestTask(model,nameRoot+i);
-				_Debug.WriteLine("Creating task " + task.Name);
+				Debug.WriteLine("Creating task " + task.Name);
 				edges.Add(task);
 			}
 
@@ -281,22 +280,22 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
 				if ( taskA == taskB ) continue;
 
-				_Debug.WriteLine(String.Format("Considering a connection between {0} and {1}.",taskA.Name,taskB.Name));
+				Debug.WriteLine(String.Format("Considering a connection between {0} and {1}.",taskA.Name,taskB.Name));
 
 				int forward = Graphs.Analysis.PathLength.ShortestPathLength(taskA,taskB);
 				int backward = Graphs.Analysis.PathLength.ShortestPathLength(taskB,taskA);
 
-				_Debug.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
+				Debug.WriteLine(String.Format("Forward path length is {0}, and reverse path length is {1}.",forward,backward));
 
 				if ( (forward==int.MaxValue) && (backward==int.MaxValue) ) {
 					taskA.AddSuccessor(taskB);
-					_Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
+					Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
 				} else if ( (forward!=int.MaxValue) && (backward==int.MaxValue) ) {
 					taskA.AddSuccessor(taskB);
-					_Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
+					Debug.WriteLine(String.Format("{0} will follow {1}.",taskB.Name,taskA.Name));
 				}else if ( (forward==int.MaxValue) && (backward!=int.MaxValue) ) {
 					taskB.AddSuccessor(taskA);
-					_Debug.WriteLine(String.Format("{1} will follow {0}.",taskB.Name,taskA.Name));
+					Debug.WriteLine(String.Format("{1} will follow {0}.",taskB.Name,taskA.Name));
 				}else {
 					throw new ApplicationException("Cycle exists between " + taskA.Name + " and " + taskB.Name + ".");
 				}
@@ -332,7 +331,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 				if ( m_delay.Equals(TimeSpan.Zero) ) {
 					SignalTaskCompletion(graphContext);
 				} else {
-					_Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is commencing a sleep for " + m_delay + ".");
+					Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is commencing a sleep for " + m_delay + ".");
 					Model.Executive.RequestEvent(new ExecEventReceiver(DoneDelaying),Model.Executive.Now+m_delay,0.0,graphContext);
 				}
 			}
@@ -342,11 +341,11 @@ namespace Highpoint.Sage.Graphs.Tasks {
 			}
 
 			private void OnTaskBeginning(IDictionary graphContext, Edge edge){
-				_Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is beginning.");
+				Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is beginning.");
 			}
 
 			private void OnTaskCompleting(IDictionary graphContext, Edge edge){
-				_Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is completing.");
+				Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is completing.");
 			}
 			#region IXmlPersistable Members
 			public TestTask(){}

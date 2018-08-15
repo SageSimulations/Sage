@@ -4,7 +4,6 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using Highpoint.Sage.Mathematics;
-using _Debug = System.Diagnostics.Debug;
 
 namespace SageTestLib {
 
@@ -15,7 +14,7 @@ namespace SageTestLib {
         }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
         [TestMethod]
         [Highpoint.Sage.Utility.FieldDescription("This test checks the basic function of a rationalizer to five digits, and fractions up to ninths.")]

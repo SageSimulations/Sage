@@ -1,12 +1,12 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Utility;
 using Highpoint.Sage.ItemBased.Ports;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 
@@ -22,7 +22,7 @@ namespace Highpoint.Sage.Materials  {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -102,7 +102,7 @@ namespace Highpoint.Sage.Materials  {
             mcat["Methylene Chloride"].SetAntoinesCoefficients3(7.263, 1222.7, 238.4, PressureUnits.mmHg, TemperatureUnits.Celsius);
             mcat["Water"].SetAntoinesCoefficients3(8.040, 1715.1, 232.4, PressureUnits.mmHg, TemperatureUnits.Celsius);
 
-			_Debug.WriteLine(" ... sample substances loaded.");
+			Debug.WriteLine(" ... sample substances loaded.");
             return mcat;
 		}
 

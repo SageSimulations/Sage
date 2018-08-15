@@ -1,8 +1,8 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Graphs;
 using Highpoint.Sage.Graphs.Tasks;
@@ -27,7 +27,7 @@ namespace Highpoint.Sage.Tasks {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 //		[TestMethod]
@@ -62,7 +62,7 @@ namespace Highpoint.Sage.Tasks {
 
 			Console.WriteLine(t.ValidationService.StatusReport());
 
-            _Debug.Assert(t.ValidityState, "Freshly initialized model is not valid.");
+            Assert.IsTrue(t.ValidityState, "Freshly initialized model is not valid.");
 		
 		}
 
@@ -75,51 +75,51 @@ namespace Highpoint.Sage.Tasks {
 		public void TestAddTasks() {
 			InitializeModel("t,t1,t2,t3,t12,t21,t23,t32");
 
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!t23.ValidityState, "Task 23 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 			
 			model.Start();
 
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t23.ValidityState, "Task 23 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t23.ValidityState, "Task 23 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
             // Statement: All tasks that are now in the graph are valid!
 
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
 			tL1.AddTaskBefore(t12,t11);
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
 
 
 			// Add a task after a valid one.
 			tL2.AddTaskAfter(t21,t22);
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(!t22.ValidityState, "Task 22 is valid when it should be invalid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(!t22.ValidityState, "Task 22 is valid when it should be invalid");
 
 			// Add a task before a valid one.
 			t31.SelfValidState = false;
 			tL3.AddTaskBefore(t32,t31);     // this forces t32 to become invalid
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
-            _Debug.Assert(!t31.ValidityState, "Task 31 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t31.ValidityState, "Task 31 is valid when it should be invalid");
 
 			// Add a task after an invalid one
 			tL3.AddTaskAfter(t32,t33);
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
-            _Debug.Assert(!t33.ValidityState, "Task 33 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t33.ValidityState, "Task 33 is valid when it should be invalid");
 			
 			Validate("Test 1");
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
-            _Debug.Assert(t33.ValidityState, "Task 33 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t33.ValidityState, "Task 33 is invalid when it should be valid");
 
 		}
 
@@ -138,12 +138,12 @@ namespace Highpoint.Sage.Tasks {
 
 			Validate("Resume Failure Test");
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
-            _Debug.Assert(t33.ValidityState, "Task 33 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t33.ValidityState, "Task 33 is invalid when it should be valid");
 
 		}
 
@@ -157,31 +157,31 @@ namespace Highpoint.Sage.Tasks {
 		public void TestSynchronizeTasks() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t31,t32");
 
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t13.ValidityState, "Task 13 is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t22.ValidityState, "Task 22 is valid when it should be invalid");
-            _Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
-            _Debug.Assert(!t31.ValidityState, "Task 31 is valid when it should be invalid");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t13.ValidityState, "Task 13 is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!t22.ValidityState, "Task 22 is valid when it should be invalid");
+            Assert.IsTrue(!t23.ValidityState, "Task 23 is valid when it should be invalid");
+            Assert.IsTrue(!t31.ValidityState, "Task 31 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 
 			model.Start();
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t13.ValidityState, "Task 13 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(t23.ValidityState, "Task 23 is invalid when it should be valid");
-            _Debug.Assert(t31.ValidityState, "Task 31 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(t23.ValidityState, "Task 23 is invalid when it should be valid");
+            Assert.IsTrue(t31.ValidityState, "Task 31 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 
 			// Synchronize two valid tasks from two different task lists
 			Synchronize(t12,t32);
-            _Debug.Assert(!t12.ValidityState, "Task 12 is still valid even after being synchronized with Task 32");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is still valid even after being synchronized with Task 12");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is still valid even after being synchronized with Task 32");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is still valid even after being synchronized with Task 12");
 
 			// Create new tasks with task list
 			TestTask nt = new TestTask(model,"New Task");
@@ -196,37 +196,37 @@ namespace Highpoint.Sage.Tasks {
 
 
             // Sychnronize a new task before a validated task - it should invalidate the following task.
-            _Debug.Assert(!nt3.ValidityState, "New Task is valid when it should be invalid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(!nt3.ValidityState, "New Task is valid when it should be invalid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
 			Synchronize(nt3, t21);
-            _Debug.Assert(!nt3.ValidityState, "New Task is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!nt3.ValidityState, "New Task is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
 
             // Sychnronize a validated task with a new task
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(!nt2.ValidityState, "New Task is valid when it should be invalid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(!nt2.ValidityState, "New Task is valid when it should be invalid");
 			Synchronize(t11, nt2);
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(!nt2.ValidityState, "New Task is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!nt2.ValidityState, "New Task is valid when it should be invalid");
 
             // Sychnronize a new task after a validated task - it should NOT invalidate the preceding task.
-            _Debug.Assert(!nt1.ValidityState, "New Task is valid when it should be invalid");
-            _Debug.Assert(t31.ValidityState, "Task 31 is invalid when it should be valid");
+            Assert.IsTrue(!nt1.ValidityState, "New Task is valid when it should be invalid");
+            Assert.IsTrue(t31.ValidityState, "Task 31 is invalid when it should be valid");
 			Synchronize(t31,nt1);
-            _Debug.Assert(!nt1.ValidityState, "New Task is valid when it should be invalid");
-            _Debug.Assert(!t31.ValidityState, "Task 31 is valid when it should be invalid");
+            Assert.IsTrue(!nt1.ValidityState, "New Task is valid when it should be invalid");
+            Assert.IsTrue(!t31.ValidityState, "Task 31 is valid when it should be invalid");
 
 			Validate("Test 2");
 
-            _Debug.Assert(t12.ValidityState, "Task 12 is not valid after being validated");
-            _Debug.Assert(t13.ValidityState, "Task 13 is not valid after being validated");
-            _Debug.Assert(t21.ValidityState, "Task 21 is not valid after being validated");
-            _Debug.Assert(t22.ValidityState, "Task 22 is not valid after being validated");
-            _Debug.Assert(t23.ValidityState, "Task 23 is not valid after being validated");
-            _Debug.Assert(t32.ValidityState, "Task 32 is not valid after being validated");
-            _Debug.Assert(nt.ValidityState, "New Task is not valid after being validated");
-            _Debug.Assert(nt1.ValidityState, "New Task 1 is not valid after being validated");
-            _Debug.Assert(nt2.ValidityState, "New Task 2 is not valid after being validated");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is not valid after being validated");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is not valid after being validated");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is not valid after being validated");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is not valid after being validated");
+            Assert.IsTrue(t23.ValidityState, "Task 23 is not valid after being validated");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is not valid after being validated");
+            Assert.IsTrue(nt.ValidityState, "New Task is not valid after being validated");
+            Assert.IsTrue(nt1.ValidityState, "New Task 1 is not valid after being validated");
+            Assert.IsTrue(nt2.ValidityState, "New Task 2 is not valid after being validated");
 
 		}
 
@@ -239,21 +239,21 @@ namespace Highpoint.Sage.Tasks {
 		public void TestSynchronizeTasksInTwoLevels() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t21,t22,t31,t32");
 
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t22.ValidityState, "Task 22 is valid when it should be invalid");
-            _Debug.Assert(!t31.ValidityState, "Task 31 is valid when it should be invalid");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!t22.ValidityState, "Task 22 is valid when it should be invalid");
+            Assert.IsTrue(!t31.ValidityState, "Task 31 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 
 			model.Start();
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(t31.ValidityState, "Task 31 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(t31.ValidityState, "Task 31 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 
 			Synchronize(t1,t2,t3);
@@ -264,12 +264,12 @@ namespace Highpoint.Sage.Tasks {
 
 			Validate("Test 4");
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is not valid after being validated");
-            _Debug.Assert(t12.ValidityState, "Task 12 is not valid after being validated");
-            _Debug.Assert(t21.ValidityState, "Task 21 is not valid after being validated");
-            _Debug.Assert(t22.ValidityState, "Task 22 is not valid after being validated");
-            _Debug.Assert(t31.ValidityState, "Task 31 is not valid after being validated");
-            _Debug.Assert(t32.ValidityState, "Task 32 is not valid after being validated");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is not valid after being validated");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is not valid after being validated");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is not valid after being validated");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is not valid after being validated");
+            Assert.IsTrue(t31.ValidityState, "Task 31 is not valid after being validated");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is not valid after being validated");
 
 		}
 
@@ -279,24 +279,24 @@ namespace Highpoint.Sage.Tasks {
 		public void TestSynchronizeAndAddTasks() {
 			InitializeModel("t,t1,t2,t3,t12,t21,t23,t31,t32");
 
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
-            _Debug.Assert(!t31.ValidityState, "Task 31 is valid when it should be invalid");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!t23.ValidityState, "Task 23 is valid when it should be invalid");
+            Assert.IsTrue(!t31.ValidityState, "Task 31 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 
 			model.Start();
 
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t23.ValidityState, "Task 23 is invalid when it should be valid");
-            _Debug.Assert(t31.ValidityState, "Task 31 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t23.ValidityState, "Task 23 is invalid when it should be valid");
+            Assert.IsTrue(t31.ValidityState, "Task 31 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 			Synchronize(t12,t32);
 
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid even after being synchronized with Task 32");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid even after being synchronized with Task 12");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid even after being synchronized with Task 32");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid even after being synchronized with Task 12");
 
 
 			Validate("Test 3a");
@@ -304,41 +304,41 @@ namespace Highpoint.Sage.Tasks {
 			// Add task before; invalidates both task
 			// in addition; because task t12 and t32 are synchronized t32 turns invalid as well
 			tL1.AddTaskBefore(t12,t11);
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
             // t32 turns invalid, because t12 turns invalid and t32 is synchronized with t12
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 
 			Validate("Test 3b");
 			t13.SelfValidState = true;
 
             // Add task after; leaves upstream task valid and sets downstream task invalid
-            _Debug.Assert(t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(t13.ValidityState, "Task 13 is invalid after being validated");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is invalid after being validated");
 			tL1.AddTaskAfter(t12,t13);
 
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(!t13.ValidityState, "Task 13 is valid when it should be invalid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(!t13.ValidityState, "Task 13 is valid when it should be invalid");
 			
 			Validate("Test 3c");
 			t22.SelfValidState = true;
 
             // Add task after; leaves upstream taks valid, but sets downstream task invalid
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid after being validated");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid after being validated");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid after being validated");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid after being validated");
 			tL2.AddTaskAfter(t21,t22);
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(!t22.ValidityState, "Task 22 is valid when it should be invalid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(!t22.ValidityState, "Task 22 is valid when it should be invalid");
 
 			
 			Validate("Test 3d");
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is not valid after being validated");
-            _Debug.Assert(t12.ValidityState, "Task 12 is not valid after being validated");
-            _Debug.Assert(t13.ValidityState, "Task 13 is not valid after being validated");
-            _Debug.Assert(t21.ValidityState, "Task 21 is not valid after being validated");
-            _Debug.Assert(t22.ValidityState, "Task 22 is not valid after being validated");
-            _Debug.Assert(t32.ValidityState, "Task 32 is not valid after being validated");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is not valid after being validated");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is not valid after being validated");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is not valid after being validated");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is not valid after being validated");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is not valid after being validated");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is not valid after being validated");
 
 		}
 
@@ -351,43 +351,43 @@ namespace Highpoint.Sage.Tasks {
 		public void TestRemoveTasks() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t32");
 
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t13.ValidityState, "Task 13 is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t13.ValidityState, "Task 13 is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!t23.ValidityState, "Task 23 is valid when it should be invalid");
 			
 			model.Start();
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t13.ValidityState, "Task 13 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t23.ValidityState, "Task 23 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t23.ValidityState, "Task 23 is invalid when it should be valid");
 			
 			// Remove upstream task in a task list, sets all downstream task invalid
 			tL1.RemoveTask(t11);
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t13.ValidityState, "Task 13 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t13.ValidityState, "Task 13 is valid when it should be invalid");
 
 
 			// Remove downstream task, leaves all upstream tasks unchanged
 			tL2.RemoveTask(t23);
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(!t23.ValidityState, "Task 23 is valid when it should be invalid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 
 			Validate("Test 1");
 
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(t12.ValidityState, "Task 12 is invalid when it should be valid");
-            _Debug.Assert(t13.ValidityState, "Task 13 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(t12.ValidityState, "Task 12 is invalid when it should be valid");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(!t23.ValidityState, "Task 23 is valid when it should be invalid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 		}
 
@@ -400,19 +400,19 @@ namespace Highpoint.Sage.Tasks {
 		public void TestSynchronizeAndRemoveTasks() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t32");
 
-            _Debug.Assert(!t11.ValidityState, "Task 11 is valid when it should be invalid");
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t13.ValidityState, "Task 13 is valid when it should be invalid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t22.ValidityState, "Task 22 is valid when it should be invalid");
-            _Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
+            Assert.IsTrue(!t11.ValidityState, "Task 11 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t13.ValidityState, "Task 13 is valid when it should be invalid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(!t22.ValidityState, "Task 22 is valid when it should be invalid");
+            Assert.IsTrue(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 			
 			model.Start();
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(t21.ValidityState, "Task 21 is invalid when it should be valid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t21.ValidityState, "Task 21 is invalid when it should be valid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 			
 			// Remove a task invalidates all downstream tasks in the same task list 
 			//   and also all tasks synchronized with a downstream task.
@@ -420,10 +420,10 @@ namespace Highpoint.Sage.Tasks {
 			Synchronize(t22,t32);
 			Validate("Test 1");			// validate all tasks
 			tL2.RemoveTask(t21);
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
             // AEL, following is a bug. It validates to true when it should be invalid
             //System.Diagnostics.Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(!t22.ValidityState, "Task 22 is valid when it should be invalid");
+            Assert.IsTrue(!t22.ValidityState, "Task 22 is valid when it should be invalid");
 			// AEL, following is a bug. It validates to true when it should be invalid
 			//System.Diagnostics.Debug.Assert(!t32.ValidityState, "Task 32 is valid when it should be invalid");
 
@@ -433,21 +433,21 @@ namespace Highpoint.Sage.Tasks {
 			// Remove the upstream task of a synchronization, the downstream task will be set invalid
 			Synchronize(t12,t23);
 			tL1.RemoveTask(t12);
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(!t13.ValidityState, "Task 13 is valid when it should be invalid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(!t13.ValidityState, "Task 13 is valid when it should be invalid");
             // AEL, following is a bug. It validates to true when it should be invalid
             //System.Diagnostics.Debug.Assert(!t23.ValidityState, "Task 23 is valid when it should be invalid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 			Validate("Test 1");
 
-            _Debug.Assert(t11.ValidityState, "Task 11 is invalid when it should be valid");
-            _Debug.Assert(!t12.ValidityState, "Task 12 is valid when it should be invalid");
-            _Debug.Assert(t13.ValidityState, "Task 13 is invalid when it should be valid");
-            _Debug.Assert(!t21.ValidityState, "Task 21 is valid when it should be invalid");
-            _Debug.Assert(t22.ValidityState, "Task 22 is invalid when it should be valid");
-            _Debug.Assert(t23.ValidityState, "Task 23 is invalid when it should be valid");
-            _Debug.Assert(t32.ValidityState, "Task 32 is invalid when it should be valid");
+            Assert.IsTrue(t11.ValidityState, "Task 11 is invalid when it should be valid");
+            Assert.IsTrue(!t12.ValidityState, "Task 12 is valid when it should be invalid");
+            Assert.IsTrue(t13.ValidityState, "Task 13 is invalid when it should be valid");
+            Assert.IsTrue(!t21.ValidityState, "Task 21 is valid when it should be invalid");
+            Assert.IsTrue(t22.ValidityState, "Task 22 is invalid when it should be valid");
+            Assert.IsTrue(t23.ValidityState, "Task 23 is invalid when it should be valid");
+            Assert.IsTrue(t32.ValidityState, "Task 32 is invalid when it should be valid");
 
 		}
 
@@ -500,52 +500,52 @@ namespace Highpoint.Sage.Tasks {
 //
 //			InitializeModel("t,t1,t2,t3,t12,t13,t21,t23,t31,t32");												// AEL
 //
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.GraphToString(t));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.GraphToString(t));
 //
 //			new TaskProcessor(model,"Main",t); // Adds it into the model.
 //
-//			/*			_Debug.WriteLine("Running the model - press enter to continue...");Trace.ReadLine();
+//			/*			Debug.WriteLine("Running the model - press enter to continue...");Trace.ReadLine();
 //						model.Start();
-//						_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//						Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
-//						_Debug.WriteLine("Invalidating Task 1.1 - press enter to continue...");Trace.ReadLine();
+//						Debug.WriteLine("Invalidating Task 1.1 - press enter to continue...");Trace.ReadLine();
 //						t11.SelfValidState = false;
-//						_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//						Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
-//						_Debug.WriteLine("Revalidating Task 1.1 - press enter to continue...");Trace.ReadLine();
+//						Debug.WriteLine("Revalidating Task 1.1 - press enter to continue...");Trace.ReadLine();
 //						t11.SelfValidState = true;
-//						_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//						Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //			*/
-//			//_Debug.WriteLine("Adding third child task & vs - press enter to continue...");Trace.ReadLine();
+//			//Debug.WriteLine("Adding third child task & vs - press enter to continue...");Trace.ReadLine();
 //			t.AddChildEdge(t3);
 //
 //			new VertexSynchronizer(model.Executive,new Vertex[]{t22.PreVertex,t31.PreVertex},ExecEventType.Detachable);
 //			model.Start();
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
-//			//_Debug.WriteLine("Invalidating Task t21 - press enter to continue...");Trace.ReadLine();
+//			//Debug.WriteLine("Invalidating Task t21 - press enter to continue...");Trace.ReadLine();
 //			t21.SelfValidState = false;
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
-//			//_Debug.WriteLine("Revalidating Task t21 - press enter to continue...");Trace.ReadLine();
+//			//Debug.WriteLine("Revalidating Task t21 - press enter to continue...");Trace.ReadLine();
 //			t21.SelfValidState = true;
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
-//			//_Debug.WriteLine("Adding Tasks t13 and t23 - press enter to continue...");Trace.ReadLine();
+//			//Debug.WriteLine("Adding Tasks t13 and t23 - press enter to continue...");Trace.ReadLine();
 //			tL1.AppendTask(t13);
 //			tL2.AppendTask(t23);
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //			model.Start();
 //
-//			_Debug.WriteLine("Removing Task t21 - press enter to continue...");Trace.ReadLine();
+//			Debug.WriteLine("Removing Task t21 - press enter to continue...");Trace.ReadLine();
 //			tL2.RemoveTask(t21);
 //			//t21.SelfValidState = true;
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
 //
-//			_Debug.WriteLine("Running the model - press enter to continue...");Trace.ReadLine();
+//			Debug.WriteLine("Running the model - press enter to continue...");Trace.ReadLine();
 //			model.Start();
-//			_Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+//			Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 //
 //		}
 
@@ -607,12 +607,12 @@ namespace Highpoint.Sage.Tasks {
 			model.StateMachine.DoTransition(model.GetIdleEnum());
 			model.Executive.Reset();
 
-			if ( VERBOSE ) _Debug.WriteLine(testName + " pre-execution state");
-			if ( VERBOSE ) _Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+			if ( VERBOSE ) Debug.WriteLine(testName + " pre-execution state");
+			if ( VERBOSE ) Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
 			model.Start();
-			if ( VERBOSE ) _Debug.WriteLine(testName + " post-execution state");
-			if ( VERBOSE ) _Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
-            _Debug.Assert(t.ValidityState,testName + " failed.");
+			if ( VERBOSE ) Debug.WriteLine(testName + " post-execution state");
+			if ( VERBOSE ) Debug.WriteLine(Diagnostics.DiagnosticAids.ReportOnTaskValidity(t,true));
+            Assert.IsTrue(t.ValidityState,testName + " failed.");
 		}
 
 		private bool include(string candidate, string includees){
@@ -634,11 +634,11 @@ namespace Highpoint.Sage.Tasks {
 			}
 
 			private void OnTaskBeginning(IDictionary graphContext, Edge edge){
-				if ( VERBOSE ) _Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is beginning.");
+				if ( VERBOSE ) Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is beginning.");
 			}
 
 			private void OnTaskCompleting(IDictionary graphContext, Edge edge){
-				if ( VERBOSE ) _Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is completing.");
+				if ( VERBOSE ) Debug.WriteLine(Model.Executive.Now + " : " +  Name + " is completing.");
 			}
 		}
 	}

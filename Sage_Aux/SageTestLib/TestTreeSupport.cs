@@ -3,10 +3,10 @@
 
 using System;
 using System.Text;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Highpoint.Sage.Utility
 {
@@ -29,7 +29,7 @@ namespace Highpoint.Sage.Utility
         [TestCleanup]
         public void destroy()
         {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Utility
                 "This test manipulates a tree that holds elements that have no knowledge of their participation in a tree.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            _Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)),
+            Assert.IsTrue(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)),
                 "Expected \"" + REQUIRED_ITERATIONSTRING1 + "\", but got \"" + sb.ToString() + "\" instead.");
         }
 
@@ -112,7 +112,7 @@ namespace Highpoint.Sage.Utility
                 "This test manipulates a tree that holds elements that have no knowledge of their participation in a tree.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            _Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)),
+            Assert.IsTrue(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)),
                 "Expected \"" + REQUIRED_ITERATIONSTRING1 + "\", but got \"" + sb.ToString() + "\" instead.");
         }
 
@@ -160,7 +160,7 @@ namespace Highpoint.Sage.Utility
             Console.WriteLine("This test manipulates a tree that holds elements that derive from TreeNode.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            _Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)));
+            Assert.IsTrue(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)));
 
         }
 
@@ -209,7 +209,7 @@ namespace Highpoint.Sage.Utility
             Console.WriteLine("This test manipulates a tree that holds elements that implement ITreeNode.");
             Console.WriteLine(sb.ToString());
             Console.WriteLine();
-            _Debug.Assert(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)));
+            Assert.IsTrue(StripCRLF(sb.ToString()).Equals(StripCRLF(REQUIRED_ITERATIONSTRING1)));
 
         }
 
@@ -259,7 +259,7 @@ Dingus";
                 ITreeNode<string> dingus = bob.AddChild("Dingus");
                 dingus.AddChild(bob);
 
-                _Debug.Assert(false, "Circular tree structure was not caught.");
+                Assert.IsTrue(false, "Circular tree structure was not caught.");
             }
             catch (ArgumentException)
             {
@@ -289,12 +289,12 @@ Dingus";
 
             string s = string.Empty;
             bob.ForEachChild(delegate (ITreeNode<Activity> activity) { s += activity.Payload.Name; });
-            _Debug.Assert(s.Equals("EthelFrankGeorge"));
+            Assert.IsTrue(s.Equals("EthelFrankGeorge"));
 
             s = string.Empty;
             bob.SortChildren(new Comparison<ITreeNode<Activity>>(ReverseSortTreeNodeActivities));
             bob.ForEachChild(delegate (ITreeNode<Activity> activity) { s += activity.Payload.Name; });
-            _Debug.Assert(s.Equals("GeorgeFrankEthel"));
+            Assert.IsTrue(s.Equals("GeorgeFrankEthel"));
 
             Console.WriteLine(s);
 

@@ -1,8 +1,8 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
+using System.Diagnostics;
 using Highpoint.Sage.Materials.Chemistry;
-using _Debug = System.Diagnostics.Debug;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Randoms;
@@ -34,7 +34,7 @@ namespace Highpoint.Sage.Materials {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
         [TestMethod]

@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
@@ -32,7 +31,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		/// <summary>
@@ -49,30 +48,30 @@ namespace Highpoint.Sage.SimCore {
 
 			// initialize validate variable
 			m_validateCount = 0;
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutiveCount");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutiveCount");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
 				++m_validateCount;
-				_Debug.WriteLine("Primary requesting event number " + m_validateCount);
+				Debug.WriteLine("Primary requesting event number " + m_validateCount);
 				exec.RequestEvent(new ExecEventReceiver(ExecEventRecieverCount),when,priority,null,m_execEventType);
 			}
 
 			if (m_validateCount != NUM_EVENTS) {
-				_Debug.WriteLine("Number of submitted event requests don't equal supposed number of : " + NUM_EVENTS);
+				Debug.WriteLine("Number of submitted event requests don't equal supposed number of : " + NUM_EVENTS);
 			}
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			exec.Start();
 
             // test validate variable
-            _Debug.Assert(0 == m_validateCount, "Executive did not submit all events");
+            Assert.IsTrue(0 == m_validateCount, "Executive did not submit all events");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
 		private void ExecEventRecieverCount(IExecutive exec, object userData) {
@@ -94,30 +93,30 @@ namespace Highpoint.Sage.SimCore {
 
 			// initialize validate variable
 			m_validateCount = 0;
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test ExecEventRecieverCountLessParameter");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test ExecEventRecieverCountLessParameter");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
 				++m_validateCount;
-				_Debug.WriteLine("Primary requesting event number " + m_validateCount);
+				Debug.WriteLine("Primary requesting event number " + m_validateCount);
 				exec.RequestEvent(new ExecEventReceiver(ExecEventRecieverCountLessParameter),when,priority,null);
 			}
 
 			if (m_validateCount != NUM_EVENTS) {
-				_Debug.WriteLine("Number of submitted event requests don't equal supposed number of : " + NUM_EVENTS);
+				Debug.WriteLine("Number of submitted event requests don't equal supposed number of : " + NUM_EVENTS);
 			}
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			exec.Start();
 
             // test validate variable
-            _Debug.Assert(0 == m_validateCount, "Executive did not submit all events");
+            Assert.IsTrue(0 == m_validateCount, "Executive did not submit all events");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
 		private void ExecEventRecieverCountLessParameter(IExecutive exec, object userData) {
@@ -139,33 +138,33 @@ namespace Highpoint.Sage.SimCore {
 			// initialize validation variables
 			m_error = false;
 			m_validatePriority = 0;
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutivePriority");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutivePriority");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				priority = (int)(m_random.NextDouble()*100);
 				if (m_validatePriority < priority) {m_validatePriority = priority;}
-				_Debug.WriteLine("Primary requesting event service for " + now + ", at priority " + priority);
+				Debug.WriteLine("Primary requesting event service for " + now + ", at priority " + priority);
 				exec.RequestEvent(new ExecEventReceiver(ExecEventRecieverPriority),now,priority,priority,m_execEventType);
 			}
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			exec.Start();
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
             // test validate variable
-            _Debug.Assert(!m_error, "Executive did not submit events in the order of the correct priority");
+            Assert.IsTrue(!m_error, "Executive did not submit events in the order of the correct priority");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
 		public void ExecEventRecieverPriority(IExecutive exec, object userData) {
 			if (m_validatePriority < (int)userData) {m_error = true;}
 			m_validatePriority = (int)userData;
-			_Debug.WriteLine("Primary fireing event with priority " + (int)userData);
+			Debug.WriteLine("Primary fireing event with priority " + (int)userData);
 		}
 
 		/// <summary>
@@ -183,33 +182,33 @@ namespace Highpoint.Sage.SimCore {
 			// initialize validation variables
 			m_error = false;
 			m_validateWhen = new DateTime(now.Ticks);
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutiveWhen");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutiveWhen");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
-				_Debug.WriteLine("Primary requesting event service for " + when);
+				Debug.WriteLine("Primary requesting event service for " + when);
 				//if (m_validateWhen.Ticks < when.Ticks) {m_validateWhen = when;}
 				exec.RequestEvent(new ExecEventReceiver(ExecEventRecieverWhen),when,0,when,m_execEventType);
 			}
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			exec.Start();
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
             // test validation variable
-            _Debug.Assert(!m_error, "Executive did not submit events in correct date/time order");
+            Assert.IsTrue(!m_error, "Executive did not submit events in correct date/time order");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
 		public void ExecEventRecieverWhen(IExecutive exec, object userData) {
 			if (m_validateWhen.Ticks > ((DateTime)userData).Ticks) {m_error = true;}
 			m_validateWhen = (DateTime)userData;
-			_Debug.WriteLine("Primary fireing event at date/time " + (DateTime)userData);
+			Debug.WriteLine("Primary fireing event at date/time " + (DateTime)userData);
 		}
 
 		/// <summary>
@@ -232,9 +231,9 @@ namespace Highpoint.Sage.SimCore {
 			// initialize validation variables
 			m_error = false;
 			m_validateUnRequest = new ArrayList();
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutiveUnRequestHash");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutiveUnRequestHash");
+			Debug.WriteLine("");
 
 			ArrayList eventIDsForRemoval = new ArrayList();
 			foreach ( string eud in eventUserData ) {
@@ -242,34 +241,34 @@ namespace Highpoint.Sage.SimCore {
 				priority = m_random.NextDouble();
 				Trace.Write("Primary requesting event service with user data \"" + eud + "\", and eventID ");
 				long eventID = exec.RequestEvent(new ExecEventReceiver(ExecEventRecieverUnRequestHash),when,priority,eud,m_execEventType);
-				_Debug.WriteLine(eventID + ".");
+				Debug.WriteLine(eventID + ".");
 				if ( eventsToRemove.Contains(eud) ) {
 					eventIDsForRemoval.Add(eventID);
-					_Debug.WriteLine("\tWe will be requesting the removal of this event.");
+					Debug.WriteLine("\tWe will be requesting the removal of this event.");
 				}
 			}
 
 			foreach ( long eventID in eventIDsForRemoval ) {
-				_Debug.WriteLine("Unrequesting event # " + eventID);
+				Debug.WriteLine("Unrequesting event # " + eventID);
 				m_validateUnRequest.Add(eventID);
 				exec.UnRequestEvent(eventID);
 			}
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			exec.Start();
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
             // test validation variable
-            _Debug.Assert(!m_error, "Executive did fire a unrequested event");
+            Assert.IsTrue(!m_error, "Executive did fire a unrequested event");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
 		public void ExecEventRecieverUnRequestHash(IExecutive exec, object userData) {
 			if (m_validateUnRequest.Contains(userData)) {m_error = true;}
-			_Debug.WriteLine("Primary firing event with user data = \"" + userData + "\"");
+			Debug.WriteLine("Primary firing event with user data = \"" + userData + "\"");
 		}
 
 		/// <summary>
@@ -289,14 +288,14 @@ namespace Highpoint.Sage.SimCore {
 			// initialize validation variables
 			m_error = false;
 			m_validateUnRequest = new ArrayList();
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutiveUnRequestTarget");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutiveUnRequestTarget");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
-				_Debug.WriteLine("Primary requesting event service " + i);
+				Debug.WriteLine("Primary requesting event service " + i);
 				switch (i) {
 					case 1:
 					case 2:
@@ -317,18 +316,18 @@ namespace Highpoint.Sage.SimCore {
 			}
 
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 // AEL			exec.UnRequestEvents(new OtherTarget(m_validateUnRequest, m_error));
 
 			exec.Start();
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
             // test validation variable
-            _Debug.Assert(!m_error, "Executive did fire a unrequested event");
+            Assert.IsTrue(!m_error, "Executive did fire a unrequested event");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
 		/// <summary>
@@ -346,14 +345,14 @@ namespace Highpoint.Sage.SimCore {
 			// initialize validation variables
 			m_error = false;
 			m_validateUnRequest = new ArrayList();
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutiveUnRequestDelegate");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutiveUnRequestDelegate");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
-				_Debug.WriteLine("Primary requesting event service " + i);
+				Debug.WriteLine("Primary requesting event service " + i);
 				switch (i) {
 					case 1:
 					case 2:
@@ -373,18 +372,18 @@ namespace Highpoint.Sage.SimCore {
 			}
 
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			// AEL		exec.UnRequestEvents((Delegate)(new ExecEventReceiver(this.ExecEventRecieverUnRequestDelegate)));
 
 			exec.Start();
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
             // test validation variable
-            _Debug.Assert(!m_error, "Executive did fire a unrequested event");
+            Assert.IsTrue(!m_error, "Executive did fire a unrequested event");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
         /// <summary>
@@ -406,7 +405,7 @@ namespace Highpoint.Sage.SimCore {
             starter.Start(exec);
             starter.Join();
             TimeSpan shortDuration = DateTime.Now - startTime;
-            _Debug.WriteLine("Duration w/o pause is " + shortDuration.TotalSeconds + " seconds.");
+            Debug.WriteLine("Duration w/o pause is " + shortDuration.TotalSeconds + " seconds.");
             exec.Reset();
 
             // Now get the duration w/ pause.
@@ -419,9 +418,9 @@ namespace Highpoint.Sage.SimCore {
             TimeSpan pauseDuration = DateTime.Now - startTime;
 
             // Finally, assess the comparative durations to ensure the test passed.
-            _Debug.WriteLine("Total test duration was " + pauseDuration.TotalSeconds + " seconds.");
+            Debug.WriteLine("Total test duration was " + pauseDuration.TotalSeconds + " seconds.");
             TimeSpan minAcceptableDuration = shortDuration + TimeSpan.FromMilliseconds(1500);
-            _Debug.Assert(pauseDuration > minAcceptableDuration,
+            Assert.IsTrue(pauseDuration > minAcceptableDuration,
                 "Test duration of less than " + minAcceptableDuration.TotalSeconds 
                 + " seconds indicates a failure to properly stop and restart.");
         }
@@ -444,7 +443,7 @@ namespace Highpoint.Sage.SimCore {
             starter.Start(exec);
             starter.Join();
             TimeSpan shortDuration = DateTime.Now - startTime;
-            _Debug.WriteLine("Duration w/o pause is " + shortDuration.TotalSeconds + " seconds.");
+            Debug.WriteLine("Duration w/o pause is " + shortDuration.TotalSeconds + " seconds.");
             exec.Reset();
 
             // Now get the duration w/ pause.
@@ -457,20 +456,20 @@ namespace Highpoint.Sage.SimCore {
             TimeSpan pauseDuration = DateTime.Now - startTime;
 
             // Finally, assess the comparative durations to ensure the test passed.
-            _Debug.WriteLine("Total test duration was " + pauseDuration.TotalSeconds + " seconds.");
+            Debug.WriteLine("Total test duration was " + pauseDuration.TotalSeconds + " seconds.");
             TimeSpan minAcceptableDuration = shortDuration + TimeSpan.FromMilliseconds(1500);
-            _Debug.Assert(pauseDuration > minAcceptableDuration,
+            Assert.IsTrue(pauseDuration > minAcceptableDuration,
                 "Test duration of less than " + minAcceptableDuration.TotalSeconds + " seconds indicates a failure to properly stop and restart.");
         }
 
         private void InstrumentExecutiveStates(IExecutive exec) {
-            exec.ExecutiveStarted_SingleShot += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Started (single shot)."); });
-            exec.ExecutiveStarted += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Started."); });
-            exec.ExecutivePaused += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Paused."); });
-            exec.ExecutiveResumed += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Resumed."); });
-            exec.ExecutiveStopped += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Stopped."); });
-            exec.ExecutiveFinished += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Finished."); });
-            exec.ExecutiveAborted += new ExecutiveEvent(delegate(IExecutive e) { _Debug.WriteLine("Executive Aborted."); });
+            exec.ExecutiveStarted_SingleShot += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Started (single shot)."); });
+            exec.ExecutiveStarted += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Started."); });
+            exec.ExecutivePaused += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Paused."); });
+            exec.ExecutiveResumed += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Resumed."); });
+            exec.ExecutiveStopped += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Stopped."); });
+            exec.ExecutiveFinished += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Finished."); });
+            exec.ExecutiveAborted += new ExecutiveEvent(delegate(IExecutive e) { Debug.WriteLine("Executive Aborted."); });
         }
 
         void exec_ExecutiveAborted(IExecutive exec) {
@@ -505,7 +504,7 @@ namespace Highpoint.Sage.SimCore {
 
         private void StartExec(object obj) {
             IExecutive exec = (IExecutive)obj;
-            _Debug.WriteLine("\r\n" + "Starting exec..." + "\r\n");
+            Debug.WriteLine("\r\n" + "Starting exec..." + "\r\n");
             DateTime startTime = new DateTime(2006, 5, 16);
             exec.RequestEvent(new ExecEventReceiver(SteadyStateEventStream), startTime, 1, 400);
             exec.Start();
@@ -514,33 +513,33 @@ namespace Highpoint.Sage.SimCore {
         private void StopAndRestartExec(object obj) {
             System.Threading.Thread.Sleep(1000);
             IExecutive exec = (IExecutive)obj;
-            _Debug.WriteLine("\r\n" + "Pausing for two seconds..." + "\r\n");
-            _Debug.WriteLine("Before pause, Exec state is " + exec.State);
+            Debug.WriteLine("\r\n" + "Pausing for two seconds..." + "\r\n");
+            Debug.WriteLine("Before pause, Exec state is " + exec.State);
             exec.Stop();
             System.Threading.Thread.Sleep(2000);
-            _Debug.WriteLine("After pause, Exec state is " + exec.State);
-            _Debug.WriteLine("\r\n" + "Resuming..." + "\r\n");
+            Debug.WriteLine("After pause, Exec state is " + exec.State);
+            Debug.WriteLine("\r\n" + "Resuming..." + "\r\n");
             exec.Start();
-            _Debug.WriteLine("Exec state is now " + exec.State);
+            Debug.WriteLine("Exec state is now " + exec.State);
         }
 
         private void PauseAndResumeExec(object obj) {
             System.Threading.Thread.Sleep(1000);
             IExecutive exec = (IExecutive)obj;
-            _Debug.WriteLine("\r\n" + "Pausing for two seconds..." + "\r\n");
-            _Debug.WriteLine("Before pause, Exec state is " + exec.State);
+            Debug.WriteLine("\r\n" + "Pausing for two seconds..." + "\r\n");
+            Debug.WriteLine("Before pause, Exec state is " + exec.State);
             exec.Pause();
             System.Threading.Thread.Sleep(2000);
-            _Debug.WriteLine("After pause, Exec state is " + exec.State);
-            _Debug.WriteLine("\r\n" + "Resuming..." + "\r\n");
+            Debug.WriteLine("After pause, Exec state is " + exec.State);
+            Debug.WriteLine("\r\n" + "Resuming..." + "\r\n");
             exec.Resume();
-            _Debug.WriteLine("Exec state is now " + exec.State);
+            Debug.WriteLine("Exec state is now " + exec.State);
         }
 
         private void SteadyStateEventStream(IExecutive exec, object userData) {
             int evtNum = (int)userData;
             if (evtNum % 20 == 0) {
-                _Debug.WriteLine(evtNum);
+                Debug.WriteLine(evtNum);
             }
             if (evtNum > 0) {
                 evtNum--;
@@ -570,14 +569,14 @@ namespace Highpoint.Sage.SimCore {
 			// initialize validation variables
 			m_error = false;
 			m_validateUnRequest = new ArrayList();
-			_Debug.WriteLine("");
-			_Debug.WriteLine("Start test TestExecutiveUnRequestSelector");
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
+			Debug.WriteLine("Start test TestExecutiveUnRequestSelector");
+			Debug.WriteLine("");
 
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
-				_Debug.WriteLine("Primary requesting event service " + i);
+				Debug.WriteLine("Primary requesting event service " + i);
 				switch (i) {
 					case 1:
 					case 2:
@@ -598,30 +597,30 @@ namespace Highpoint.Sage.SimCore {
 			}
 
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
 			// AEL			exec.UnRequestEvents(new ExecEventSelectorByTargetType(this));
 
 			exec.Start();
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 
             // test validation variable
-            _Debug.Assert(!m_error, "Executive fired a unrequested event");
+            Assert.IsTrue(!m_error, "Executive fired a unrequested event");
 
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 		}
 
         #region TestExecutiveUnRequestSelector() support methods.
         
         public void ExecEventRecieverUnRequestEventReceiver(IExecutive exec, object userData) {
             if (m_validateUnRequest.Contains(userData)) { m_error = true; }
-            _Debug.WriteLine("Primary firing event number" + (int)userData);
+            Debug.WriteLine("Primary firing event number" + (int)userData);
         }
 
         public void ExecEventRecieverUnRequestDelegate(IExecutive exec, object userData) {
             if (m_validateUnRequest.Contains(userData)) { m_error = true; }
-            _Debug.WriteLine("ERROR: Primary firing unrequested event number" + (int)userData);
+            Debug.WriteLine("ERROR: Primary firing unrequested event number" + (int)userData);
         }
         
         #endregion
@@ -641,13 +640,13 @@ namespace Highpoint.Sage.SimCore {
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
-				_Debug.WriteLine("Primary requesting detachable event service for " + when + ", at priority " + priority);
+				Debug.WriteLine("Primary requesting detachable event service for " + when + ", at priority " + priority);
 				exec.RequestEvent(new ExecEventReceiver(TimeSeparatedTask),when,priority,"Task " + i,ExecEventType.Detachable);
 			}
 
 			exec.Start();
 
-			_Debug.WriteLine("\r\n\r\n\r\nNow going to do it again after a 1.5 second pause.\r\n\r\n\r\n");
+			Debug.WriteLine("\r\n\r\n\r\nNow going to do it again after a 1.5 second pause.\r\n\r\n\r\n");
 			System.Threading.Thread.Sleep(1500);
 
 			exec = ExecFactory.Instance.CreateExecutive();
@@ -656,7 +655,7 @@ namespace Highpoint.Sage.SimCore {
 			for ( int i = 0 ; i < NUM_EVENTS ; i++ ) {
 				when = new DateTime(now.Ticks + m_random.Next());
 				priority = m_random.NextDouble();
-				_Debug.WriteLine("Primary requesting detachable event service for " + when + ", at priority " + priority);
+				Debug.WriteLine("Primary requesting detachable event service for " + when + ", at priority " + priority);
 				exec.RequestEvent(new ExecEventReceiver(TimeSeparatedTask),when,priority,"Task " + i,ExecEventType.Detachable);
 			}
 
@@ -787,7 +786,7 @@ namespace Highpoint.Sage.SimCore {
 
             Console.WriteLine(m_result);
 
-            _Debug.Assert(m_result.Equals("16/05/2007 12:34:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:34:56 PM, is about to change.\r\n16/05/2007 12:35:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:35:56 PM, is about to change.\r\n16/05/2007 12:37:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:37:56 PM, is about to change.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:40:56 PM, is about to change.\r\n16/05/2007 12:42:56 PM : Event is firing.\r\n16/05/2007 12:42:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:42:56 PM, is about to change.\r\n16/05/2007 12:44:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:44:56 PM, is about to change.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:47:56 PM, is about to change.\r\n16/05/2007 12:51:56 PM : Event is firing.\r\n"));
+            Assert.IsTrue(m_result.Equals("16/05/2007 12:34:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:34:56 PM, is about to change.\r\n16/05/2007 12:35:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:35:56 PM, is about to change.\r\n16/05/2007 12:37:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:37:56 PM, is about to change.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n16/05/2007 12:40:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:40:56 PM, is about to change.\r\n16/05/2007 12:42:56 PM : Event is firing.\r\n16/05/2007 12:42:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:42:56 PM, is about to change.\r\n16/05/2007 12:44:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:44:56 PM, is about to change.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n16/05/2007 12:47:56 PM : Event is firing.\r\n\tClock, currently at 16/05/2007 12:47:56 PM, is about to change.\r\n16/05/2007 12:51:56 PM : Event is firing.\r\n"));
         }
 
         private string m_result = null;
@@ -915,31 +914,31 @@ namespace Highpoint.Sage.SimCore {
 		private void TimeSeparatedTask(IExecutive exec, object userData){
 			IDetachableEventController dec = exec.CurrentEventController;
 
-			_Debug.WriteLine(exec.Now + " : " + userData.ToString() + " performing initialization of detachable task on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
+			Debug.WriteLine(exec.Now + " : " + userData.ToString() + " performing initialization of detachable task on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
 
 			while ( m_random.Next(3) < 2 ) {
 
 				DateTime when = exec.Now+TimeSpan.FromDays(1.5);
 
-				_Debug.WriteLine("Suspending task until " + when);
+				Debug.WriteLine("Suspending task until " + when);
 
 				dec.SuspendUntil(when);
 
-				_Debug.WriteLine(exec.Now + " : " + userData.ToString() + " performing continuation of detachable task on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
+				Debug.WriteLine(exec.Now + " : " + userData.ToString() + " performing continuation of detachable task on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
 			}
 		}
 
 		private void MyExecEventReceiver(IExecutive exec, object userData){
 			if ( m_random.NextDouble() > .15 ) {
 				DateTime when = new DateTime(exec.Now.Ticks + m_random.Next());
-				_Debug.WriteLine("Secondary requesting event service for " + when + ".");
+				Debug.WriteLine("Secondary requesting event service for " + when + ".");
 				exec.RequestEvent(new ExecEventReceiver(MyExecEventReceiver),when,m_random.NextDouble(),null,m_execEventType);
 			}
 
-			_Debug.WriteLine("Running event at time " + exec.Now + ", and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
+			Debug.WriteLine("Running event at time " + exec.Now + ", and priority level " + exec.CurrentPriorityLevel + " on thread " + System.Threading.Thread.CurrentThread.GetHashCode());
 
 			//if ( m_random.NextDouble() < .05 ) {
-			//    _Debug.WriteLine("Putting task to sleep at time " + exec.Now + ".");
+			//    Debug.WriteLine("Putting task to sleep at time " + exec.Now + ".");
 			//Thread.CurrentThread.Suspend();
 			//    Thread.Sleep(1000);
 			//}
@@ -960,7 +959,7 @@ namespace Highpoint.Sage.SimCore {
 
 		public void ExecEventRecieverUnRequestEventReceiver(IExecutive exec, object userData) {
 			if (m_validateUnRequest.Contains(userData)) {m_error = true;}
-			_Debug.WriteLine("ERROR: Primary firing unrequested event number" + (int)userData);
+			Debug.WriteLine("ERROR: Primary firing unrequested event number" + (int)userData);
 		}
 
 	}

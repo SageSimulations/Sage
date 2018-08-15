@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Utility;
 
@@ -15,7 +15,7 @@ namespace SageTestLib {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		string[] testTimes = new string[]{"9/1/1998 12:00:00 AM",
@@ -110,7 +110,7 @@ namespace SageTestLib {
 				while ( heap.Count > 0 ) {
 					IComparable thisValRead = heap.Dequeue();
 					int comparisonVal = lastValRead.CompareTo(thisValRead);
-                    _Debug.Assert(((comparisonVal == ((int)direction)) || ( comparisonVal == 0 ) ),"Heap Test","Heap test failed.");
+                    Assert.IsTrue(((comparisonVal == ((int)direction)) || ( comparisonVal == 0 ) ),"Heap Test","Heap test failed.");
 					if ( testNum < 10 ) Console.WriteLine("Dequeueing " + lastValRead);
 					lastValRead = thisValRead;
 				}

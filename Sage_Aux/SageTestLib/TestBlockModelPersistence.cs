@@ -1,6 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
-using _Debug = System.Diagnostics.Debug;
+
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 
@@ -17,7 +18,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
         }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
         #endregion
 

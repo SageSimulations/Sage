@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 #if WORKFLOW_INCLUDED
 
-using _Debug = System.Diagnostics.Debug;
 
 using System;
 using System.Diagnostics;
@@ -149,7 +148,7 @@ namespace Highpoint.Sage.Workflow {
         }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
         #endregion
 

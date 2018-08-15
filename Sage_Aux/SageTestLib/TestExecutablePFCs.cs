@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
-using _Debug = System.Diagnostics.Debug;
 using System.Text;
 using Highpoint.Sage.Utility;
 
@@ -19,7 +18,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         public void Init() { }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
 
         /// <summary>

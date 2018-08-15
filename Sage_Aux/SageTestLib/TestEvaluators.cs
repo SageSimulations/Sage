@@ -1,9 +1,10 @@
 /* This source code licensed under the GNU Affero General Public License */
 
+using System.Diagnostics;
+
 namespace Highpoint.Sage.SimCore {
 	using System;
-	using _Debug = System.Diagnostics.Debug;
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+		using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 	/// <summary>
     /// Summary description for EvaluatorTester.
@@ -17,7 +18,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
 		[TestMethod]
@@ -26,7 +27,7 @@ namespace Highpoint.Sage.SimCore {
 			Evaluator eval = EvaluatorFactory.CreateEvaluator("double x = y + z;","x",new string[]{"y","z"});
 
 
-            _Debug.Assert(((double)eval(3.0,4.0)) == 7.0,"Evaluator did not return the proper value.");
+            Assert.IsTrue(((double)eval(3.0,4.0)) == 7.0,"Evaluator did not return the proper value.");
 			Console.WriteLine(eval(3.0,4.0));
 		}
 	}

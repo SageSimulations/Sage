@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 
@@ -20,7 +20,7 @@ namespace Highpoint.Sage.Resources  {
 		public void Init() {}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -53,7 +53,7 @@ namespace Highpoint.Sage.Resources  {
 			new PriRscReqTester(5).Start();
             //Console.WriteLine(m_resultString);
 
-            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+            Assert.IsTrue(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
 		
@@ -89,7 +89,7 @@ namespace Highpoint.Sage.Resources  {
 			m_prt.Start();
             //Console.WriteLine(m_resultString);
 
-            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+            Assert.IsTrue(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
         private string StripCRLF(string structureString) => structureString.Replace("\r", "").Replace("\n", "");
 
@@ -125,7 +125,7 @@ namespace Highpoint.Sage.Resources  {
 			m_prt.Start();
             //Console.WriteLine(m_resultString);
 
-            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
+            Assert.IsTrue(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
 		[TestMethod]
@@ -154,7 +154,7 @@ namespace Highpoint.Sage.Resources  {
 			m_resultString = "";
 			m_prt.Start();
             //Console.WriteLine(m_resultString);
-            _Debug.Assert(StripCRLF(m_resultString).Equals(StripCRLF(expected)), "TestPrioritizedResourceRequestWRemoval_2", "Results didn't match!");
+            Assert.IsTrue(StripCRLF(m_resultString).Equals(StripCRLF(expected)), "TestPrioritizedResourceRequestWRemoval_2", "Results didn't match!");
 		}
 
 		private void Model_Starting(IModel theModel) {

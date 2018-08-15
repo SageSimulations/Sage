@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using _Debug = System.Diagnostics.Debug;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.Utility;
 
@@ -65,7 +65,7 @@ namespace Highpoint.Sage.Scheduling {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -75,9 +75,9 @@ namespace Highpoint.Sage.Scheduling {
 			TimePeriod tpA=null;
 			TimePeriod tpB=null;
 			foreach ( TimePeriod.Relationship relationship in m_relationships ) {
-				_Debug.WriteLine("************************************************************************");
-				_Debug.WriteLine("          A " + relationship.ToString() + " B.");
-				_Debug.WriteLine("************************************************************************");
+				Debug.WriteLine("************************************************************************");
+				Debug.WriteLine("          A " + relationship.ToString() + " B.");
+				Debug.WriteLine("************************************************************************");
 				foreach ( TimeSpan slack in new TimeSpan[]{FiveMinutes,TenMinutes,TwentyMinutes} ){
 					foreach ( TimePeriodPart moveWhichPart in new TimePeriodPart[]{TimePeriodPart.StartTime,TimePeriodPart.EndTime}){ 
 						foreach ( string ofWhich in new string[]{"A","B"}) {
@@ -107,14 +107,14 @@ namespace Highpoint.Sage.Scheduling {
 
 	        if (CONSOLE_OUTPUT)
 	        {
-                _Debug.WriteLine("           ....*....|....*....|....*....|....*....|....*....|");
+                Debug.WriteLine("           ....*....|....*....|....*....|....*....|....*....|");
                 A = "Initial A : ";
                 spaces = (int)((TimeSpan)(tpA.StartTime - left)).TotalMinutes;
                 width = (int)tpA.Duration.TotalMinutes;
                 for (int i = 0; i < spaces; i++) A += " ";
                 for (int i = 0; i < width; i++) A += "a";
                 for (int i = (spaces + width); i < 50; i++) A += " ";
-                _Debug.WriteLine(A + tpA.ToString());
+                Debug.WriteLine(A + tpA.ToString());
 
 
                 B = "Initial B : ";
@@ -123,9 +123,9 @@ namespace Highpoint.Sage.Scheduling {
                 for (int i = 0; i < spaces; i++) B += " ";
                 for (int i = 0; i < width; i++) B += "b";
                 for (int i = (spaces + width); i < 50; i++) B += " ";
-                _Debug.WriteLine(B + tpB.ToString());
+                Debug.WriteLine(B + tpB.ToString());
 
-                _Debug.WriteLine("We'll move " + ofWhich + "." + moveWhichPart.ToString() + " by " + byHowMuch.ToString() + "...");
+                Debug.WriteLine("We'll move " + ofWhich + "." + moveWhichPart.ToString() + " by " + byHowMuch.ToString() + "...");
             }
 
 	        int selector = 0;
@@ -175,7 +175,7 @@ namespace Highpoint.Sage.Scheduling {
 	            for (int i = 0; i < spaces; i++) A += " ";
 	            for (int i = 0; i < width; i++) A += "A";
 	            for (int i = (spaces + width); i < 50; i++) A += " ";
-	            _Debug.WriteLine(A + tpA.ToString());
+	            Debug.WriteLine(A + tpA.ToString());
 
 	            B = "Final B   : ";
 	            spaces = (int) ((TimeSpan) (tpB.StartTime - left)).TotalMinutes;
@@ -183,7 +183,7 @@ namespace Highpoint.Sage.Scheduling {
 	            for (int i = 0; i < spaces; i++) B += " ";
 	            for (int i = 0; i < width; i++) B += "B";
 	            for (int i = (spaces + width); i < 50; i++) B += " ";
-	            _Debug.WriteLine(B + tpB.ToString());
+	            Debug.WriteLine(B + tpB.ToString());
 	        }
 
 	        foreach ( TimePeriod tp in new TimePeriod[]{tpA,tpB} ){

@@ -1,12 +1,12 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using _Debug = System.Diagnostics.Debug;
 using Highpoint.Sage.ItemBased.Ports;
 using Highpoint.Sage.ItemBased.Connectors;
 using Highpoint.Sage.SimCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Highpoint.Sage.ItemBased.Blocks {
 
@@ -40,10 +40,10 @@ namespace Highpoint.Sage.ItemBased.Blocks {
             }
 
             m_blocks[0].In.Put("Random string");
-            _Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Peek(null));
+            Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Peek(null));
 
 
-            _Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Take(null));
+            Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Take(null));
         }
 
         [TestMethod]
@@ -51,9 +51,9 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
             SimpleProxyPortOwner sppo = new SimpleProxyPortOwner(m_model, "Proxy", Guid.NewGuid());
             sppo.In.Put("Random string");
-            _Debug.WriteLine(sppo.Out.Peek(null));
+            Debug.WriteLine(sppo.Out.Peek(null));
 
-            _Debug.WriteLine(sppo.Out.Take(null));
+            Debug.WriteLine(sppo.Out.Take(null));
         }
     }
 
@@ -409,11 +409,11 @@ namespace Highpoint.Sage.ItemBased.Blocks {
         }
 
         private bool OnDataArrived(object data,IInputPort ip){
-            _Debug.Write(Name + " was just given data (" + data.ToString() + ")");
+            Debug.Write(Name + " was just given data (" + data.ToString() + ")");
             if ( In.Peer != null ) {
-                _Debug.WriteLine(" by " + ( (IHasName)In.Peer.Owner ).Name);
+                Debug.WriteLine(" by " + ( (IHasName)In.Peer.Owner ).Name);
             } else {
-                _Debug.WriteLine(" by some non-connected element.");
+                Debug.WriteLine(" by some non-connected element.");
             }
 
             m_buffer = data;
@@ -427,19 +427,19 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         private object OnDataRequested(IOutputPort op, object selector) {
 
-            _Debug.Write(Name + " was just asked for data by ");
+            Debug.Write(Name + " was just asked for data by ");
             if ( Out.Peer != null ) {
-                _Debug.WriteLine(((IHasName)Out.Peer.Owner).Name);
+                Debug.WriteLine(((IHasName)Out.Peer.Owner).Name);
             } else {
-                _Debug.WriteLine("some non-connected element.");
+                Debug.WriteLine("some non-connected element.");
             }
             
             if ( m_in.Peer != null ) {
-                _Debug.WriteLine("I will ask " + ( (IHasName)In.Peer.Owner ).Name + "...");
+                Debug.WriteLine("I will ask " + ( (IHasName)In.Peer.Owner ).Name + "...");
                 return m_in.OwnerTake(null);
             } else {
                 string data = RandomString();
-                _Debug.WriteLine("Since I have no predecessor, I'll make up some data. How about " + data + "...");
+                Debug.WriteLine("Since I have no predecessor, I'll make up some data. How about " + data + "...");
                 return data;
             }
         }

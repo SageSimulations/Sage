@@ -1,6 +1,5 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Highpoint.Sage.SimCore;
 using System.Xml;
@@ -401,7 +400,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
             structureString = PfcDiagnostics.GetStructure(pfc);
             Console.WriteLine("Structure is \r\n" + structureString);
-            _Debug.Assert(structureString.Equals("{START-->[L_000(SFC 1.Root)]-->T_000}\r\n{T_000-->[L_002(SFC 1.Root)]-->STEP_1}\r\n{STEP_1-->[L_003(SFC 1.Root)]-->T_001}\r\n{T_001-->[L_004(SFC 1.Root)]-->FINISH}\r\n"));
+            Assert.IsTrue(structureString.Equals("{START-->[L_000(SFC 1.Root)]-->T_000}\r\n{T_000-->[L_002(SFC 1.Root)]-->STEP_1}\r\n{STEP_1-->[L_003(SFC 1.Root)]-->T_001}\r\n{T_001-->[L_004(SFC 1.Root)]-->FINISH}\r\n"));
 
         }
 
@@ -557,7 +556,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
             string result = PfcDiagnostics.GetStructure(pfc);
             Console.WriteLine(result);
-            _Debug.Assert(result.Equals("{START-->[L_000(SFC 1.Root)]-->T1}\r\n{T1-->[L_001(SFC 1.Root)]-->STEP1}\r\n{STEP1-->[L_003(SFC 1.Root)]-->T3}\r\n{T2-->[L_004(SFC 1.Root)]-->STEP1}\r\n{T3-->[L_005(SFC 1.Root)]-->FINISH}\r\n{STEP2-->[L_006(SFC 1.Root)]-->T2}\r\n{STEP1-->[L_007(SFC 1.Root)]-->T4}\r\n{T4-->[L_008(SFC 1.Root)]-->STEP2}\r\n"));
+            Assert.IsTrue(result.Equals("{START-->[L_000(SFC 1.Root)]-->T1}\r\n{T1-->[L_001(SFC 1.Root)]-->STEP1}\r\n{STEP1-->[L_003(SFC 1.Root)]-->T3}\r\n{T2-->[L_004(SFC 1.Root)]-->STEP1}\r\n{T3-->[L_005(SFC 1.Root)]-->FINISH}\r\n{STEP2-->[L_006(SFC 1.Root)]-->T2}\r\n{STEP1-->[L_007(SFC 1.Root)]-->T4}\r\n{T4-->[L_008(SFC 1.Root)]-->STEP2}\r\n"));
 
 
         }
