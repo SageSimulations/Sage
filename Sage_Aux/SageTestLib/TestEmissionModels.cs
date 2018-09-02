@@ -38,8 +38,7 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureIn = new Hashtable();
 
-            string devRoot = Environment.GetEnvironmentVariable("SAGE_ROOT");
-            Assert.IsNotNull(devRoot, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
+            string devRoot = SageTestLib.Utility.SAGE_ROOT;
 
             TEST_FILE = devRoot + @"\Sage_Aux\SageTesting\emissionTest_12345-10.xml";
             PROP_FILE = devRoot + @"\Sage_Aux\SageTesting\PureComponentProperties.csv";

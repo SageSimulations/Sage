@@ -300,6 +300,7 @@
     <Compile Include="TestXmlSerialization.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SageTesting\app.config">

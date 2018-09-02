@@ -30,8 +30,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureInPascals = new Hashtable();
 
-            string filename = Environment.GetEnvironmentVariable("SAGE_ROOT");
-            Assert.IsNotNull(filename, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
+		    string filename = SageTestLib.Utility.SAGE_ROOT;
 
             filename += @"\Sage_Aux\SageTesting\PureComponentProperties.csv";
 

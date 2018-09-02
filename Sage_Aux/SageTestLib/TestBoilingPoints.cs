@@ -21,10 +21,7 @@ namespace SchedulerDemoMaterial {
 		public void Init() {
 			m_brs = new BasicReactionSupporter();
 
-			string filename = Environment.GetEnvironmentVariable("SAGE_ROOT");
-            Assert.IsNotNull(filename, "environment variable \"SAGE_ROOT\" must point to the directory with the Sage solution files.");
-		    Assert.IsTrue(Directory.Exists(filename),
-		        string.Format("environment variable \"SAGE_ROOT\" points to nonexistent directory " + filename));
+			string filename =  SageTestLib.Utility.SAGE_ROOT;
 
             filename += @"\Sage_Aux\SageTesting\PureComponentProperties.csv";
 
