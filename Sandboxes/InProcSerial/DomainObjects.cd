@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ModelRunner.FulfillmentCenter">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="ModelRunner.FulfillmentCenter.DataLogger" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Domain\FulfillmentCenter.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ASAAAAEEBAAAgAAAAAAAiIEAAAAAACAQAAAgAAAIAAA=</HashCode>
+      <FileName>Domain\FulfillmentCenter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelRunner.MarketSegment">
+    <Position X="13.25" Y="1" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAAEAAABQAAAAAgCAAQAAABAAAAQAAABBAAAAAAAAA=</HashCode>
+      <FileName>Domain\MarketSegment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelRunner.Replenisher">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAEgAABIAAAAAAAAAAAACgAAAAAAA=</HashCode>
+      <FileName>Domain\Replenisher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelRunner.Shipment">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAEAAAAABAA=</HashCode>
+      <FileName>Domain\Types\Shipment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelRunner.ModelConstants" Collapsed="true">
+    <Position X="1.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AkAwAggAQAAAACAAAEEDQAAAKAABAAACAAQAAIAAAgA=</HashCode>
+      <FileName>ModelConstants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelRunner.Program" Collapsed="true">
+    <Position X="1.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAEAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ModelRunner.Order">
+    <Position X="11.25" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAEAkAAAAAA=</HashCode>
+      <FileName>Domain\Types\Order.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ModelRunner.Range&lt;T&gt;" Collapsed="true">
+    <Position X="1.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Types\Range.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ModelRunner.SKU" Collapsed="true">
+    <Position X="6.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAQAAAAAAAAAAAQAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Domain\Types\SKU.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ModelRunner.Stock">
+    <Position X="9.25" Y="4" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAACAAAAEAAgAAARAA=</HashCode>
+      <FileName>Domain\Types\Stock.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ModelRunner.TimeSpanRange" Collapsed="true">
+    <Position X="1.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Types\Range.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="ModelRunner.AllocationStrategy" Collapsed="true">
+    <Position X="1.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Types\AllocationStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

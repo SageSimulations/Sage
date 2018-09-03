@@ -396,7 +396,7 @@ namespace Highpoint.Sage.SimCore.Parallel
                             {
                                 m_pastEvents.Add(m_currentEvent, m_currentEvent.When);
                             }
-                            catch (ArgumentException ae)
+                            catch (ArgumentException /*ae*/)
                             {
                                 Console.WriteLine("Past Events given an event it's already seen. {0} future events.",
                                     m_futureEvents.Count);
@@ -868,9 +868,11 @@ namespace Highpoint.Sage.SimCore.Parallel
             }
         }
 
+#pragma warning disable 67
         public event ExecutiveEvent ExecutivePaused;
         public event ExecutiveEvent ExecutiveResumed;
         public event ExecutiveEvent ExecutiveAborted;
+#pragma warning restore
         public event ExecutiveEvent ClockAboutToChange;
 
         #endregion

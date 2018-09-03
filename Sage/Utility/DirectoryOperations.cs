@@ -15,11 +15,13 @@ namespace Highpoint.Sage.Utility {
         /// <returns>
         /// The full path name, ending in the DirectorySeparatorChar.
         /// </returns>
-        public static string GetAppDataDir(string subDir = null) {
-            string moduleName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-            moduleName = moduleName.Substring(moduleName.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+        public static string GetAppDataDir(string subDir = null)
+        {
+            //string moduleName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            //moduleName = moduleName.Substring(moduleName.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            string retval = folderPath + Path.DirectorySeparatorChar + moduleName + Path.DirectorySeparatorChar;
+            //string retval = folderPath + Path.DirectorySeparatorChar + moduleName + Path.DirectorySeparatorChar;
+            string retval = folderPath + Path.DirectorySeparatorChar;
             if (!string.IsNullOrEmpty(subDir)) {
                 subDir = subDir.Trim(new char[] { Path.DirectorySeparatorChar });
                 retval = retval + subDir + Path.DirectorySeparatorChar;

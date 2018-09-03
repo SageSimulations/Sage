@@ -765,10 +765,13 @@ namespace Highpoint.Sage.SimCore {
         public IDetachableEventController CurrentEventController { get; }
         public ArrayList LiveDetachableEvents { get; }
 
+#pragma warning disable 67
         public event ExecutiveEvent ExecutivePaused;
         public event ExecutiveEvent ExecutiveResumed;
         public event ExecutiveEvent ExecutiveAborted;
+#pragma warning restore 67
         public event ExecutiveEvent ClockAboutToChange;
+
         #endregion
 
     }

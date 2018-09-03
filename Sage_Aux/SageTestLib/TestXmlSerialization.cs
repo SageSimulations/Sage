@@ -34,7 +34,6 @@ namespace Highpoint.Sage.Persistence {
 			mto.Child1.Child2 = mto2;
 
 			xsc.StoreObject("MTO",mto);
-
 			xsc.Save(Highpoint.Sage.Utility.DirectoryOperations.GetAppDataDir() + "foo.xml");
 
 			xsc.Reset();
