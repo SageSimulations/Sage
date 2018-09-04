@@ -1,8 +1,8 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Highpoint.Sage.Materials.Chemistry;
@@ -56,7 +56,7 @@ namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod] 

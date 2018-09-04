@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 #region COMMENTED OUT WHILE WORKFLOW PARAMETERS ARE COMMENTED OUT.
 #if NOT_DEFINED
-using _Debug = System.Diagnostics.Debug;
 
 using System;
 using System.Diagnostics;
@@ -33,7 +32,7 @@ namespace Highpoint.Sage.Workflow {
         }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
         #endregion
 

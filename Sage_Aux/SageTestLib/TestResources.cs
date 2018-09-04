@@ -1,10 +1,10 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Highpoint.Sage.Materials.Chemistry;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
-using _Debug = System.Diagnostics.Debug;
 
 
 namespace Highpoint.Sage.Resources  {
@@ -19,7 +19,7 @@ namespace Highpoint.Sage.Resources  {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -39,50 +39,50 @@ namespace Highpoint.Sage.Resources  {
 				if ( steamSystem.Reserve(requests[i],false) ){
 					double obtained = requests[i].QuantityObtained;
 					double remaining = requests[i].ResourceObtained.Available;
-					_Debug.WriteLine("Successfully reserved " + obtained + " pounds of steam - " + remaining + " remains.");
+					Debug.WriteLine("Successfully reserved " + obtained + " pounds of steam - " + remaining + " remains.");
 				} else {
-					_Debug.WriteLine("Failed to reserve steam for request["+i+"]");
+					Debug.WriteLine("Failed to reserve steam for request["+i+"]");
 				}
 			}
 
-			_Debug.WriteLine("Unreserving steam from 2 requests");
+			Debug.WriteLine("Unreserving steam from 2 requests");
 			steamSystem.Unreserve(requests[2]);
 			double available = steamSystem.Available;
-			_Debug.WriteLine("Successfully unreserved steam - " + available + " available.");
+			Debug.WriteLine("Successfully unreserved steam - " + available + " available.");
 
 			steamSystem.Unreserve(requests[3]);
 			available = steamSystem.Available;
-			_Debug.WriteLine("Successfully unreserved steam - " + available + " available.");
+			Debug.WriteLine("Successfully unreserved steam - " + available + " available.");
 
 			for ( int i = 5; i < 7 ; i++ ) {
 				if ( steamSystem.Reserve(requests[i],false) ){
 					double obtained = requests[i].QuantityObtained;
 					double remaining = requests[i].ResourceObtained.Available;
-					_Debug.WriteLine("Successfully reserved " + obtained + " pounds of steam - " + remaining + " remains.");
+					Debug.WriteLine("Successfully reserved " + obtained + " pounds of steam - " + remaining + " remains.");
 				} else {
-					_Debug.WriteLine("Failed to acquire steam for request["+i+"]");
+					Debug.WriteLine("Failed to acquire steam for request["+i+"]");
 				}
 			}
 
 
-			_Debug.WriteLine("Unreserving all steam requests - ");
+			Debug.WriteLine("Unreserving all steam requests - ");
 			for ( int i = 0; i < 7 ; i++ ) steamSystem.Unreserve(requests[i]);
 			available = steamSystem.Available;
-			_Debug.WriteLine("Successfully unreserved steam - " + available + " available.");
+			Debug.WriteLine("Successfully unreserved steam - " + available + " available.");
 
 			// AEL, bug "Reserve a resource over an existing one" submitted.
-//			_Debug.WriteLine("Trying to acquire all steam requests - ");
+//			Debug.WriteLine("Trying to acquire all steam requests - ");
 //			for ( int i = 0; i < 7 ; i++ ) {
 //				if ( steamSystem.Acquire(requests[i],false) ){
 //					double obtained = requests[i].QuantityObtained;
 //					double remaining = requests[i].ResourceObtained.Available;
-//					_Debug.WriteLine("Successfully acquired " + obtained + " pounds of steam - " + remaining + " remains.");
+//					Debug.WriteLine("Successfully acquired " + obtained + " pounds of steam - " + remaining + " remains.");
 //				} else {
-//					_Debug.WriteLine("Failed to acquire steam for request["+i+"]");
+//					Debug.WriteLine("Failed to acquire steam for request["+i+"]");
 //				}
 //			}
 //
-//			_Debug.WriteLine("Releasing 2 steam requests ");
+//			Debug.WriteLine("Releasing 2 steam requests ");
 //			steamSystem.Release(requests[1]);
 //			steamSystem.Release(requests[4]);
 //
@@ -90,13 +90,13 @@ namespace Highpoint.Sage.Resources  {
 //				if ( steamSystem.Acquire(requests[i],false) ){
 //					double obtained = requests[i].QuantityObtained;
 //					double remaining = requests[i].ResourceObtained.Available;
-//					_Debug.WriteLine("Successfully acquired " + obtained + " pounds of steam - " + remaining + " remains.");
+//					Debug.WriteLine("Successfully acquired " + obtained + " pounds of steam - " + remaining + " remains.");
 //				} else {
-//					_Debug.WriteLine("Failed to acquire steam for request["+i+"]");
+//					Debug.WriteLine("Failed to acquire steam for request["+i+"]");
 //				}
 //			}
 
-			_Debug.WriteLine("Releasing all steam requests - ");
+			Debug.WriteLine("Releasing all steam requests - ");
 			for ( int i = 0; i < 7 ; i++ ) steamSystem.Release(requests[i]);
 
 			//model.Validate();
@@ -110,15 +110,15 @@ namespace Highpoint.Sage.Resources  {
 		public void TestConsumableResourceBasics(){
 
 			Model model = new Model("Resource Testing Model...");
-			_Debug.WriteLine("Test results of replenishable material inventories.");
+			Debug.WriteLine("Test results of replenishable material inventories.");
 
 			Hashtable materialInventory = new Hashtable();
 
-			_Debug.WriteLine("Setting up an inventory of 500 liters Water, capacity of 1000 liters.");
+			Debug.WriteLine("Setting up an inventory of 500 liters Water, capacity of 1000 liters.");
 			MaterialType waterType = new MaterialType(model,"Water",Guid.NewGuid(),1.0,1.0,MaterialState.Liquid,18.0);
 			MaterialResourceItem waterItem = new MaterialResourceItem(model,waterType,500,20,1000);
 
-			_Debug.WriteLine("Setting up an inventory of 100 liters SodiumChloride, capacity of 250 liters.");
+			Debug.WriteLine("Setting up an inventory of 100 liters SodiumChloride, capacity of 250 liters.");
 			MaterialType NaClType = new MaterialType(model,"SodiumChloride",Guid.NewGuid(),1.2,1.8,MaterialState.Liquid);
 			MaterialResourceItem NaClItem = new MaterialResourceItem(model,NaClType,100,20,250);
 
@@ -139,7 +139,7 @@ namespace Highpoint.Sage.Resources  {
 											   ,{NaClType,250,deplete,false}
 											   ,{NaClType,1000,augment,false}};
 			MaterialResourceRequest mrr;
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 			for ( int i = 0 ; i < tests.GetLength(0) ; i++ ) {
 
 				#region >>> Set up test parameters from array. <<<
@@ -152,17 +152,17 @@ namespace Highpoint.Sage.Resources  {
 				#endregion
 
 				string testDescription = "Test " + (i+1) + ": Trying to " + (direction.Equals(augment)?"augment":"deplete") + " " + quantity + " liters of " + itemName + ".";
-				_Debug.WriteLine(testDescription);
-				_Debug.WriteLine("Before - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
+				Debug.WriteLine(testDescription);
+				Debug.WriteLine("Before - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
 				mrr = new MaterialResourceRequest(mt,quantity,direction);
 				MaterialResourceItem mri = (MaterialResourceItem)materialInventory[mt];
 				bool result = mri.Acquire(mrr,false);
-                _Debug.Write((result?"Request honored.":"Request denied."));
-                _Debug.Assert(result==expected,"This test is a failure");
-				_Debug.WriteLine(((result==expected)?" - this was expected.":" - THIS IS A TEST FAILURE!" )) ;
-                _Debug.Assert(expected==result,testDescription); 
-				_Debug.WriteLine("After - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
-				_Debug.WriteLine("");
+                Debug.Write((result?"Request honored.":"Request denied."));
+                Assert.IsTrue(result==expected,"This test is a failure");
+				Debug.WriteLine(((result==expected)?" - this was expected.":" - THIS IS A TEST FAILURE!" )) ;
+                Assert.IsTrue(expected==result,testDescription); 
+				Debug.WriteLine("After - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
+				Debug.WriteLine("");
 			}
 
 		}
@@ -172,7 +172,7 @@ namespace Highpoint.Sage.Resources  {
 		public void TestMaterialConduits(){
 
 			Model model = new Model("Conduit Testing Model...");
-			_Debug.WriteLine("Test results of replenishable material inventories.");
+			Debug.WriteLine("Test results of replenishable material inventories.");
 
 			Hashtable materialInventory1 = new Hashtable();
 			Hashtable materialInventory2 = new Hashtable();
@@ -182,16 +182,16 @@ namespace Highpoint.Sage.Resources  {
 			MaterialResourceItem WaterItem = new MaterialResourceItem(model,WaterType,500,20,1000);
 			MaterialResourceItem NaClItem  = new MaterialResourceItem(model,NaClType,100,20,250);
 
-			_Debug.WriteLine("Setting up an inventory of 500 liters Water, capacity of 1000 liters in materialInventory1.");
+			Debug.WriteLine("Setting up an inventory of 500 liters Water, capacity of 1000 liters in materialInventory1.");
 			materialInventory1.Add(WaterType,WaterItem);
 
-			_Debug.WriteLine("Setting up an inventory of 100 liters SodiumChloride, capacity of 250 liters in materialInventory1.");
+			Debug.WriteLine("Setting up an inventory of 100 liters SodiumChloride, capacity of 250 liters in materialInventory1.");
 			materialInventory1.Add(NaClType,NaClItem);
 
-			_Debug.WriteLine("Setting up an inventory of 750 liters Water, capacity of 1500 liters in materialInventory2.");
+			Debug.WriteLine("Setting up an inventory of 750 liters Water, capacity of 1500 liters in materialInventory2.");
 			materialInventory2.Add(WaterType,new MaterialResourceItem(model,WaterType,750,20,1500));
 
-			_Debug.WriteLine("Setting up an inventory of 400 liters SodiumChloride, capacity of 800 liters in materialInventory3.");
+			Debug.WriteLine("Setting up an inventory of 400 liters SodiumChloride, capacity of 800 liters in materialInventory3.");
 			materialInventory3.Add(NaClType,new MaterialResourceItem(model,NaClType,400,20,800));
 
 			// AEL, not sure why thest lines don't matter in the test. I probably miss something.
@@ -213,7 +213,7 @@ namespace Highpoint.Sage.Resources  {
 											   ,{NaClType,250,deplete,false}
 											   ,{NaClType,1000,augment,false}};
 			MaterialResourceRequest mrr;
-			_Debug.WriteLine("");
+			Debug.WriteLine("");
 			for ( int i = 0 ; i < tests.GetLength(0) ; i++ ) {
 
 				#region >>> Set up test parameters from array. <<<
@@ -226,17 +226,17 @@ namespace Highpoint.Sage.Resources  {
 				#endregion
 
 				string testDescription = "Test " + (i+1) + ": Trying to " + (direction.Equals(augment)?"augment":"deplete") + " " + quantity + " liters of " + itemName + ".";
-				_Debug.WriteLine(testDescription);
-				_Debug.WriteLine("Before - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
+				Debug.WriteLine(testDescription);
+				Debug.WriteLine("Before - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
 				mrr = new MaterialResourceRequest(mt,quantity,direction);
 				MaterialResourceItem mri = (MaterialResourceItem)materialInventory1[mt];
 				bool result = mri.Acquire(mrr,false);
-                _Debug.Write((result?"Request honored.":"Request denied."));
-                _Debug.Assert(result==expected,"This test is a failure");
-				_Debug.WriteLine(((result==expected)?" - this was expected.":" - THIS IS A TEST FAILURE!" )) ;
-                _Debug.Assert(result==expected,testDescription);
-				_Debug.WriteLine("After - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
-				_Debug.WriteLine("");
+                Debug.Write((result?"Request honored.":"Request denied."));
+                Assert.IsTrue(result==expected,"This test is a failure");
+				Debug.WriteLine(((result==expected)?" - this was expected.":" - THIS IS A TEST FAILURE!" )) ;
+                Assert.IsTrue(result==expected,testDescription);
+				Debug.WriteLine("After - " + itemName + " has " + item.Available + " liters, and a capacity of " + item.Capacity + ".");
+				Debug.WriteLine("");
 			}
 
 		}
@@ -266,13 +266,13 @@ namespace Highpoint.Sage.Resources  {
 			rr.Key = genericAccessKey;
 
 			rscPool1.Acquire(rr,false); // This should succeed.
-			_Debug.WriteLine(rr.ResourceObtained==null?"Resource not obtained.":"Resource obtained.");
+			Debug.WriteLine(rr.ResourceObtained==null?"Resource not obtained.":"Resource obtained.");
 			rr.Release();
 
 			// Now change the key to 'just an object' - i.e. one that the AccessManager doesn't recognize.
 			rr.Key = new object();
 			rscPool1.Acquire(rr,false); // This should fail.
-			_Debug.WriteLine(rr.ResourceObtained==null?"Resource not obtained":"Resource obtained.");
+			Debug.WriteLine(rr.ResourceObtained==null?"Resource not obtained":"Resource obtained.");
 
 
 		}
@@ -342,7 +342,7 @@ namespace Highpoint.Sage.Resources  {
 				if ( expectSuccess ) rsc.Release(irr);
 				Console.WriteLine("Sub-test passed : " + result );
 			} else {
-                _Debug.Assert(false,"Access Regulation","Sub-test failed : " + result);
+                Assert.IsTrue(false,"Access Regulation","Sub-test failed : " + result);
 			}
 		}
 

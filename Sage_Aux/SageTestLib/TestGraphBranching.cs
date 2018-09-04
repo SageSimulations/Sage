@@ -1,10 +1,10 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System.Collections;
+using System.Diagnostics;
 using Highpoint.Sage.Graphs.Tasks;
 using Highpoint.Sage.SimCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using _Debug = System.Diagnostics.Debug;
 
 
 namespace Highpoint.Sage.Graphs {
@@ -21,7 +21,7 @@ namespace Highpoint.Sage.Graphs {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		#endregion
 
@@ -58,7 +58,7 @@ namespace Highpoint.Sage.Graphs {
 
 			model.Start();
 
-            _Debug.Assert(loopResult.Equals(m_out.ToString()), "LoopingTester Results", "Looping tester failed to match expected results.");
+            Assert.IsTrue(loopResult.Equals(m_out.ToString()), "LoopingTester Results", "Looping tester failed to match expected results.");
 
 		}
 
@@ -90,7 +90,7 @@ namespace Highpoint.Sage.Graphs {
 			
 			model.Start();
 
-            _Debug.Assert(branchResult.Equals(m_out.ToString()),"BranchingTester Results","Branching tester failed to match expected results.");
+            Assert.IsTrue(branchResult.Equals(m_out.ToString()),"BranchingTester Results","Branching tester failed to match expected results.");
 		}
 
 		private void CreateLoopback(IModel model, Vertex from, Vertex to, object channelMarker, int howManyTimes){

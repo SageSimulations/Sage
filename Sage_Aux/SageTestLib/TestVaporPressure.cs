@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 
 		[TestCleanup]
 		public void Destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
 		
@@ -88,8 +88,8 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 				double svp = (double)m_computedVaporPressureInPascals[mt.Name];
 				double pctError = Math.Abs(vp-svp)/Math.Max(vp,svp);
 				string msg = string.Format("Computed VP({0}) at {1:F2} deg C was {2:F2}, refData was {3:F2}, for a {4:F2} percent error.",mt.Name,temperature,vp,svp,pctError*100);
-				_Debug.WriteLine(msg);
-                _Debug.Assert(pctError < 0.01,"Vapor Pressure",mt.Name + " Vapor Pressure at " + temperature + " deg C == " + svp + " Pascals");
+				Debug.WriteLine(msg);
+                Assert.IsTrue(pctError < 0.01,"Vapor Pressure",mt.Name + " Vapor Pressure at " + temperature + " deg C == " + svp + " Pascals");
 			}
 		}
 
@@ -102,8 +102,8 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
             double svp = (double)m_computedVaporPressureInPascals[mt.Name];
             double pctError = Math.Abs(vp - svp) / Math.Max(vp, svp);
             string msg = string.Format("Computed VP({0}) at {1:F2} deg C was {2:F2}, refData was {3:F2}, for a {4:F2} percent error.", mt.Name, temperature, vp, svp, pctError * 100);
-            _Debug.WriteLine(msg);
-            _Debug.Assert(pctError < 0.01, "Vapor Pressure", mt.Name + " Vapor Pressure at 35 deg C == " + svp + " Pascals");
+            Debug.WriteLine(msg);
+            Assert.IsTrue(pctError < 0.01, "Vapor Pressure", mt.Name + " Vapor Pressure at 35 deg C == " + svp + " Pascals");
         }
 
 		[TestMethod]
@@ -119,8 +119,8 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
                 vp = VaporPressureCalculator.ComputeVaporPressure(mt, temperature, TemperatureUnits.Kelvin, PressureUnits.Pascals);
 				double pctError = Math.Abs(vp-empiricalVP)/Math.Max(vp,empiricalVP);
 				string msg = string.Format("Computed VP({0}) at {1:F2} deg C was {2:F2}, empirical was {3:F2}, for a {4:F2} percent error.",mt.Name,temperature,vp,empiricalVP,pctError*100);
-				_Debug.WriteLine(msg);
-                _Debug.Assert(pctError < 0.01,"Water Vapor Pressure","Water Vapor Pressure at " + temperature + " deg C == " + empiricalVP );
+				Debug.WriteLine(msg);
+                Assert.IsTrue(pctError < 0.01,"Water Vapor Pressure","Water Vapor Pressure at " + temperature + " deg C == " + empiricalVP );
 			}
 
 		}

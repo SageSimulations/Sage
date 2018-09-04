@@ -1,6 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Randoms;
@@ -19,7 +19,7 @@ namespace Highpoint.Sage.Utility {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
 		int NUM_SAMPLES = 9000;

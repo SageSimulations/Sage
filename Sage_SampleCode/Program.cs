@@ -1,5 +1,6 @@
 ﻿/* This source code licensed under the GNU Affero General Public License */
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -105,7 +106,7 @@ namespace Sage_SampleCode {
         {
             string @namespace = run.Method.DeclaringType?.Namespace;
             string demoNamespace = @namespace.StartsWith("Demo.")? @namespace.Substring(5) : @namespace;
-            Assert.IsNotNull(demoNamespace);
+            Debug.Assert(!string.IsNullOrEmpty(demoNamespace));
             if (demoNamespace.Contains("."))
             {
                 string demoFeature = demoNamespace.Substring(0, demoNamespace.IndexOf('.'));
@@ -117,7 +118,7 @@ namespace Sage_SampleCode {
 
 
                 string subFeature = demoNamespace.Substring(demoNamespace.IndexOf('.') + 1);
-                Assert.IsNotNull(subFeature);
+                Debug.Assert(!string.IsNullOrEmpty(subFeature));
                 if (!string.Equals(subFeature, _subFeature))
                 {
                     s_sb.AppendLine(string.Format("<h3>{0}</h3>", subFeature));

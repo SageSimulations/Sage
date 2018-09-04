@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
@@ -21,7 +21,7 @@ namespace Highpoint.Sage.Scheduling.Cost {
         }
         [TestCleanup]
         public void destroy() {
-            _Debug.WriteLine("Done.");
+            Debug.WriteLine("Done.");
         }
 
         private Thing alice, bob, charlie, dave, edna, frank, george, harry;

@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Highpoint.Sage.Materials.Chemistry {
@@ -18,7 +18,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 
 
@@ -37,7 +37,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
 
 
             foreach ( IMaterial constituent in mixture.Constituents ) {
-                _Debug.WriteLine(constituent.ToString());
+                Debug.WriteLine(constituent.ToString());
             }
 
             /* Calculation mass:
@@ -74,11 +74,11 @@ namespace Highpoint.Sage.Materials.Chemistry {
                 }
             }
 
-            _Debug.Assert(Math.Abs(soda.Mass - 1.03) < 0.01, "The Caustic Soda part is not 2.88 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 4.94) < 0.01, "The Water part is not 4.5 kg");
-            _Debug.Assert(Math.Abs(sodium.Mass - 16.03) < 0.01, "The Sodium Cloride part is not 14.61 kg");
+            Assert.IsTrue(Math.Abs(soda.Mass - 1.03) < 0.01, "The Caustic Soda part is not 2.88 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 4.94) < 0.01, "The Water part is not 4.5 kg");
+            Assert.IsTrue(Math.Abs(sodium.Mass - 16.03) < 0.01, "The Sodium Cloride part is not 14.61 kg");
             Console.WriteLine(mixture.Temperature);
-            _Debug.Assert(Math.Abs(mixture.Temperature - 35.91) < 0.01, "The temperature is not 33.09 degrees C");
+            Assert.IsTrue(Math.Abs(mixture.Temperature - 35.91) < 0.01, "The temperature is not 33.09 degrees C");
 
         }
 
@@ -99,16 +99,16 @@ namespace Highpoint.Sage.Materials.Chemistry {
 
 
             foreach ( IMaterial constituent in mixture.Constituents ) {
-                _Debug.WriteLine(constituent.ToString());
+                Debug.WriteLine(constituent.ToString());
             }
 
             mixture.AddMaterial(brs.MyMaterialCatalog["Palladium"].CreateMass(1, 44));
 
             foreach ( IMaterial constituent in mixture.Constituents ) {
-                _Debug.WriteLine(constituent.ToString());
+                Debug.WriteLine(constituent.ToString());
             }
 
-            _Debug.Assert(nReactions == 1, String.Format("Reaction occurred {0} times, but should have happened once.", nReactions));
+            Assert.IsTrue(nReactions == 1, String.Format("Reaction occurred {0} times, but should have happened once.", nReactions));
             if ( nReactions != 1 ) {
                 Console.WriteLine("Test failed. Catalytic reaction happened {0} times, but should only have happened once.", nReactions);
                 if ( System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
@@ -126,14 +126,14 @@ namespace Highpoint.Sage.Materials.Chemistry {
 
 
             foreach ( IMaterial constituent in mixture.Constituents ) {
-                _Debug.WriteLine(constituent.ToString());
+                Debug.WriteLine(constituent.ToString());
             }
 
             foreach ( IMaterial constituent in mixture.Constituents ) {
-                _Debug.WriteLine(constituent.ToString());
+                Debug.WriteLine(constituent.ToString());
             }
 
-            _Debug.Assert(nReactions == 0, String.Format("Reaction occurred {0} times, but should not have happened.", nReactions));
+            Assert.IsTrue(nReactions == 0, String.Format("Reaction occurred {0} times, but should not have happened.", nReactions));
             if ( nReactions != 0 ) {
                 Console.WriteLine("Test failed. Catalytic reaction happened {0} times, but should not have happened.", nReactions);
                 if ( System.Diagnostics.Debugger.IsAttached )
@@ -156,47 +156,47 @@ namespace Highpoint.Sage.Materials.Chemistry {
             IMaterial resultA;
             ArrayList observedReactions, observedReactionInstances;
 
-            _Debug.WriteLine("Part A : Reaction should happen...");
+            Debug.WriteLine("Part A : Reaction should happen...");
             bool reactionAHappened = brs.MyReactionProcessor.CombineMaterials(new IMaterial[]{m1.Clone(),m2.Clone(),m3.Clone()},out resultA, out observedReactions, out observedReactionInstances);
             //bool reactionHappened = brs.MyReactionProcessor.CombineMaterials(new IMaterial[]{m1,m2,m3},out result, out observedReactions, out observedReactionInstances);
 
-            _Debug.WriteLine("Engine says that reactions " + (reactionAHappened?"happened.":"didn't happen."));
+            Debug.WriteLine("Engine says that reactions " + (reactionAHappened?"happened.":"didn't happen."));
 
-            _Debug.WriteLine("\r\nObserved Reactions");
+            Debug.WriteLine("\r\nObserved Reactions");
             foreach ( Reaction r in observedReactions ) {
-                _Debug.WriteLine(r.ToString());
+                Debug.WriteLine(r.ToString());
             }
 
-            _Debug.WriteLine("\r\nObserved Reaction Instances");
+            Debug.WriteLine("\r\nObserved Reaction Instances");
             foreach ( ReactionInstance ri in observedReactionInstances ) {
-                _Debug.WriteLine(ri.ToString());
+                Debug.WriteLine(ri.ToString());
             }
 
-            _Debug.WriteLine("\r\nMixture");
-            _Debug.WriteLine(resultA.ToString());
+            Debug.WriteLine("\r\nMixture");
+            Debug.WriteLine(resultA.ToString());
 
 			
 			IMaterial resultB;
 
-			_Debug.WriteLine("Part B : Reaction should not happen...");
+			Debug.WriteLine("Part B : Reaction should not happen...");
             bool reactionBHappened = brs.MyReactionProcessor.CombineMaterials(new IMaterial[]{m1.Clone(),m3.Clone()},out resultB, out observedReactions, out observedReactionInstances);
 
-            _Debug.WriteLine("Engine says that reactions " + (reactionBHappened?"happened.":"didn't happen.")); 
+            Debug.WriteLine("Engine says that reactions " + (reactionBHappened?"happened.":"didn't happen.")); 
 
-            _Debug.WriteLine("\r\nObserved Reactions");
+            Debug.WriteLine("\r\nObserved Reactions");
             foreach ( Reaction r in observedReactions ) {
-                _Debug.WriteLine(r.ToString());
+                Debug.WriteLine(r.ToString());
             }
 
-            _Debug.WriteLine("\r\nObserved Reaction Instances");
+            Debug.WriteLine("\r\nObserved Reaction Instances");
             foreach ( ReactionInstance ri in observedReactionInstances ) {
-                _Debug.WriteLine(ri.ToString());
+                Debug.WriteLine(ri.ToString());
             }
 
-            _Debug.WriteLine("\r\nMixture");
-            _Debug.WriteLine(resultB.ToString());
+            Debug.WriteLine("\r\nMixture");
+            Debug.WriteLine(resultB.ToString());
 
-            _Debug.Assert(!reactionBHappened,"Reaction B should not have happened");
+            Assert.IsTrue(!reactionBHappened,"Reaction B should not have happened");
 
         }
 
@@ -264,17 +264,17 @@ namespace Highpoint.Sage.Materials.Chemistry {
         }
 
 		private void mixture_OnReactionHappened(ReactionInstance reactionInstance) {
-			_Debug.WriteLine("Observed reaction called  " + reactionInstance.Reaction.ToString() + "...");
-			_Debug.WriteLine("Instance-specific reaction is " + reactionInstance.InstanceSpecificReaction.ToString() + "...");
-			_Debug.WriteLine("Instance-specific name is " + reactionInstance.InstanceSpecificReactionString() + "...");
-			_Debug.WriteLine("--- REACTANTS ---");
+			Debug.WriteLine("Observed reaction called  " + reactionInstance.Reaction.ToString() + "...");
+			Debug.WriteLine("Instance-specific reaction is " + reactionInstance.InstanceSpecificReaction.ToString() + "...");
+			Debug.WriteLine("Instance-specific name is " + reactionInstance.InstanceSpecificReactionString() + "...");
+			Debug.WriteLine("--- REACTANTS ---");
 			foreach ( Reaction.ReactionParticipant rp in reactionInstance.InstanceSpecificReaction.Reactants ) {
-				_Debug.WriteLine(rp.MaterialType.Name + " : " + rp.Mass + " kg.");
+				Debug.WriteLine(rp.MaterialType.Name + " : " + rp.Mass + " kg.");
 			}
 
-			_Debug.WriteLine("--- PRODUCTS ---");
+			Debug.WriteLine("--- PRODUCTS ---");
 			foreach ( Reaction.ReactionParticipant rp in reactionInstance.InstanceSpecificReaction.Products ) {
-				_Debug.WriteLine(rp.MaterialType.Name + " : " + rp.Mass + " kg.");
+				Debug.WriteLine(rp.MaterialType.Name + " : " + rp.Mass + " kg.");
 			} 
 		}
 	}

@@ -1,7 +1,6 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using _Debug = System.Diagnostics.Debug;
 using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Highpoint.Sage.SimCore;
@@ -20,7 +19,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 		}
 		[TestCleanup]
 		public void destroy() {
-			_Debug.WriteLine( "Done." );
+			Debug.WriteLine( "Done." );
 		}
 		
 		[TestMethod]
@@ -36,15 +35,15 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 			mixture.AddMaterial(cat["Acetone"].CreateMass(100,20));
 			mixture.AddMaterial(cat["Potassium Sulfate"].CreateMass(100,20));
 			mixture.AddMaterial(cat["Ammonia"].CreateMass(100,20));
-			_Debug.WriteLine("Mixture has the following stuff...");
+			Debug.WriteLine("Mixture has the following stuff...");
 			DiagnosticAids.DumpMaterial(mixture);
-            _Debug.Assert(mixture.Mass.Equals(300D),"Mixture is not 300 kg");
+            Assert.IsTrue(mixture.Mass.Equals(300D),"Mixture is not 300 kg");
 
-			_Debug.WriteLine("Removing 100 kg of Acetone.");
+			Debug.WriteLine("Removing 100 kg of Acetone.");
 			IMaterial matl = mixture.RemoveMaterial(cat["Acetone"],100);
 			DiagnosticAids.DumpMaterial(matl);
-            _Debug.Assert(mixture.Mass.Equals(200D),"Mixture is not 200 kg");
-			_Debug.WriteLine("Remaining is the following mixture:");
+            Assert.IsTrue(mixture.Mass.Equals(200D),"Mixture is not 200 kg");
+			Debug.WriteLine("Remaining is the following mixture:");
 			DiagnosticAids.DumpMaterial(mixture);
 		}
 
@@ -59,15 +58,15 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				cat["Potassium Sulfate"].CreateMass(100,20),
 				cat["Ammonia"].CreateMass(100,20));
 
-			_Debug.WriteLine("Mixture has the following stuff...");
+			Debug.WriteLine("Mixture has the following stuff...");
 			DiagnosticAids.DumpMaterial(mixture);
-            _Debug.Assert(mixture.Mass.Equals(300D),"Mixture is not 300 kg");
+            Assert.IsTrue(mixture.Mass.Equals(300D),"Mixture is not 300 kg");
 
-			_Debug.WriteLine("Removing 100 kg of Acetone.");
+			Debug.WriteLine("Removing 100 kg of Acetone.");
 			IMaterial matl = mixture.RemoveMaterial(cat["Acetone"],100);
 			DiagnosticAids.DumpMaterial(matl);
-            _Debug.Assert(mixture.Mass.Equals(200D),"Mixture is not 200 kg");
-			_Debug.WriteLine("Remaining is the following mixture:");
+            Assert.IsTrue(mixture.Mass.Equals(200D),"Mixture is not 200 kg");
+			Debug.WriteLine("Remaining is the following mixture:");
 			DiagnosticAids.DumpMaterial(mixture);
 		}
 
@@ -84,23 +83,23 @@ namespace Highpoint.Sage.Materials.Chemistry  {
             AddSubstance(ref mixture, cat["Nitrous Acid"], 100, 20);
             AddSubstance(ref mixture, cat["Potassium Hydroxide"], 150, 41);
             AddSubstance(ref mixture, cat["Water"], 100, 100);
-            _Debug.Assert(mixture.Mass.Equals(350D), "Mass is not 350 kg");
-            _Debug.Assert(Math.Abs(mixture.Temperature - ( 18150D / 350D )) < 0.00001, "Temperature is not 51.86724 C.");
+            Assert.IsTrue(mixture.Mass.Equals(350D), "Mass is not 350 kg");
+            Assert.IsTrue(Math.Abs(mixture.Temperature - ( 18150D / 350D )) < 0.00001, "Temperature is not 51.86724 C.");
 
             IMaterial matl = mixture.RemoveMaterial(cat["Nitrous Acid"]);
-            _Debug.WriteLine("Removing all avaliable " + matl.MaterialType.Name);
+            Debug.WriteLine("Removing all avaliable " + matl.MaterialType.Name);
             DiagnosticAids.DumpMaterial(mixture);
-            _Debug.Assert(mixture.Mass.Equals(250D), "Mass is not 250 kg");
+            Assert.IsTrue(mixture.Mass.Equals(250D), "Mass is not 250 kg");
 
-            _Debug.WriteLine("Adding " + matl.MaterialType.Name + " back in.");
+            Debug.WriteLine("Adding " + matl.MaterialType.Name + " back in.");
             mixture.AddMaterial(matl);
             DiagnosticAids.DumpMaterial(mixture);
-            _Debug.Assert(mixture.Mass.Equals(350D), "Mass is not 350 kg");
+            Assert.IsTrue(mixture.Mass.Equals(350D), "Mass is not 350 kg");
 
-            _Debug.WriteLine("Removing 50 kg of the " + matl.MaterialType.Name);
+            Debug.WriteLine("Removing 50 kg of the " + matl.MaterialType.Name);
             matl = mixture.RemoveMaterial(matl.MaterialType, 50.0);
             DiagnosticAids.DumpMaterial(mixture);
-            _Debug.Assert(mixture.Mass.Equals(300D), "Mass is not 300 kg");
+            Assert.IsTrue(mixture.Mass.Equals(300D), "Mass is not 300 kg");
 
         }
         [TestMethod]
@@ -118,16 +117,16 @@ namespace Highpoint.Sage.Materials.Chemistry  {
             MaterialCatalog cat = brs.MyMaterialCatalog;
             AddSubstance(ref mixture, cat["Nitrous Oxide"], 100, 20);
 
-            _Debug.Assert(mixture.Volume.Equals(100000D), "Mass is not 10000 liters");
+            Assert.IsTrue(mixture.Volume.Equals(100000D), "Mass is not 10000 liters");
 
             AddSubstance(ref mixture, cat["Water"], 100, 50);
-            _Debug.Assert(mixture.Volume.Equals(100D), "Mass is not 100 liters");
+            Assert.IsTrue(mixture.Volume.Equals(100D), "Mass is not 100 liters");
 
             RemoveSubstance(ref mixture, cat["Water"], 100);
-            _Debug.Assert(mixture.Volume.Equals(100000D), "Mass is not 10000 liters");
+            Assert.IsTrue(mixture.Volume.Equals(100000D), "Mass is not 10000 liters");
 
             AddSubstance(ref mixture, cat["Pixie Breath"], 100, 20);
-            _Debug.Assert(mixture.Volume.Equals(200000D), "Mass is not 100 liters");
+            Assert.IsTrue(mixture.Volume.Equals(200000D), "Mass is not 100 liters");
 
         }
 
@@ -150,7 +149,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 			Mixture mixture = new Mixture(model,"Contents of vat 1",Guid.NewGuid());
 			brs.MyReactionProcessor.Watch(mixture);
 
-			_Debug.WriteLine("Adding two reactants to the mixture.");
+			Debug.WriteLine("Adding two reactants to the mixture.");
 			AddSubstance(ref mixture,brs.MyMaterialCatalog["Potassium Hydroxide"],150,41);
 			AddSubstance(ref mixture,brs.MyMaterialCatalog["Nitrous Acid"],100,20);
 
@@ -173,11 +172,11 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				}
 			}
 
-            _Debug.Assert(Math.Abs(potassiumH.Mass - 30.65) < 0.01,"The Potassium Hidroxide part is not 30.65 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 38.32) < 0.01,"The Water part is not 38.32 kg");
-            _Debug.Assert(Math.Abs(potassiumN.Mass - 181.03) < 0.01,"The Potassium Nitrite part is not 181.03 kg");
+            Assert.IsTrue(Math.Abs(potassiumH.Mass - 30.65) < 0.01,"The Potassium Hidroxide part is not 30.65 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 38.32) < 0.01,"The Water part is not 38.32 kg");
+            Assert.IsTrue(Math.Abs(potassiumN.Mass - 181.03) < 0.01,"The Potassium Nitrite part is not 181.03 kg");
 
-			_Debug.WriteLine(mixture);
+			Debug.WriteLine(mixture);
 
 		}
 
@@ -228,12 +227,12 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				}
 			}
 
-            _Debug.Assert(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 18.01) < 0.01,"The Water part is not 18.01 kg");
-            _Debug.Assert(Math.Abs(sodiumCloride.Mass - 53.83) < 0.01,"The Sodium Cloride part is not 53.83 kg");
-            _Debug.Assert(Math.Abs(ff.Mass - 44.62) < 0.01,"The French Fries part is not 44.62 kg");
+            Assert.IsTrue(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 18.01) < 0.01,"The Water part is not 18.01 kg");
+            Assert.IsTrue(Math.Abs(sodiumCloride.Mass - 53.83) < 0.01,"The Sodium Cloride part is not 53.83 kg");
+            Assert.IsTrue(Math.Abs(ff.Mass - 44.62) < 0.01,"The French Fries part is not 44.62 kg");
 			
-			_Debug.WriteLine(mixture);
+			Debug.WriteLine(mixture);
 
 		}
 
@@ -273,17 +272,17 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				}
 			}
 
-            _Debug.Assert(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 18.01) < 0.01,"The Water part is not 18.01 kg");
-            _Debug.Assert(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01,"The Sodium Cloride part is not 58.45 kg");
+            Assert.IsTrue(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 18.01) < 0.01,"The Water part is not 18.01 kg");
+            Assert.IsTrue(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01,"The Sodium Cloride part is not 58.45 kg");
 			
 			// Remove 10 kg of water
 			MaterialTransferSpecByMass tsbm = new MaterialTransferSpecByMass(brs.MyMaterialCatalog["Water"],10,TimeSpan.FromMinutes(5));
 
-			_Debug.WriteLine("Want to remove " + tsbm);
+			Debug.WriteLine("Want to remove " + tsbm);
 			IMaterial removee = tsbm.GetExtract(mixture);
-			_Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
-			_Debug.WriteLine(mixture);
+			Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
+			Debug.WriteLine(mixture);
 
 			foreach ( Substance su in mixture.Constituents ) {
 				switch (su.Name) {
@@ -293,10 +292,10 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				}
 			}
 
-            _Debug.Assert(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01, "The Hydrochloric Acid part is not 3.53 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 8.01) < 0.01, "The Water part is not 8.01 kg");
-            _Debug.Assert(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01, "The Sodium Chloride part is not 58.45 kg");
-            _Debug.Assert(tsbm.Duration.Equals(new TimeSpan(0, 0, 5, 0, 0)), "Removing 10 kg Water part did not take 5 Min");
+            Assert.IsTrue(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01, "The Hydrochloric Acid part is not 3.53 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 8.01) < 0.01, "The Water part is not 8.01 kg");
+            Assert.IsTrue(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01, "The Sodium Chloride part is not 58.45 kg");
+            Assert.IsTrue(tsbm.Duration.Equals(new TimeSpan(0, 0, 5, 0, 0)), "Removing 10 kg Water part did not take 5 Min");
 
 		}
 
@@ -309,21 +308,21 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 			LoadSampleCatalog(brs.MyMaterialCatalog);
 
 			// Now try to remove by mass from a substance.
-			_Debug.WriteLine("\r\nWe now work on a substance.");
+			Debug.WriteLine("\r\nWe now work on a substance.");
 			MaterialType mt = brs.MyMaterialCatalog["Hydrochloric Acid"];
 			Substance s = (Substance)mt.CreateMass(100,20);
 
-			_Debug.WriteLine("We have " + s);
+			Debug.WriteLine("We have " + s);
 
 			MaterialTransferSpecByMass tsbm = new MaterialTransferSpecByMass(brs.MyMaterialCatalog["Hydrochloric Acid"],10,TimeSpan.FromMinutes(5));
 
-			_Debug.WriteLine("Want to remove " + tsbm);
+			Debug.WriteLine("Want to remove " + tsbm);
 			IMaterial removee = tsbm.GetExtract(s);
-			_Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
-			_Debug.WriteLine(s);
+			Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
+			Debug.WriteLine(s);
 
-            _Debug.Assert(Math.Abs(s.Mass - 90.00) < 0.01,"The Water part is not 90 kg");
-            _Debug.Assert(tsbm.Duration.Equals(new TimeSpan(0,0,5,0,0)), "Removing 10 kg Water part did not take 5 Min");
+            Assert.IsTrue(Math.Abs(s.Mass - 90.00) < 0.01,"The Water part is not 90 kg");
+            Assert.IsTrue(tsbm.Duration.Equals(new TimeSpan(0,0,5,0,0)), "Removing 10 kg Water part did not take 5 Min");
 
 		}
 
@@ -363,17 +362,17 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				}
 			}
 
-            _Debug.Assert(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 18.01) < 0.01,"The Water part is not 18.01 kg");
-            _Debug.Assert(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01,"The Sodium Cloride part is not 58.45 kg");
+            Assert.IsTrue(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 18.01) < 0.01,"The Water part is not 18.01 kg");
+            Assert.IsTrue(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01,"The Sodium Cloride part is not 58.45 kg");
 			
 			// Duration for removing mass given is per 1 kg
 			MaterialTransferSpecByPercentage tsbp = new MaterialTransferSpecByPercentage(brs.MyMaterialCatalog["Water"],.5,TimeSpan.FromMinutes(5));
 
 			IMaterial removee = tsbp.GetExtract(mixture);
-			_Debug.WriteLine("Want to remove " + tsbp);
-			_Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
-			_Debug.WriteLine(mixture);
+			Debug.WriteLine("Want to remove " + tsbp);
+			Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
+			Debug.WriteLine(mixture);
 
 			// Now try to remove by mass from a substance.
 			foreach ( Substance su in mixture.Constituents ) {
@@ -384,10 +383,10 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 				}
 			}
 
-            _Debug.Assert(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
-            _Debug.Assert(Math.Abs(water.Mass - 9.00) < 0.01,"The Water part is not 9.00 kg");
-            _Debug.Assert(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01,"The Sodium Cloride part is not 58.45 kg");
-            _Debug.Assert(tsbp.Duration.Minutes == 45,"Removing 50% Water part did not take 5 Min"); // there are also a few seconds and miliseconds
+            Assert.IsTrue(Math.Abs(hydrochloricAcid.Mass - 3.53) < 0.01,"The Hydrochloric Acid part is not 3.53 kg");
+            Assert.IsTrue(Math.Abs(water.Mass - 9.00) < 0.01,"The Water part is not 9.00 kg");
+            Assert.IsTrue(Math.Abs(sodiumCloride.Mass - 58.45) < 0.01,"The Sodium Cloride part is not 58.45 kg");
+            Assert.IsTrue(tsbp.Duration.Minutes == 45,"Removing 50% Water part did not take 5 Min"); // there are also a few seconds and miliseconds
 
 		}
       
@@ -399,21 +398,21 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 			LoadSampleCatalog(brs.MyMaterialCatalog);
 
-			_Debug.WriteLine("\r\nWe now work on a substance.");
+			Debug.WriteLine("\r\nWe now work on a substance.");
 			MaterialType mt = brs.MyMaterialCatalog["Hydrochloric Acid"];
 			Substance s = (Substance)mt.CreateMass(100,20);
 
-			_Debug.WriteLine("We have " + s);
+			Debug.WriteLine("We have " + s);
 
 			MaterialTransferSpecByPercentage tsbp = new MaterialTransferSpecByPercentage(brs.MyMaterialCatalog["Hydrochloric Acid"],.75,TimeSpan.FromMinutes(5));
 
 			IMaterial removee = tsbp.GetExtract(s);
-			_Debug.WriteLine("Want to remove " + tsbp);
-			_Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
-			_Debug.WriteLine(s);
+			Debug.WriteLine("Want to remove " + tsbp);
+			Debug.WriteLine("Successful in removing " + removee + ".\r\nWhat remains is ");
+			Debug.WriteLine(s);
 
-            _Debug.Assert(Math.Abs(s.Mass - 25.00) < 0.01,"The Water part is not 25 kg");
-            _Debug.Assert(tsbp.Duration.Hours == 6 && tsbp.Duration.Minutes == 15,"Removing 75% Water part did not take 5 Min");
+            Assert.IsTrue(Math.Abs(s.Mass - 25.00) < 0.01,"The Water part is not 25 kg");
+            Assert.IsTrue(tsbp.Duration.Hours == 6 && tsbp.Duration.Minutes == 15,"Removing 75% Water part did not take 5 Min");
 
 		}
 		
@@ -474,39 +473,39 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 			Substance w1 = (Substance)waterType.CreateMass(100,37);
 			w1.SetMaterialSpec(city,100);
-			_Debug.WriteLine("\r\nCreating 100 kg of City Water (" + city + ").");
+			Debug.WriteLine("\r\nCreating 100 kg of City Water (" + city + ").");
 			DumpMaterialSpecs(w1);
 
 			Substance w2 = (Substance)waterType.CreateMass(40,37);
 			w2.SetMaterialSpec(dist,40);
-			_Debug.WriteLine("\r\nCreating 40 kg of Distilled Water (" + dist + ").");
+			Debug.WriteLine("\r\nCreating 40 kg of Distilled Water (" + dist + ").");
 			DumpMaterialSpecs(w2);
 
-			_Debug.WriteLine("\r\nAdding city water to distilled water.");
+			Debug.WriteLine("\r\nAdding city water to distilled water.");
 			w1.Add(w2);
 			DumpMaterialSpecs(w1);
 
-			_Debug.WriteLine("\r\nRemoving 60 kg of the blended water.");
+			Debug.WriteLine("\r\nRemoving 60 kg of the blended water.");
 			Substance w3 = w1.Remove(60);
 			DumpMaterialSpecs(w1);
 			DumpMaterialSpecs(w3);
 
-			_Debug.WriteLine("\r\nCloning the blended water.");
+			Debug.WriteLine("\r\nCloning the blended water.");
 			Substance w4 = (Substance)w3.Clone();
 			DumpMaterialSpecs(w4);
 
-			_Debug.WriteLine("\r\nPurifying the cloned blended water.");
+			Debug.WriteLine("\r\nPurifying the cloned blended water.");
 			w4.ConvertMaterialSpec(dist,city);
-			_Debug.WriteLine("Purified clone:");
+			Debug.WriteLine("Purified clone:");
 			DumpMaterialSpecs(w4);
-			_Debug.WriteLine("...and original water:");
+			Debug.WriteLine("...and original water:");
 			DumpMaterialSpecs(w3);
 
 			double amtDistilled = w1.GetMaterialSpec(dist);
-			_Debug.WriteLine("\r\nThere are " + amtDistilled + " kg of distilled water.");
+			Debug.WriteLine("\r\nThere are " + amtDistilled + " kg of distilled water.");
 
 			w1.ConvertMaterialSpec(dist,city);
-			_Debug.WriteLine("\r\nConverting distilled water to city water.");
+			Debug.WriteLine("\r\nConverting distilled water to city water.");
 			DumpMaterialSpecs(w1);
 
 		}
@@ -529,21 +528,21 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
             w1.Temperature = 85.0;
             w1.Add((Substance)waterType.CreateMass(100, 37));
-            _Debug.Assert(results.Equals(RESULT1));
+            Assert.IsTrue(results.Equals(RESULT1));
 
             results = string.Empty;
             w1.SuspendChangeEvents();
             w1.Temperature = 95.0;
             w1.Add((Substance)waterType.CreateMass(100, 37));
             w1.ResumeChangeEvents(false);
-            _Debug.Assert(results.Equals(string.Empty));
+            Assert.IsTrue(results.Equals(string.Empty));
 
             results = string.Empty;
             w1.SuspendChangeEvents();
             w1.Temperature = 95.0;
             w1.Add((Substance)waterType.CreateMass(100, 37));
             w1.ResumeChangeEvents(true);
-            _Debug.Assert(results.Equals(RESULT2));
+            Assert.IsTrue(results.Equals(RESULT2));
 
             // NOW, SAME TEST, BUT ON A MIXTURE INSTEAD.
             MaterialType acetoneType = (MaterialType)brs.MyMaterialCatalog["Acetone"];
@@ -556,23 +555,23 @@ namespace Highpoint.Sage.Materials.Chemistry  {
             results = string.Empty;
             m1.AddMaterial((Substance)waterType.CreateMass(100, 37));
             m1.AddMaterial((Substance)acetoneType.CreateMass(100, 45));
-            _Debug.Assert(results.Equals(RESULT3));
+            Assert.IsTrue(results.Equals(RESULT3));
 
             results = string.Empty;
             m1.SuspendChangeEvents();
             m1.AddMaterial((Substance)waterType.CreateMass(100, 99));
             m1.AddMaterial((Substance)acetoneType.CreateMass(100, 99));
-            _Debug.Assert(results.Equals(string.Empty));
+            Assert.IsTrue(results.Equals(string.Empty));
             m1.ResumeChangeEvents(false);
-            _Debug.Assert(results.Equals(string.Empty));
+            Assert.IsTrue(results.Equals(string.Empty));
 
             results = string.Empty;
             m1.SuspendChangeEvents();
             m1.AddMaterial((Substance)waterType.CreateMass(100, 99));
             m1.AddMaterial((Substance)acetoneType.CreateMass(100, 99));
-            _Debug.Assert(results.Equals(string.Empty));
+            Assert.IsTrue(results.Equals(string.Empty));
             m1.ResumeChangeEvents(true);
-            _Debug.Assert(results.Equals(RESULT4));
+            Assert.IsTrue(results.Equals(RESULT4));
 
         }
 
@@ -759,27 +758,27 @@ namespace Highpoint.Sage.Materials.Chemistry  {
         }
 
         private void DumpMaterialSpecs(Substance s) {
-			_Debug.WriteLine(s.ToString());
-			foreach ( DictionaryEntry de in s.GetMaterialSpecs() ) _Debug.WriteLine("\t"+de.Key + " : " + de.Value);
+			Debug.WriteLine(s.ToString());
+			foreach ( DictionaryEntry de in s.GetMaterialSpecs() ) Debug.WriteLine("\t"+de.Key + " : " + de.Value);
 		}
 		
 		#region Private Support Goo
 		private void AddSubstance(ref Mixture mixture, MaterialType matType, double mass, double temp){
 			IMaterial matl = matType.CreateMass(mass,temp);
 			double energy = (temp+Highpoint.Sage.Materials.Chemistry.Constants.CELSIUS_TO_KELVIN)*mass*matType.SpecificHeat;
-			_Debug.WriteLine(String.Format("Adding {0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",matl.MaterialType.Name,matl.Mass,matl.Temperature,matl.Volume,energy));
+			Debug.WriteLine(String.Format("Adding {0} - {1} kg, {2} C, and {3} liters. ({4} Joules of thermal energy)",matl.MaterialType.Name,matl.Mass,matl.Temperature,matl.Volume,energy));
 			mixture.AddMaterial(matl);
 
-			_Debug.WriteLine("Mixture is now:");
+			Debug.WriteLine("Mixture is now:");
 			DiagnosticAids.DumpMaterial(mixture);
 		}
 
 		private void RemoveSubstance(ref Mixture mixture, MaterialType matType, double mass){
 			IMaterial matl = matType.CreateMass(mass,0.0);
-			_Debug.WriteLine(String.Format("Removing {0} - {1} kg ({2} liters).",matl.MaterialType.Name,matl.Mass,matl.Volume));
+			Debug.WriteLine(String.Format("Removing {0} - {1} kg ({2} liters).",matl.MaterialType.Name,matl.Mass,matl.Volume));
 			IMaterial whatIGot = mixture.RemoveMaterial(matl.MaterialType,mass);
-			_Debug.WriteLine(String.Format("I got {0} - {1} kg, {2} C, and {3} liters.",whatIGot.MaterialType.Name,whatIGot.Mass,whatIGot.Temperature,whatIGot.Volume));
-			_Debug.WriteLine("Mixture is now:");
+			Debug.WriteLine(String.Format("I got {0} - {1} kg, {2} C, and {3} liters.",whatIGot.MaterialType.Name,whatIGot.Mass,whatIGot.Temperature,whatIGot.Volume));
+			Debug.WriteLine("Mixture is now:");
 			DiagnosticAids.DumpMaterial(mixture);
 		}
 
@@ -847,7 +846,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
             mcat["Methylene Chloride"].SetAntoinesCoefficients3(7.263, 1222.7, 238.4, PressureUnits.mmHg, TemperatureUnits.Celsius);
             mcat["Water"].SetAntoinesCoefficients3(8.040, 1715.1, 232.4, PressureUnits.mmHg, TemperatureUnits.Celsius);
 
-			_Debug.WriteLine(" ... sample substances loaded.");
+			Debug.WriteLine(" ... sample substances loaded.");
 		}    
 
 		/// <summary>
