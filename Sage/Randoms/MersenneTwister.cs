@@ -95,14 +95,14 @@ namespace Highpoint.Sage.Randoms {
 		*/
 
 		/* Period parameters */  
-		private static readonly ulong s_n = 624;
-		private static readonly ulong s_m = 397;
-		private static readonly ulong s_matrix_A = 0x9908b0dfUL;   /* constant vector a */
-		private static readonly ulong s_upper_Mask = 0x80000000UL; /* most significant w-r bits */
-		private static readonly ulong s_lower_Mask = 0x7fffffffUL; /* least significant r bits */
+		private const ulong s_n = 624;
+		private const ulong s_m = 397;
+		private const ulong s_matrix_A = 0x9908b0dfUL;   /* constant vector a */
+		private const ulong s_upper_Mask = 0x80000000UL; /* most significant w-r bits */
+		private const ulong s_lower_Mask = 0x7fffffffUL; /* least significant r bits */
 		private static readonly ulong[] s_mag01 = new ulong[]{0x0UL, s_matrix_A};
-        private static readonly ulong[] s_mt = new ulong[s_n]; /* the array for the state vector  */
-        private static ulong _mti=s_n + 1; /* mti==N+1 means mt[N] is not initialized */
+        private ulong[] s_mt = new ulong[s_n]; /* the array for the state vector  */
+        private ulong _mti=s_n + 1; /* mti==N+1 means mt[N] is not initialized */
 
         /// <summary>
         /// Initializes this Mersenne Twister with the specified seed.
