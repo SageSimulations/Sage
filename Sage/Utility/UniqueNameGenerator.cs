@@ -32,16 +32,17 @@ namespace Highpoint.Sage.Utility
         /// depending on the value of 'zeroBased.'
         /// </summary>
         /// <param name="seed">The seed.</param>
-        /// <param name="nPlaces">The number of places. Ignored on all but the first call for a particular seed.</param>
+        /// <param name="nPlaces">The number of places for the increasing index. It's up to the user to ensure this is adequate.</param>
         /// <param name="zeroBased">if set to <c>true</c> the index will be zero based. Ignored on all but the first call for a particular seed.</param>
         /// <returns>System.String.</returns>
-        public string GetNextName(string seed, int nPlaces=0, bool zeroBased = false)
+        public string GetNextName(string seed, int nPlaces, bool zeroBased = false)
         {
-            if (!m_uniqueNameData.ContainsKey(seed))
+            string key = seed + nPlaces;
+            if (!m_uniqueNameData.ContainsKey(key))
             {
-                m_uniqueNameData.Add(seed, new UniqueNameData(nPlaces, zeroBased));
+                m_uniqueNameData.Add(key, new UniqueNameData(nPlaces, zeroBased));
             }
-            UniqueNameData und = m_uniqueNameData[seed];
+            UniqueNameData und = m_uniqueNameData[key];
             return seed + und.NextSuffix();
         }
 
