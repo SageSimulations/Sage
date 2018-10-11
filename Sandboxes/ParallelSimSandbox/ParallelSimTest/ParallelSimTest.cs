@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -8,7 +9,8 @@ using Highpoint.Sage.Randoms;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.SimCore.Parallel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using InProcParallelLib;
+using ParallelSimSandbox;
+using ParallelSimSandbox.Lib;
 
 namespace ParallelSimTest
 {
@@ -138,7 +140,7 @@ namespace ParallelSimTest
         private readonly DateTime m_testStart = new DateTime(2018, 1, 1);
 
         private int PERIODICITY = 100;
-        // [TestMethod] TODO: This test takes a LOOOOOOOONG time to run.
+        //[TestMethod]
         public void TestCoprocessorInterleaving()
         {
             foreach (int i in Enumerable.Range(1, 1000)) TestCoprocessorInterleaving(i);
@@ -269,12 +271,10 @@ namespace ParallelSimTest
     [TestClass]
     public class TraceVarTester
     {
-        
-        //[TestMethod()] TODO: Get this to run. The binary search is hosed somewhere.
-        public void TestTraceVar1()
+        [TestMethod]
+        public void TestTraceVarRecordingWithNonParallelExec()
         {
             TestExec exec1 = new TestExec();
-            TestExec exec2 = new TestExec();
 
             TracedValue<int> tv1 = new TracedValue<int>(exec1, 0);
             exec1.Now = new DateTime(2018, 1, 1, 12, 0, 0);
@@ -283,78 +283,152 @@ namespace ParallelSimTest
             {
                 exec1.Now += TimeSpan.FromHours(i);
                 tv1.Set(111 + i, exec1);
-                exec2.Now = exec1.Now - TimeSpan.FromMinutes(5);
-                Console.WriteLine("At {0} tv1 went from {1} to {2}.", exec1.Now, tv1.Get(exec2), tv1.Get(exec1));
             }
-
-            for (DateTime tN = new DateTime(2018, 1, 1, 12, 0, 0); tN < exec1.Now; tN += TimeSpan.FromHours(6))
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < tv1.Length; i++)
             {
-                exec2.Now = tN;
-                Console.WriteLine("At time {0}, tv1={1}", tN, tv1.Get(exec2));
+                sb.AppendFormat("At {0}, tv1 changed to {1}.\r\n", tv1.GetDateTime(i), tv1.GetValue(i));
             }
+            string s = sb.ToString();
+            Console.WriteLine(s);
+            System.Diagnostics.Debug.Assert(sb.ToString().Equals(
+@"At 1/1/0001 12:00:00 AM, tv1 changed to 0.
+At 1/1/2018 12:00:00 PM, tv1 changed to 111.
+At 1/1/2018 1:00:00 PM, tv1 changed to 112.
+At 1/1/2018 3:00:00 PM, tv1 changed to 113.
+At 1/1/2018 6:00:00 PM, tv1 changed to 114.
+At 1/1/2018 10:00:00 PM, tv1 changed to 115.
+At 1/2/2018 3:00:00 AM, tv1 changed to 116.
+At 1/2/2018 9:00:00 AM, tv1 changed to 117.
+At 1/2/2018 4:00:00 PM, tv1 changed to 118.
+At 1/3/2018 12:00:00 AM, tv1 changed to 119.
+At 1/3/2018 9:00:00 AM, tv1 changed to 120.
+At 1/3/2018 7:00:00 PM, tv1 changed to 121.
+At 1/4/2018 6:00:00 AM, tv1 changed to 122.
+At 1/4/2018 6:00:00 PM, tv1 changed to 123.
+At 1/5/2018 7:00:00 AM, tv1 changed to 124.
+At 1/5/2018 9:00:00 PM, tv1 changed to 125.
+At 1/6/2018 12:00:00 PM, tv1 changed to 126.
+"));
         }
-        
+
         private IExecutive m_exec1;
-        private readonly DateTime m_testStart = new DateTime(2018,1,1);
+        private readonly DateTime m_testStart = new DateTime(2018,1,1,1,0,0);
 
-        [TestMethod()]
-        public void TestTraceVar2()
+        private SortedSet<string> eventPreports = new SortedSet<string>();
+        private int indents = 0;
+        private int tabSize = 4;
+
+        [TestMethod]
+        public void TestTraceVarRecordingWithParallelExec()
         {
-            m_exec1 = ExecFactory.Instance.CreateExecutive(ExecType.SingleThreaded);
-            IExecutive exec2 = ExecFactory.Instance.CreateExecutive(ExecType.SingleThreaded);
+            m_exec1 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            ((IParallelExec) m_exec1).Rolledback +=
+                dt =>
+                    Console.WriteLine("{0}Exec[{1}] rolled back to {2}.",
+                        new string(' ', indents * tabSize),
+                        m_exec1.GetHashCode(), 
+                        dt.ToShortTimeString());
 
+            IExecutive exec2 = ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+
+            TracedValue<int>.NameGeneratorNumPlaces = 1;
             TracedValue<int> tv1 = new TracedValue<int>(m_exec1, 0);
-            //TracedValue<int> tv2 = new TracedValue<int>(exec2, 0);
 
-            SetValue(tv1, m_exec1, 1, 99);
-            SetValue(tv1, m_exec1, 2, 88);
-            SetValue(tv1, m_exec1, 3, 77);
-            SetValue(tv1, m_exec1, 4, 66);
-            SetValue(tv1, m_exec1, 5, 55);
+            SetValueAtTime(tv1, m_exec1, 1, 99);
+            SetValueAtTime(tv1, m_exec1, 2, 88);
+            SetValueAtTime(tv1, m_exec1, 3, 77);
+            SetValueAtTime(tv1, m_exec1, 4, 66);
+            SetValueAtTime(tv1, m_exec1, 5, 55);
 
-            GetValue(tv1, exec2, 0);
-            GetValue(tv1, exec2, 1);
-            GetValue(tv1, exec2, 2);
-            GetValue(tv1, exec2, 3);
-            GetValue(tv1, exec2, 4);
-            GetValue(tv1, exec2, 5);
-            GetValue(tv1, exec2, 6);
+            GetValueAtTime(tv1, m_exec1, 3.5);
+            GetValueAtTime(tv1, m_exec1, 6.5);
+            GetValueAtTime(tv1, m_exec1, 7.5);
 
+            GetValueAtTime(tv1, exec2, 0.1);
+            GetValueAtTime(tv1, exec2, 1.1);
+            GetValueAtTime(tv1, exec2, 2.1);
+            GetValueAtTime(tv1, exec2, 3);
+            GetValueAtTime(tv1, exec2, 4.1);
 
-            DateTime start = DateTime.Now;
-            Task task1 = Task.Factory.StartNew(() => m_exec1.Start());
-            Task task2 = Task.Factory.StartNew(() => exec2.Start());
+            SetValueAtTime(tv1, exec2, 5.1, 44);
+            SetValueAtTime(tv1, exec2, 6.1, 33);
 
-            Task.WaitAll(task1, task2);
-            DateTime finish = DateTime.Now;
-            Console.WriteLine("All threads complete in {0} seconds.", ((TimeSpan) (finish - start)).TotalSeconds);
+            GetValueAtTime(tv1, exec2, 5.5);
+
+            foreach ( string report in eventPreports ) Console.WriteLine(report);
+
+            CoExecutor.CoStart(new[]{(IParallelExec)m_exec1, (IParallelExec)exec2}, m_testStart+TimeSpan.FromHours(10));
+
+            Console.WriteLine("Exec1 ran {0} events, and Exec2 ran {1} events.", m_exec1.EventCount, exec2.EventCount);
 
         }
 
-        private void GetValue(TracedValue<int> tv, IExecutive fromExec, int hours)
+        private void GetValueAtTime(TracedValue<int> tv, IExecutive fromExec, double hours)
         {
-            m_exec1.RequestEvent((exec, data) =>
-            {
-                Console.Write("{0}/{1} Get : ", m_exec1.Now, fromExec.Now);
-                int val = tv.Get(exec);
-                Console.WriteLine(" {0} at {1}:{2}.", val, m_exec1.Now, fromExec.Now);
+            DateTime when = m_testStart + TimeSpan.FromHours(hours);
+            eventPreports.Add(string.Format("At {0} local time, a thread from {1} will read the value of {2}.", 
+                when.ToShortTimeString(), 
+                string.Format("Exec[{0}]", 
+                fromExec.GetHashCode()), 
+                tv.Name));
 
-            }, m_testStart + TimeSpan.FromHours(hours));
+            fromExec.RequestEvent((exec, data) =>
+            {
+                //lock (Console.Out)
+                {
+                    Console.Out.WriteLine("{0}Get commanded into world at {1} from world at {2}",
+                        new string(' ', indents * tabSize), 
+                        m_exec1.Now.ToShortTimeString(),
+                        fromExec.Now.ToShortTimeString());
+
+                    indents++;
+                    int val = tv.Get(fromExec);
+                    indents--;
+
+                    Console.Out.WriteLine("{0}Get returned {1} at Target: {2}, Origin: {3}", 
+                        new string(' ', indents * tabSize),
+                        val,
+                        m_exec1.Now.ToShortTimeString(), 
+                        fromExec.Now.ToShortTimeString());
+                }
+            }, when);
         }
 
-        private void SetValue(TracedValue<int> tv, IExecutive fromExec, int hours, int value)
+        private void SetValueAtTime(TracedValue<int> tv, IExecutive fromExec, double hours, int value)
         {
+            DateTime when = m_testStart + TimeSpan.FromHours(hours);
+            eventPreports.Add(string.Format("{4}At {0} local time, a thread from {1} will set the value of {2} to {3}.", 
+                when.ToShortTimeString(), 
+                string.Format("Exec[{0}]", 
+                fromExec.GetHashCode()), 
+                tv.Name, 
+                value, 
+                new string(' ', indents*tabSize)));
+
             m_exec1.RequestEvent((exec, data) =>
             {
-                Console.Write("{0}/{1} Set({2}) : ", m_exec1.Now, fromExec.Now, value);
+                Console.Out.WriteLine("{0}Set({1}) commanded into world at {2} from world at {3}.",
+                    new string(' ', indents * tabSize),
+                    value,
+                    m_exec1.Now.ToShortTimeString(), 
+                    fromExec.Now.ToShortTimeString());
+
+                indents++;
                 tv.Set(value, fromExec);
-                Console.WriteLine("completed at {0}/{1}.", m_exec1.Now, fromExec.Now);
+                indents--;
 
-            }, m_testStart + TimeSpan.FromHours(hours));
+                Console.Out.WriteLine("{0}Set({1}) completed at Target: {2}, Origin: {3}.",
+                    new string(' ', indents * tabSize),
+                    value,
+                    m_exec1.Now.ToShortTimeString(), 
+                    fromExec.Now.ToShortTimeString());
+            }, when);
         }
     }
 
-    public class TestExec : IParallelExec
+#pragma warning disable CS0067
+    public class TestExec : IExecutive
     {
         public void Dispose()
         {
@@ -410,7 +484,6 @@ namespace ParallelSimTest
             throw new NotImplementedException();
         }
 
-#pragma warning disable 67 // Event not called. Love them clean builds!
         public event ExecutiveEvent ExecutiveStarted_SingleShot;
         public event ExecutiveEvent ExecutiveStarted;
         public event ExecutiveEvent ExecutiveStopped;
@@ -418,8 +491,6 @@ namespace ParallelSimTest
         public event ExecutiveEvent ExecutiveReset;
         public event EventMonitor EventAboutToFire;
         public event EventMonitor EventHasCompleted;
-#pragma warning restore 67 // Event not called. 
-
         public void SetStartTime(DateTime startTime)
         {
             throw new NotImplementedException();
@@ -482,39 +553,10 @@ namespace ParallelSimTest
 
         public IDetachableEventController CurrentEventController { get; }
         public ArrayList LiveDetachableEvents { get; }
-#pragma warning disable 67 // Event not called.
         public event ExecutiveEvent ExecutivePaused;
         public event ExecutiveEvent ExecutiveResumed;
         public event ExecutiveEvent ExecutiveAborted;
         public event ExecutiveEvent ClockAboutToChange;
-#pragma warning restore 162 // Event not called.
-
-        #region IParallelExec stubs.
-        public string Name { get; set; }
-
-        public void InitiateRollback(DateTime toWhen, Action doWhenRollbackCompletes = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PerformRollback(DateTime toWhen)
-        {
-            throw new NotImplementedException();
-        }
-        public event TimeEvent Rolledback;
-
-        public void WakeCallerAt(IParallelExec callerExec, DateTime @when, Action thenDoThis)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CoExecutor Coexecutor { get; set; }
-        public ManualResetEvent RollbackBlock { get; } = null;
-        public AutoResetEvent FutureReadBlock { get; } = null;
-        public Thread ExecThread { get; set; }
-        public bool IsBlockedInEventCall { get; set; }
-        public bool IsBlockedAtRollbackBlock { get; set; }
-        #endregion
     }
-
+#pragma warning restore CS0067
 }

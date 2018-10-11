@@ -13,7 +13,7 @@ namespace Highpoint.Sage.SimCore.Parallel
     /// </summary>
     public class CoExecutor
     {
-        private static bool m_diagnostics = true;
+        private static bool m_diagnostics = Diagnostics.DiagnosticAids.Diagnostics("CoExecutor");
         private int m_nExecsAtEndTime;
         private readonly IParallelExec[] m_execs;
         private readonly DateTime m_terminateAt;
@@ -120,7 +120,7 @@ namespace Highpoint.Sage.SimCore.Parallel
             }
         }
 
-        public bool m_executingRollback;
+        //public bool m_executingRollback;
         private void CoordinateRollback()
         {
 
@@ -140,20 +140,20 @@ namespace Highpoint.Sage.SimCore.Parallel
             List<IParallelExec> targets = new List<IParallelExec>();
             foreach (IParallelExec parallelExec in m_execs) if ( parallelExec.Now > m_rollbackTo ) targets.Add(parallelExec);
 
-            Console.WriteLine("Rolling back {0} to {1}.", StringOperations.ToCommasAndAndedList(targets, n=>n.Name), m_rollbackTo);
+            if ( m_diagnostics ) Console.WriteLine("Rolling back {0} to {1}.", StringOperations.ToCommasAndAndedList(targets, n=>n.Name), m_rollbackTo);
 
             // Unblock any blocked targets. They will advance to the Rollback Block. May have to keep doing this for a while,
-            // since, for example, many future-reads are multiple-iteration reads.
+            // since, for example, many future-reads are multiple-iteration reads (but good design suggests that they shouldn't be?
             targets.ForEach(n =>
             {
                 if (n.IsBlockedInEventCall)
                 {
-                    //Console.WriteLine("{0} is blocked in an event call.", n.Name);
+                    if (m_diagnostics) Console.WriteLine("{0} is blocked in an event call.", n.Name);
                     while (!n.IsBlockedAtRollbackBlock) n.FutureReadBlock.Set();
                 }
                 if (n.IsBlockedAtRollbackBlock)
                 {
-                    //Console.WriteLine("{0} is blocked at rollback block.", n.Name);
+                    if (m_diagnostics) Console.WriteLine("{0} is blocked at rollback block.", n.Name);
                 }
             });
 
@@ -161,9 +161,9 @@ namespace Highpoint.Sage.SimCore.Parallel
             while (m_execs.Any(n => !(n.IsBlockedAtRollbackBlock||n.IsBlockedInEventCall))){}
 
             // Now execute rollbacks on targets.
-            m_executingRollback = true;
+            //m_executingRollback = true;
             System.Threading.Tasks.Parallel.ForEach(targets, n => n.PerformRollback(m_rollbackTo));
-            m_executingRollback = false;
+            //m_executingRollback = false;
 
             m_rollbackTo = DateTime.MaxValue;
             nRollbacksCommanded = 0;
@@ -179,7 +179,7 @@ namespace Highpoint.Sage.SimCore.Parallel
         private void CoTerminate(IExecutive executive, object userData)
         {
             IParallelExec exec = (IParallelExec)executive;
-            Console.WriteLine("{0} asking to terminate at {1}", exec.Name, exec.Now);
+            if (m_diagnostics) Console.WriteLine("{0} asking to terminate at {1}", exec.Name, exec.Now);
             Interlocked.Increment(ref m_nExecsAtEndTime);
             if (m_nExecsAtEndTime == m_execs.Length) foreach (IParallelExec exec2 in m_execs) exec2.Stop();
             else Thread.Sleep(500);

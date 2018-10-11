@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Highpoint.Sage.SimCore.Parallel;
 using Highpoint.Sage.Randoms;
 using Highpoint.Sage.SimCore;
 using OfficeOpenXml;
-using InProcParallelLib;
+using ParallelSimSandbox.Lib;
 // ReSharper disable CoVariantArrayConversion
 
 namespace ParallelSimSandbox
@@ -18,10 +14,11 @@ namespace ParallelSimSandbox
     {
         public static void Main(string[] args)
         {
-#pragma warning disable 162 // Unreachable code.
             if (false)
             //if (true)
             {
+#pragma warning disable 0067
+                // This test is not working yet.
                 new ParallelSimTest.CoprocessingTester().TestCoprocessorInterleaving();
             }
             else
@@ -30,8 +27,6 @@ namespace ParallelSimSandbox
                 if (args?.Length > 0) howMany = int.Parse(args[0]);
                 RunMarketsAndFactoriesInParallel(howMany);
             }
-#pragma warning restore 162 // Unreachable code.
-
         }
 
         public static void RunMarketsAndFactoriesInParallel(int howMany)

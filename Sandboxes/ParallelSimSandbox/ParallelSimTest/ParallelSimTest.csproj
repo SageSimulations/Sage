@@ -51,7 +51,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BasicTests.cs" />
+    <Compile Include="ParallelSimTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,10 +59,13 @@
       <Project>{cdc5cbdb-b488-45b2-bced-008a3c351e0d}</Project>
       <Name>Sage4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InProcParallel.lib\InProcParallelLib.csproj">
+    <ProjectReference Include="..\ParallelSimSandbox.lib\ParallelSimSandboxLib.csproj">
       <Project>{8bf40a3d-84f3-433d-b8f2-3f057024a0b1}</Project>
       <Name>ParallelSimSandboxLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -5,7 +5,7 @@ using System.Threading;
 using Highpoint.Sage.Randoms;
 using Highpoint.Sage.SimCore;
 
-namespace InProcParallelLib
+namespace ParallelSimSandbox.Lib
 {
     public struct SKU
     {

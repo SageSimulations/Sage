@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Xml.Serialization;
 using Highpoint.Sage.SimCore;
+using Highpoint.Sage.Utility;
 
-namespace InProcParallelLib
+namespace ParallelSimSandbox.Lib
 {
 
     /// <summary>
@@ -73,7 +74,7 @@ namespace InProcParallelLib
         }
     }
 
-    public class TracedValue<T0>
+    public class TracedValue<T0> : IHasIdentity
     {
         // TODO: If an initial value is set with time t=0, and the simulation is begun, also at time t=0,
         // There could(?) be two entries at t=0 - the initial value, and the first set. The initial value
@@ -85,7 +86,6 @@ namespace InProcParallelLib
             public DateTime When;
             public T1 NewValue;
 
-
             public override string ToString()
             {
                 return string.Format("Changed to {0} at {1}", NewValue, When);
@@ -93,24 +93,37 @@ namespace InProcParallelLib
         }
 
         private static int LINEAR_VS_BINARY_SEARCH_BREAK_EVEN = 15;
-        private readonly IExecutive m_localExec;
+        private readonly IExecutive m_localExec = null;
+        private readonly IParallelExec m_localParallelExec = null;
         private readonly List<Delta<T0>> m_trace;
         private Delta<T0> m_currentValue;
+        private static readonly UniqueNameGenerator m_ung = new UniqueNameGenerator();
+        public static int NameGeneratorNumPlaces = 4;
+        public static string m_nameSeed = string.Format("TV<{0}>", typeof (T0).Name);
 
-        public TracedValue(IExecutive exec, T0 initialValue)
+        public TracedValue(IExecutive exec, T0 initialValue, string name = "", string description = "", Guid guid = default(Guid))
         {
+            Name = string.IsNullOrEmpty(name)?m_ung.GetNextName(m_nameSeed, NameGeneratorNumPlaces):name;
+            Description = description;
+            Guid = guid;
             m_localExec = exec;
-            IParallelExec tmp = m_localExec as IParallelExec;
-            if (tmp != null)
-            {
-                tmp.Rolledback += dt => ResetTo(dt);
-            }
-
+            m_localParallelExec = exec as IParallelExec;
             m_currentValue = new Delta<T0> { NewValue = initialValue, When = exec.Now };
-            m_trace = new List<Delta<T0>> { m_currentValue };
+            m_trace = new List<Delta<T0>> {m_currentValue};
+
+            if (m_localParallelExec != null)
+            {
+                m_localParallelExec.Rolledback += ResetTo;
+                Get = executive => m_getPT(executive as IParallelExec);
+            }
+            else
+            {
+                Get = otherExec => m_getSt(otherExec, m_localExec, this);
+            } 
+            
         }
 
-        public int Length { get { return m_trace.Count; } }
+        public int Length => m_trace.Count;
 
         private void ResetTo(DateTime toWhen)
         {
@@ -118,7 +131,7 @@ namespace InProcParallelLib
 
             int endIndex = m_trace.Count - 1;
             int length = 0;
-            for (; length < endIndex; length++)
+            for ( ; length < endIndex; length++ )
             {
                 if (m_trace[endIndex - length].When < toWhen) break;
             }
@@ -126,14 +139,28 @@ namespace InProcParallelLib
             m_currentValue = m_trace[endIndex - length];
         }
 
-        public T0 Get(IExecutive otherExec)
+        public Func<IExecutive, T0> Get { get; }
+
+        public string Description { get; }
+
+        public Guid Guid { get; }
+
+        public string Name { get; }
+
+        private Func<IExecutive, IExecutive, TracedValue<T0>, T0> m_getSt = (fromExec, localExec, tracedValue) =>
+        {
+            System.Diagnostics.Debug.Assert(fromExec.Equals(localExec));
+            return tracedValue.m_currentValue.NewValue;
+        };
+
+        private T0 m_getPT(IExecutive otherExec)
         {
             lock (this)
             {
                 if (otherExec == m_localExec) return m_currentValue.NewValue;
 
                 DateTime callersNow = otherExec.Now;
-                DateTime myNow = m_localExec.Now;
+                DateTime myNow = m_localParallelExec.Now;
                 T0 retval = default(T0);
 
                 if (callersNow <= myNow)
@@ -148,7 +175,7 @@ namespace InProcParallelLib
                     Monitor.Exit(this);
                     //Console.Out.WriteLine("{0} blocked in function call.", ((IParallelExec)otherExec).Name);
 
-                    ((IParallelExec)m_localExec).WakeCallerAt(ipoe, callersNow, () =>
+                    m_localParallelExec.WakeCallerAt(ipoe, callersNow, () =>
                     {
                         retval = ReadHistoricalValue(callersNow);
                     });
@@ -159,7 +186,7 @@ namespace InProcParallelLib
         }
 
         /// <summary>
-        /// Locals the set.
+        /// Sets the value from a thread on the local executive.
         /// </summary>
         /// <param name="value">The value.</param>
         private void LocalSet(T0 value)
@@ -175,7 +202,7 @@ namespace InProcParallelLib
             else
             {
                 // Otherwise, create a new tracedValue Delta and add it to the list.
-                m_currentValue = new Delta<T0> { When = m_localExec.Now, NewValue = value };
+                m_currentValue = new Delta<T0> {When = m_localExec.Now, NewValue = value};
                 m_trace.Add(m_currentValue);
             }
         }
@@ -183,17 +210,21 @@ namespace InProcParallelLib
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Set(T0 value, IExecutive otherExec)
         {
-            //if (m_localExec.Coexecutor.m_executingRollback) System.Diagnostics.Debugger.Break();
             if (otherExec == m_localExec)
             {
                 LocalSet(value);
             }
             else
             {
+                if (m_localParallelExec == null)
+                {
+                    throw new ArgumentException("TraceValue.Set that was declared with a non-parallel executive is being called from another executive. This is not supported.");
+                }
+
                 // Running on the thread of the REMOTE exec, so it won't advance.
                 // TODO: IS THIS OKAY? GOOBER ((IParallelExec)m_localExec).HoldToCurrentTimeslice();
                 DateTime remoteNow = otherExec.Now;
-                DateTime localNow = m_localExec.Now;
+                DateTime localNow = m_localParallelExec.Now;
 
                 // Someone in a remote domain is writing a value to a traced value in this domain.
                 if (remoteNow < localNow)
@@ -202,7 +233,7 @@ namespace InProcParallelLib
                     // write is to be done. After the rollback, m_localExec will be at the right time.
                     // We include ==, since as this method executes on remote exec's thread, local exec
                     // could be moving on.
-                    ((IParallelExec)m_localExec).InitiateRollback(remoteNow, () => LocalSet(value));
+                    ((IParallelExec)m_localParallelExec).InitiateRollback(remoteNow, () => LocalSet(value));
                 }
                 else if (remoteNow == localNow)
                 {
@@ -214,7 +245,7 @@ namespace InProcParallelLib
                 {
                     // The other exec is writing into the future of the local exec. Schedule an event at
                     // that future time to perform the write.
-                    m_localExec.RequestEvent((exec, data) => LocalSet(value), remoteNow);
+                    m_localParallelExec.RequestEvent((exec, data) => LocalSet(value), remoteNow);
                 }
                 // TODO: IS THIS OKAY? GOOBER ((IParallelExec)m_localExec).ReleaseFromCurrentTimeslice();
             }
@@ -223,7 +254,7 @@ namespace InProcParallelLib
         private T0 ReadHistoricalValue(DateTime fromWhatTime)
         {
             T0 retval = default(T0);
-            int cursor = m_trace.Count - 1;
+            int cursor = m_trace.Count-1;
 
             // If the cursor is already in the right place, return that value:
             // Either at the end of the list, or at the last location prior to the time at which value is requested.
@@ -238,14 +269,14 @@ namespace InProcParallelLib
                 if (cursor == 0) cursor = 1;
                 //Console.Out.WriteLine("0b.) Looking for value at {0}, it {1}.", fromWhatTime, m_trace[cursor-1]);
                 //Console.Out.Flush();
-                return m_trace[cursor - 1].NewValue; // The next one is at or after 'when.'
+                return m_trace[cursor-1].NewValue; // The next one is at or after 'when.'
             }
 
             // If it's a short list, use a simple linear search for the right place.
             int traceCount = m_trace.Count;
             if (traceCount < LINEAR_VS_BINARY_SEARCH_BREAK_EVEN)
             {
-                for (cursor = traceCount - 1; cursor > 0; cursor--)
+                for (cursor = traceCount-1; cursor > 0; cursor--)
                 {
                     if (m_trace[cursor].When == fromWhatTime)
                     {
@@ -274,7 +305,7 @@ namespace InProcParallelLib
             bool found = false;
             while (high - low > 1)
             {
-                int middle = (high + low) / 2;
+                int middle = (high + low)/2;
                 if (m_trace[middle].When < fromWhatTime)
                 {
                     if (m_trace[middle + 1].When >= fromWhatTime)

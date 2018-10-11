@@ -1,7 +1,7 @@
 using System;
 using Highpoint.Sage.Randoms;
 
-namespace InProcParallelLib
+namespace ParallelSimSandbox.Lib
 {
     public static class TotallyBogusConfigMechanism
     {
