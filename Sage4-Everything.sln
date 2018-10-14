@@ -25,16 +25,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InProcSerial", "Sandboxes\I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InProcParallel", "InProcParallel", "{3BE53127-0ABB-48B7-B5F4-C8841727BEF3}"
 	ProjectSection(SolutionItems) = preProject
-		Sandboxes\InProcParallel\README (InProcParallel).txt = Sandboxes\InProcParallel\README (InProcParallel).txt
+		Sandboxes\InProcParallel\ReadMe.txt = Sandboxes\InProcParallel\ReadMe.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InProcParallel", "Sandboxes\InProcParallel\InProcParallel\InProcParallel.csproj", "{B9EA4C60-BB1A-4F09-8434-B9A2AB95A2E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSimSandbox", "Sandboxes\InProcParallel\ParallelSimSandbox\ParallelSimSandbox.csproj", "{B9EA4C60-BB1A-4F09-8434-B9A2AB95A2E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InProcParallelLib", "Sandboxes\InProcParallel\InProcParallel.lib\InProcParallelLib.csproj", "{8BF40A3D-84F3-433D-B8F2-3F057024A0B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSimSandboxLib", "Sandboxes\InProcParallel\ParallelSimSandbox.lib\ParallelSimSandboxLib.csproj", "{8BF40A3D-84F3-433D-B8F2-3F057024A0B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InProcParallelTest", "Sandboxes\InProcParallel\InProcParallelTest\InProcParallelTest.csproj", "{30D5156C-BC6D-4AAC-871A-98DD64341AAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSimTest", "Sandboxes\InProcParallel\ParallelSimTest\ParallelSimTest.csproj", "{30D5156C-BC6D-4AAC-871A-98DD64341AAD}"
 EndProject
 Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Product|Any CPU = Debug_Product|Any CPU
 		Debug_Product|x64 = Debug_Product|x64
@@ -218,9 +222,5 @@ Global
 		{B9EA4C60-BB1A-4F09-8434-B9A2AB95A2E5} = {3BE53127-0ABB-48B7-B5F4-C8841727BEF3}
 		{8BF40A3D-84F3-433D-B8F2-3F057024A0B1} = {3BE53127-0ABB-48B7-B5F4-C8841727BEF3}
 		{30D5156C-BC6D-4AAC-871A-98DD64341AAD} = {3BE53127-0ABB-48B7-B5F4-C8841727BEF3}
-	EndGlobalSection
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal
