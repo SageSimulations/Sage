@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Highpoint.Sage.Utility;
 
 namespace Highpoint.Sage.SimCore.Parallel
@@ -13,13 +12,18 @@ namespace Highpoint.Sage.SimCore.Parallel
     /// </summary>
     public class CoExecutor
     {
-        private static bool m_diagnostics = Diagnostics.DiagnosticAids.Diagnostics("CoExecutor");
+        // ReSharper disable once InconsistentNaming
+        private static readonly bool m_diagnostics = Diagnostics.DiagnosticAids.Diagnostics("CoExecutor");
         private int m_nExecsAtEndTime;
         private readonly IParallelExec[] m_execs;
         private readonly DateTime m_terminateAt;
 
         private CoExecutor(IParallelExec[] execs, DateTime terminateAt)
         {
+            for (int i = 0; i < execs.Length; i++)
+            {
+                if (execs[i] == null) execs[i] = (IParallelExec)ExecFactory.Instance.CreateExecutive(ExecType.ParallelSimulation);
+            }
             m_execs = execs;
             m_terminateAt = terminateAt;
             foreach (IParallelExec executive in m_execs)
@@ -68,6 +72,7 @@ namespace Highpoint.Sage.SimCore.Parallel
             }
 
             // TODO: What if one of the execs finishes between the last line and this one?
+            // TODO: INVESTIGATE, can this line go after 'foreach (Thread t in threads) t.Start();'?
             foreach (Thread t in threads) t.Join();
 
             
@@ -90,90 +95,52 @@ namespace Highpoint.Sage.SimCore.Parallel
             return dt;
         }
 
-        private readonly object m_rollbackLock = new object();
-        private bool m_rollbackInProgress = false;
-        private DateTime m_rollbackTo = DateTime.MaxValue;
-        public int nRollbacksCommanded = 0;
-
+        List<IParallelExec> m_activeRollbackInitiators = new List<IParallelExec>(); 
         /// <summary>
-        /// 1.) Pause all executives.
-        /// 2.) For executives that are blocked at, or running after the rollback-to-time, unblock them, repeatedly, until all are waiting at the RollbackSynchronizer.
-        /// 3.) Command each to roll back to time toWhen.
+        /// All of the execs must stop during a rollback, for now. // TODO: Maybe figure out how not to halt everyone.
+        /// CoExecutor's m_rollbackLock ensures that only one rollback happens at a time.
+        /// 
+        /// 1.) Pause all executives somewhere (if it's a pending read block, and the exec needs to rollback, the
+        ///     Pending Read Block will be aborted.)
+        /// 2.) 
         /// </summary>
         /// <param name="toWhen">The time to which a rollback is desired.</param>
-        public void RollBack(DateTime toWhen)
+        public void RollBack(DateTime toWhen, IParallelExec onBehalfOf)
         {
-            nRollbacksCommanded++;
-            lock (m_rollbackLock)
+            IParallelExec localOnBehalfOf = onBehalfOf;
+            if (m_activeRollbackInitiators.Contains(localOnBehalfOf)) return;
+            m_activeRollbackInitiators.Add(localOnBehalfOf);
+            // "Close the door" for all executives so that they stop at the RollbackBlock.
+            foreach (IParallelExec executive in m_execs) executive.RollbackBlock.Reset();
+
+            // By executing this in another thread, we allow this one, an executive thread, to proceed to its rollback lock.
+            ThreadPool.QueueUserWorkItem(state =>
             {
-                bool isMaster = !m_rollbackInProgress;
-                m_rollbackInProgress = true;
+                // Wait until all execs have stopped somewhere. Could be pending read block, or could be rollback block.
+                while (m_execs.Any(n => !(n.IsBlockedAtRollbackBlock || n.IsBlockedInPendingReadCall))) {/* NOOP */}
 
-                m_rollbackTo = DateTimeOperations.Min(m_rollbackTo, toWhen);
+                // Create the list of execs that need to roll back.
+                List<IParallelExec> targets = m_execs.Where(parallelExec => parallelExec.Now > toWhen).ToList();
 
-                // Tell all of the execs to stop.
-                if (isMaster)
+                if (m_diagnostics) Console.WriteLine("Rolling back {0} to {1}.", StringOperations.ToCommasAndAndedList(targets, n => n.Name), toWhen);
+
+                foreach (IParallelExec target in targets)
                 {
-                    foreach (IParallelExec executive in m_execs) executive.RollbackBlock.Reset();
-                    ThreadPool.QueueUserWorkItem(state => CoordinateRollback());
+                    // Any target executive that's not at the Rollback Block is stuck at the Pending Read Block. 
+                    // The pending read block must be aborted so that it can advance to the Rollback Block.
+                    while (!target.IsBlockedAtRollbackBlock) target.PendingReadBlock.Set();
                 }
-            }
-        }
 
-        //public bool m_executingRollback;
-        private void CoordinateRollback()
-        {
+                // Now execute rollbacks on targets.
+                System.Threading.Tasks.Parallel.ForEach(targets, n => n.PerformRollback(toWhen));
 
-            // Wait until all execs have stopped.
-            bool allExecsAreBlocked;
-            do
-            {
-                allExecsAreBlocked = true;
-                foreach (IParallelExec parallelExec in m_execs)
-                {
-                    allExecsAreBlocked &= (parallelExec.IsBlockedInEventCall || parallelExec.IsBlockedAtRollbackBlock);
-                }
-            } while (!allExecsAreBlocked);
-            // All threads are waiting...
+                // All tasks have completed rollback. Resume running.
+                foreach (IParallelExec executive in m_execs) executive.RollbackBlock.Set();
 
-            // Create the list of execs that need to roll back.
-            List<IParallelExec> targets = new List<IParallelExec>();
-            foreach (IParallelExec parallelExec in m_execs) if ( parallelExec.Now > m_rollbackTo ) targets.Add(parallelExec);
+                m_activeRollbackInitiators.Remove(localOnBehalfOf);
 
-            if ( m_diagnostics ) Console.WriteLine("Rolling back {0} to {1}.", StringOperations.ToCommasAndAndedList(targets, n=>n.Name), m_rollbackTo);
-
-            // Unblock any blocked targets. They will advance to the Rollback Block. May have to keep doing this for a while,
-            // since, for example, many future-reads are multiple-iteration reads (but good design suggests that they shouldn't be?
-            targets.ForEach(n =>
-            {
-                if (n.IsBlockedInEventCall)
-                {
-                    if (m_diagnostics) Console.WriteLine("{0} is blocked in an event call.", n.Name);
-                    while (!n.IsBlockedAtRollbackBlock) n.FutureReadBlock.Set();
-                }
-                if (n.IsBlockedAtRollbackBlock)
-                {
-                    if (m_diagnostics) Console.WriteLine("{0} is blocked at rollback block.", n.Name);
-                }
-            });
-
-            // Wait for all targets to stop.
-            while (m_execs.Any(n => !(n.IsBlockedAtRollbackBlock||n.IsBlockedInEventCall))){}
-
-            // Now execute rollbacks on targets.
-            //m_executingRollback = true;
-            System.Threading.Tasks.Parallel.ForEach(targets, n => n.PerformRollback(m_rollbackTo));
-            //m_executingRollback = false;
-
-            m_rollbackTo = DateTime.MaxValue;
-            nRollbacksCommanded = 0;
-            m_rollbackInProgress = false;
-
-            // All tasks have completed rollback. Resume running.
-            foreach (IParallelExec executive in m_execs)
-            {
-                executive.RollbackBlock.Set();
-            }
+            }); // Allows this thread to proceed to its RollbackBlock.
+            
         }
 
         private void CoTerminate(IExecutive executive, object userData)

@@ -394,20 +394,88 @@ namespace Highpoint.Sage.SimCore {
 
     public delegate void TimeEvent(DateTime dt);
 
+    /// <summary>
+    /// Interface IParallelExec
+    /// </summary>
+    /// <seealso cref="Highpoint.Sage.SimCore.IExecutive" />
     public interface IParallelExec : IExecutive
     {
         string Name { get; set; }
 
+        /// <summary>
+        /// Called when another executive (which is behind this one) wants this one to roll back to
+        /// its time point, so it can effect a change on this executive's world-chunk.
+        /// </summary>
+        /// <param name="toWhen">To when.</param>
+        /// <param name="doWhenRollbackCompletes">The do when rollback completes.</param>
         void InitiateRollback(DateTime toWhen, Action doWhenRollbackCompletes = null);
+        /// <summary>
+        /// Called by the CoExecutor to initiate the actual rollback.
+        /// </summary>
+        /// <param name="toWhen">To when.</param>
         void PerformRollback(DateTime toWhen);
-        event TimeEvent Rolledback;
+        /// <summary>
+        /// Occurs when this executive is [rolled back].
+        /// </summary>
+        event TimeEvent RolledBack;
+        /// <summary>
+        /// Blocks the calling thread until this executive has reached the specified time, then 
+        /// performs the specified action, and finally releases the calling thread. Called by 
+        /// another executive when that other executive tries to read a value at its time, when 
+        /// the called (this) executive has not yet reached the calling executive's time.
+        /// </summary>
+        /// <param name="callerExec">The caller execute.</param>
+        /// <param name="when">The when.</param>
+        /// <param name="thenDoThis">The then do this.</param>
         void WakeCallerAt(IParallelExec callerExec, DateTime @when, Action thenDoThis);
+        /// <summary>
+        /// Gets or sets the coexecutor that is assigned to managing all of the parallel executives
+        /// running in the same simulation.
+        /// </summary>
+        /// <value>The coexecutor.</value>
         CoExecutor Coexecutor { get; set; }
+        /// <summary>
+        /// Gets the rollback block.
+        /// </summary>
+        /// <value>The rollback block.</value>
         ManualResetEvent RollbackBlock { get; }
-        AutoResetEvent FutureReadBlock { get; }
+        /// <summary>
+        /// Gets the pending read block.
+        /// </summary>
+        /// <value>The pending read block.</value>
+        AutoResetEvent PendingReadBlock { get; }
+        /// <summary>
+        /// Gets or sets the execute thread used by this executive. Only used by the Coexecutor.
+        /// </summary>
+        /// <value>The execute thread.</value>
         Thread ExecThread { get; set; }
-        bool IsBlockedInEventCall { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this executive instance is blocked in a read call 
+        /// into another time domain that has not reached this executive's time yet.
+        /// </summary>
+        /// <value><c>true</c> if this instance is blocked in event call; otherwise, <c>false</c>.</value>
+        bool IsBlockedInPendingReadCall { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is blocked at the rollback block, meaning
+        /// that it is awaiting execution of a rollback it knows it has been commanded to experience.
+        /// </summary>
+        /// <value><c>true</c> if this instance is blocked at rollback block; otherwise, <c>false</c>.</value>
         bool IsBlockedAtRollbackBlock { get; set; }
+
+        /// <summary>
+        /// Called from another executive's thread to lock this executive. If this executive is stuck in a
+        /// pending read call, this may lead to a deadlock.
+        /// </summary>
+        void LockExecutive();
+
+        /// <summary>
+        /// Called from another executive's thread to release this executive.
+        /// </summary>
+        void ReleaseExecutive();
+
+        void SuspendExecLock();
+        void ResumeExecLock();
+
     }
 
     /// <summary>
