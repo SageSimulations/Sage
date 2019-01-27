@@ -890,6 +890,15 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             ExecEvent execEvent = (ExecEvent)p[1];
             execEvent.ExecEventReceiver(executive, execEvent.UserData);
         }
+
+        public void SynchronizeTo(IExecutive callersExecutive, SyncMode readWrite, Action action)
+        {
+            if (callersExecutive != this)
+                throw new InvalidOperationException(
+                    string.Format("Executive in use ({0}) is not capable of synchronizing with another executive.",
+                        this.GetType().FullName));
+        }
+
     }
 
     /// <summary>

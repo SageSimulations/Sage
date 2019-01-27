@@ -309,12 +309,7 @@ namespace Highpoint.Sage.SimCore.Parallel
             m_startTime = startTime;
         }
 
-        public bool IsBlockedInPendingReadCall { get; set; }
-        public bool IsBlockedAtRollbackBlock { get; set; }
-
-        public ManualResetEvent RollbackBlock { get; } = new ManualResetEvent(true);
-        public AutoResetEvent PendingReadBlock { get; } = new AutoResetEvent(false);
-
+        private bool m_cursorIsAtExecLock = false;
         /// <summary>
         /// Starts the executive. 
         /// </summary>
@@ -415,14 +410,12 @@ namespace Highpoint.Sage.SimCore.Parallel
                     {
                         while (m_execEventBuffer.Any()) Enqueue(m_execEventBuffer.Dequeue());
                     }
-
+           
                     Monitor.Exit(m_execLock);
-                    // This is the only time that other callers can 
-
-                    IsBlockedAtRollbackBlock = true;
-                    RollbackBlock.WaitOne();
-                    IsBlockedAtRollbackBlock = false;
+                    m_cursorIsAtExecLock = true;
+                    //Console.WriteLine("{0} is{1} blocked at ExecLock.", this.Name, IsBlockedAtExecLock?"": " not");
                     m_execTimeBlock.WaitOne();
+                    m_cursorIsAtExecLock = false;
                     Monitor.Enter(m_execLock);
                 }
                 Monitor.Exit(m_execLock);
@@ -448,9 +441,6 @@ namespace Highpoint.Sage.SimCore.Parallel
             Console.WriteLine("{0} finished at {1}", Name, Now);
 
         }
-
-        public void SuspendExecLock() { Monitor.Exit(m_execLock); }
-        public void ResumeExecLock() { Monitor.Enter(m_execLock); }
 
         //private void Dump(TextWriter @out)
         //{
@@ -628,45 +618,43 @@ namespace Highpoint.Sage.SimCore.Parallel
         private static string s_aveMessage2 =
             "ReleaseExecutive() was called on {0}, but it was not locked.";
 
-        /// <summary>
-        /// Wakes the calling thread when this executive's 'Now' reaches the specified time.
-        /// NOTE: It is a precondition that the local exec's thread must be locked, so the local
-        /// time is known and reliable.
-        /// </summary>
-        /// <param name="callingExec">The executive whose exec thread this call was made on.</param>
-        /// <param name="when">The time when this call is to return.</param>
-        /// <param name="andDoThis">What to do immediately prior to returning.</param>
-        /// <exception cref="DeadlockException"></exception>
-        public void WakeCallerAt(IParallelExec callingExec, DateTime when, Action andDoThis)
-        {
-            if (Thread.CurrentThread == m_execThread) throw new DeadlockException(s_dleMessage);
-            if (Now >= when)
-            {
-                andDoThis();
-            }
-            else
-            {
-                // This exective is at T0, and someone else wants to perform an action at T1,
-                // where T1 > T0. We use the calling executive's PendingReadBlock
-                callingExec.IsBlockedInPendingReadCall = true; // TODO: THIS IS A RACE CONDITION WAITING TO HAPPEN!
-                RequestEventAtOrAfter((exec, data) =>
-                {
-                    //Console.Out.WriteLine("{0} unblocked in function call.", Name);
-                    andDoThis?.Invoke();
-                    callingExec.PendingReadBlock.Set();
+        ///// <summary>
+        ///// Wakes the calling thread when this executive's 'Now' reaches the specified time.
+        ///// NOTE: It is a precondition that the local exec's thread must be locked, so the local
+        ///// time is known and reliable.
+        ///// </summary>
+        ///// <param name="callingExec">The executive whose exec thread this call was made on.</param>
+        ///// <param name="when">The time when this call is to return.</param>
+        ///// <param name="andDoThis">What to do immediately prior to returning.</param>
+        ///// <exception cref="DeadlockException"></exception>
+        //public void WakeCallerAt(IParallelExec callingExec, DateTime when, Action andDoThis)
+        //{
+        //    if (Thread.CurrentThread == m_execThread) throw new DeadlockException(s_dleMessage);
+        //    if (Now >= when)
+        //    {
+        //        andDoThis();
+        //    }
+        //    else
+        //    {
+        //        // This exective is at T0, and someone else wants to perform an action at T1,
+        //        // where T1 > T0. We use the calling executive's PendingReadBlock
+        //        RequestEventAtOrAfter((exec, data) =>
+        //        {
+        //            //Console.Out.WriteLine("{0} unblocked in function call.", Name);
+        //            andDoThis?.Invoke();
+        //            callingExec.PendingReadBlock.Set();
 
-                }, when, () =>
-                {
-                    //Console.Out.WriteLine("{0} unblocked in function call.", Name);
-                    callingExec.PendingReadBlock.Set();
-                });
+        //        }, when, () =>
+        //        {
+        //            //Console.Out.WriteLine("{0} unblocked in function call.", Name);
+        //            callingExec.PendingReadBlock.Set();
+        //        });
 
-                // Block this thread until someone unblocks it. 
-                // (This will probably be the completed read, though it could also be a read-abort on rollback.)
-                callingExec.PendingReadBlock.WaitOne();
-                callingExec.IsBlockedInPendingReadCall = false;
-            }
-        }
+        //        // Block this thread until someone unblocks it. 
+        //        // (This will probably be the completed read, though it could also be a read-abort on rollback.)
+        //        callingExec.PendingReadBlock.WaitOne();
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets the coexecutor that is assigned to managing all of the parallel executives
@@ -675,28 +663,18 @@ namespace Highpoint.Sage.SimCore.Parallel
         /// <value>The coexecutor.</value>
         public CoExecutor Coexecutor { get; set; }
 
-        /// <summary>
-        /// Called by another executive (which is behind this one) when it wants this one to
-        /// roll back to its time point, so it can effect a change on this executive's world-chunk.
-        /// </summary>
-        /// <param name="toWhen">To when.</param>
-        /// <param name="thenDoThis">The then do this.</param>
-        public void InitiateRollback(DateTime toWhen, Action thenDoThis = null)
-        {
-            //if (m_inPostRollbackActions) System.Diagnostics.Debugger.Break();
-            //Console.Out.WriteLine("{0} initiating a rollback to {1}.", this.Name, toWhen);
-            //Console.Out.Flush();
-            if (thenDoThis != null)
-            {
-                lock (m_actionsOnRollback)
-                {
-                    //if ( m_iterating ) System.Diagnostics.Debugger.Break();
-                    //Console.Out.Write(".");
-                    m_actionsOnRollback.Add(thenDoThis);
-                }
-            }
+        public bool IsBlockedPending { get { return !PendingBlock.WaitOne(0); } }
+        public bool IsBlockedAtExecLock { get { return m_cursorIsAtExecLock && !m_execTimeBlock.WaitOne(0); } }
 
-            Coexecutor.RollBack(toWhen, onBehalfOf: this);
+        public bool IsRollbackRequester { get; set; }
+        public bool IsSynching { get; set; }
+
+        public ManualResetEvent RollbackBlock { get; } = new ManualResetEvent(true);
+        public ManualResetEvent PendingBlock { get; } = new ManualResetEvent(true);
+
+        public void InitiateRollback(DateTime toWhen, Action doWhenRollbackCompletes = null)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -711,7 +689,7 @@ namespace Highpoint.Sage.SimCore.Parallel
             {
                 lock (m_actionsOnRollback)
                 {
-                    if (IsBlockedInPendingReadCall) System.Diagnostics.Debugger.Break();
+                    if (IsBlockedPending) System.Diagnostics.Debugger.Break();
 
                     // If there are multiple executives coexecuting, then we will delete any rollback targets prior
                     // to the earliest-running executive.
@@ -764,22 +742,18 @@ namespace Highpoint.Sage.SimCore.Parallel
 
                     m_now = toWhen;
 
-                    m_iterating = true;
                     //Console.Out.WriteLine("{0} performing {1} post-rollback actions.", Name, m_actionsOnRollback.Count);
                     //Console.Out.Flush();
                     foreach (Action action in m_actionsOnRollback)
                     {
                         action();
                     }
-                    m_iterating = false;
                     m_actionsOnRollback.Clear();
                 }
             }
 
 
-            m_inPostRollbackActions = true;
-            RolledBack?.Invoke(m_now);
-            m_inPostRollbackActions = false;
+            RolledBack?.Invoke(m_now);  // TODO: 
 
             //Console.WriteLine("{0} COMPLETING a rollback to {1}, with {2} PRAs remaining.", this.Name, toWhen, m_actionsOnRollback.Count); // (Post-Rollback Actions)
 
@@ -789,9 +763,6 @@ namespace Highpoint.Sage.SimCore.Parallel
                 m_actionsOnRollback.First()();
             }    
         }
-
-        private bool m_inPostRollbackActions;
-        private bool m_iterating;
 
         //public void PurgePastEvents(DateTime priorTo)
         //{
@@ -895,25 +866,83 @@ namespace Highpoint.Sage.SimCore.Parallel
         }
 
         private int m_execTimeLocks;
+
+        private readonly object m_execLockLock = new object();
+
         /// <summary>
         /// Called by another executive to lock this one. When it returns, the executive is at a
         /// consistent place in the event execution loop.
         /// </summary>
         public void LockExecutive()
         {
-            // Calling thread will wait here until the called exec is at the execLock.
-            lock (m_execLock)
+            lock (m_execLockLock)
             {
-                Console.WriteLine("Locked {0}, #locks = {1}", this.Name, m_execTimeLocks+1);
-                if (Interlocked.Increment(ref m_execTimeLocks) == 1) m_execTimeBlock.Reset();
+                m_execTimeLocks++;
+                Console.WriteLine("Locked {0}, #locks = {1}", Name, m_execTimeLocks);
+                if (m_execTimeLocks == 1)
+                {
+                    m_execTimeBlock.Reset();
+                    Console.WriteLine(!m_execTimeBlock.WaitOne(0));
+                }
             }
         }
 
-        public void ReleaseExecutive()
+        public void ReleaseExecutive(bool @override = false)
         {
-            if (m_execTimeLocks==0) throw new AccessViolationException(string.Format(s_aveMessage2, this));
-            Console.WriteLine("Unlocked {0}, #locks = {1}", this.Name, m_execTimeLocks - 1);
-            if (Interlocked.Decrement(ref m_execTimeLocks) == 0) m_execTimeBlock.Set();
+            lock (m_execLockLock)
+            {
+                if (m_execTimeLocks == 0) throw new AccessViolationException(string.Format(s_aveMessage2, this));
+                m_execTimeLocks--;
+                Console.WriteLine("Unlocked {0}, #locks = {1}", Name, m_execTimeLocks - 1);
+                if (@override)
+                {
+                    m_execTimeLocks = 0;
+                    m_execTimeBlock.Set();
+                }
+                else
+                {
+                    if (m_execTimeLocks == 0) m_execTimeBlock.Set();
+                }
+            }
+        }
+
+        public void SuspendExecLock() { Monitor.Exit(m_execLock); }
+        public void ResumeExecLock() { Monitor.Enter(m_execLock); }
+
+        public void SynchronizeTo(IExecutive callersExecutive, SyncMode mode, Action actionToSynchronize)
+        {
+
+            if (callersExecutive == this)
+            {
+                actionToSynchronize();
+            }
+            else
+            {
+                IParallelExec callersExecAsParallel = callersExecutive as IParallelExec;
+                System.Diagnostics.Debug.Assert(callersExecAsParallel != null);
+                CoExecutor.SyncAction action = Coexecutor.Synchronize(callersExecAsParallel, this, mode);
+                switch (action)
+                {
+                    case CoExecutor.SyncAction.Execute:
+                        actionToSynchronize();
+                        break;
+                    case CoExecutor.SyncAction.Abort:
+                        break;
+                    case CoExecutor.SyncAction.Defer:
+                        // Caller's exec past the time of the called executive. Caller must wait until the
+                        // called executive catches up, then do the thing.
+                        RequestEvent((exec, data) => { actionToSynchronize();
+                                                       callersExecAsParallel.PendingBlock.Set(); // Unblock when the called exec catches up.
+                        }, callersExecutive.Now);
+                        callersExecAsParallel.PendingBlock.Reset(); // Reset will cause the thread to block at WaitOne().
+                        callersExecAsParallel.PendingBlock.WaitOne(); // ...and block.
+                        break;
+                    default:
+                        break;
+                }
+                // Successful synchronization.
+                Coexecutor.ReleaseSync(callersExecAsParallel, this);
+            }
         }
     }
 

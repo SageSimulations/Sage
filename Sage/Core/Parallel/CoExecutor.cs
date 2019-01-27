@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using Highpoint.Sage.Utility;
 
@@ -85,64 +86,6 @@ namespace Highpoint.Sage.SimCore.Parallel
             new CoExecutor(execs, terminateAt).StartAll();
         }
 
-        public DateTime GetEarliestExecDateTime()
-        {
-            DateTime dt = DateTime.MaxValue;
-            foreach (IParallelExec executive in m_execs)
-            {
-                dt = DateTimeOperations.Min(dt, executive.Now);
-            }
-            return dt;
-        }
-
-        List<IParallelExec> m_activeRollbackInitiators = new List<IParallelExec>(); 
-        /// <summary>
-        /// All of the execs must stop during a rollback, for now. // TODO: Maybe figure out how not to halt everyone.
-        /// CoExecutor's m_rollbackLock ensures that only one rollback happens at a time.
-        /// 
-        /// 1.) Pause all executives somewhere (if it's a pending read block, and the exec needs to rollback, the
-        ///     Pending Read Block will be aborted.)
-        /// 2.) 
-        /// </summary>
-        /// <param name="toWhen">The time to which a rollback is desired.</param>
-        public void RollBack(DateTime toWhen, IParallelExec onBehalfOf)
-        {
-            IParallelExec localOnBehalfOf = onBehalfOf;
-            if (m_activeRollbackInitiators.Contains(localOnBehalfOf)) return;
-            m_activeRollbackInitiators.Add(localOnBehalfOf);
-            // "Close the door" for all executives so that they stop at the RollbackBlock.
-            foreach (IParallelExec executive in m_execs) executive.RollbackBlock.Reset();
-
-            // By executing this in another thread, we allow this one, an executive thread, to proceed to its rollback lock.
-            ThreadPool.QueueUserWorkItem(state =>
-            {
-                // Wait until all execs have stopped somewhere. Could be pending read block, or could be rollback block.
-                while (m_execs.Any(n => !(n.IsBlockedAtRollbackBlock || n.IsBlockedInPendingReadCall))) {/* NOOP */}
-
-                // Create the list of execs that need to roll back.
-                List<IParallelExec> targets = m_execs.Where(parallelExec => parallelExec.Now > toWhen).ToList();
-
-                if (m_diagnostics) Console.WriteLine("Rolling back {0} to {1}.", StringOperations.ToCommasAndAndedList(targets, n => n.Name), toWhen);
-
-                foreach (IParallelExec target in targets)
-                {
-                    // Any target executive that's not at the Rollback Block is stuck at the Pending Read Block. 
-                    // The pending read block must be aborted so that it can advance to the Rollback Block.
-                    while (!target.IsBlockedAtRollbackBlock) target.PendingReadBlock.Set();
-                }
-
-                // Now execute rollbacks on targets.
-                System.Threading.Tasks.Parallel.ForEach(targets, n => n.PerformRollback(toWhen));
-
-                // All tasks have completed rollback. Resume running.
-                foreach (IParallelExec executive in m_execs) executive.RollbackBlock.Set();
-
-                m_activeRollbackInitiators.Remove(localOnBehalfOf);
-
-            }); // Allows this thread to proceed to its RollbackBlock.
-            
-        }
-
         private void CoTerminate(IExecutive executive, object userData)
         {
             IParallelExec exec = (IParallelExec)executive;
@@ -153,5 +96,151 @@ namespace Highpoint.Sage.SimCore.Parallel
             Interlocked.Decrement(ref m_nExecsAtEndTime);
             exec.RequestEvent(CoTerminate, m_terminateAt);
         }
+
+        private readonly object m_lock1 = new object();
+
+
+        internal SyncAction Synchronize(IParallelExec callingExecutive, IParallelExec calledExecutive, SyncMode mode)
+        {
+            SyncAction retval;
+
+            callingExecutive.IsSynching = true;
+            lock (m_lock1)
+            {
+                calledExecutive.LockExecutive();
+                while (!calledExecutive.IsBlockedPending
+                       && !calledExecutive.IsBlockedAtExecLock
+                       && !calledExecutive.IsRollbackRequester
+                       && !calledExecutive.IsSynching)
+                {
+                }
+                // At this point, both executives are blocked somewhere. (Calling exec is on this thread.)
+
+                DateTime callersTime = callingExecutive.Now;
+                DateTime calleesTime = calledExecutive.Now;
+
+                switch (mode)
+                {
+                    case SyncMode.Read:
+                        if (callersTime > calleesTime) retval = SyncAction.Defer; // Until caller's time in callee.
+                        else retval = SyncAction.Execute;
+                        break;
+                    case SyncMode.Write: // Write and ReadWrite are both the same.
+                    case SyncMode.ReadWrite:
+                        if (callersTime <= calleesTime)
+                        {
+                            // Pause the caller until the callee catches up, and then write into present time.
+                            retval = SyncAction.Defer; // Until caller's time in callee.
+                        }
+                        else
+                        {
+                            // We have to roll back the callee to the callers time. (And everyone else, too, for now.)
+                            callingExecutive.IsRollbackRequester = true;
+                            InitiateRollBack();
+                            callingExecutive.RollbackBlock.WaitOne();
+                            retval = SyncAction.Execute;
+                        }
+                        break;
+                    case SyncMode.Execute:
+                    // caller is trying to add an event to called executive. This requires that
+                    // the caller's requested event posting time must be at or after the 'Now' time
+                    // of the called executive. Since the caller wouldn't try to schedule an event
+                    // in its own past, that means that the caller's 'Now' must be at or after that
+                    // of the called executive, in order to be sure that it's scheduling for the called
+                    // executive's future.
+                        if (callersTime >= calleesTime)
+                        {
+                            retval = SyncAction.Execute;
+                        }
+                        else
+                        {
+                            // caller's time is earlier than the callee's. Roll back the callee.
+                            calledExecutive.IsRollbackRequester = true;
+                            InitiateRollBack();
+                            // Still need calling executive (whose thread we're on) to await completion of the rollback.
+                            callingExecutive.RollbackBlock.WaitOne();
+                            retval = SyncAction.Execute;
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            callingExecutive.IsSynching = false;
+            return retval;
+        }
+
+        internal void ReleaseSync(IParallelExec callersExecutive, IParallelExec calledExecutive)
+        {
+            if (calledExecutive.IsBlockedAtExecLock) calledExecutive.ReleaseExecutive();
+        }
+
+        internal DateTime GetEarliestExecDateTime()
+        {
+            return m_execs.Aggregate(DateTime.MaxValue, (current, executive) => DateTimeOperations.Min(current, executive.Now));
+        }
+
+        private bool m_rollbackRequested = false;
+
+        /// <summary>
+        /// Stops all execs. Any whose "now" is past the earliest time of any rollback requesters is rolled back.
+        /// </summary>
+        private void InitiateRollBack()
+        {
+            if (m_rollbackRequested) return;
+            lock (this)
+            {
+                m_rollbackRequested = true;
+                // By executing this in another thread, we allow this one, an executive thread, to proceed to its rollback lock.
+                ThreadPool.QueueUserWorkItem(state =>
+                {
+                    // Wait until all execs have stopped somewhere. Could be pending read block, or could be rollback block.
+                    while (m_execs.Any(n => !(n.IsRollbackRequester || n.IsBlockedPending || n.IsBlockedAtExecLock)))
+                    {/* NOOP */}
+
+                    DateTime toWhen = m_execs.Where(exec => exec.IsRollbackRequester).Aggregate(DateTime.MaxValue, (current, exec) => Utility.DateTimeOperations.Min(current, exec.Now));
+
+                    // Create the list of execs that need to roll back.
+                    List<IParallelExec> targets = m_execs.Where(parallelExec => parallelExec.Now > toWhen).ToList();
+
+                    if (m_diagnostics)
+                        Console.WriteLine("Rolling back {0} to {1}.",
+                            StringOperations.ToCommasAndAndedList(targets, n => n.Name), toWhen);
+
+                    foreach (IParallelExec target in targets)
+                    {
+                        // Any target executive that's not at the Rollback Block is stuck at the Pending Read Block. 
+                        // The pending read block must be aborted so that it can advance to the Exec Lock.
+                        if (target.IsBlockedPending) {
+                            target.PendingBlock.Set();
+                            while (!target.IsBlockedAtExecLock) {}
+                        }
+                    }
+
+                    // Now execute rollbacks on targets.
+                    System.Threading.Tasks.Parallel.ForEach(targets, n => n.PerformRollback(toWhen));
+
+                    m_rollbackRequested = false;
+                });
+            }
+        }
+
+        /// <summary>
+        /// All of the execs must stop during a rollback, for now. // TODO: Maybe figure out how not to halt everyone.
+        /// 
+        /// 1.) Pause all executives somewhere (if it's a pending read block, and the exec needs to rollback, the
+        ///     Pending Read Block will be aborted.)
+        /// 2.) 
+        /// </summary>
+        /// <param name="toWhen">The time to which a rollback is desired.</param>
+        private void RollBack(DateTime toWhen)
+        {
+
+
+
+        }
+
+
+        public enum SyncAction { Execute, Abort, Defer }
     }
 }

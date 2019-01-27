@@ -774,6 +774,15 @@ namespace Highpoint.Sage.SimCore {
 
         #endregion
 
+        public void SynchronizeTo(IExecutive callersExecutive, SyncMode readWrite, Action action)
+        {
+            if (callersExecutive != this)
+                throw new InvalidOperationException(
+                    string.Format("Executive in use ({0}) is not capable of synchronizing with another executive.",
+                        this.GetType().FullName));
+        }
+
+
     }
 
     [Serializable]
