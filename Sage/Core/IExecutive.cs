@@ -407,6 +407,7 @@ namespace Highpoint.Sage.SimCore {
 
 
         string Name { get; set; }
+        string Tag { get; set; }
 
         /// <summary>
         /// Called when another executive (which is behind this one) wants this one to roll back to

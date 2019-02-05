@@ -31,6 +31,7 @@ namespace Highpoint.Sage.SimCore.Parallel
     /// <seealso cref="Highpoint.Sage.SimCore.IParallelExec" />
     internal class ParallelExecutive : IParallelExec
     {
+        private static readonly bool m_diagnostics = Diagnostics.DiagnosticAids.Diagnostics("ParallelExecutive");
         private readonly ManualResetEvent m_execTimeBlock = new ManualResetEvent(true);
         private object m_execLock = new object();
 
@@ -362,6 +363,7 @@ namespace Highpoint.Sage.SimCore.Parallel
                 Monitor.Enter(m_execLock);
                 while (m_numNonDaemonEventsPending > 0 && !m_stopRequested)
                 {
+                    Console.Write(Tag);
                     m_currentEvent = m_futureEvents.First().Key;
 
                     if (m_currentEvent.When.Ticks < m_now.Ticks)
@@ -607,6 +609,8 @@ namespace Highpoint.Sage.SimCore.Parallel
 
         public string Name { get; set; }
 
+        public string Tag { get; set; }
+
         //private int m_parallelWaiters;
         //public void AddWaiter() => Interlocked.Increment(ref m_parallelWaiters);
         //public void RemoveWaiter() => Interlocked.Decrement(ref m_parallelWaiters);
@@ -689,7 +693,11 @@ namespace Highpoint.Sage.SimCore.Parallel
             {
                 lock (m_actionsOnRollback)
                 {
-                    if (IsBlockedPending) System.Diagnostics.Debugger.Break();
+                    if (IsBlockedPending)
+                    {
+                        string tmp = Name;
+                        System.Diagnostics.Debugger.Break();
+                    }
 
                     // If there are multiple executives coexecuting, then we will delete any rollback targets prior
                     // to the earliest-running executive.
@@ -878,12 +886,8 @@ namespace Highpoint.Sage.SimCore.Parallel
             lock (m_execLockLock)
             {
                 m_execTimeLocks++;
-                Console.WriteLine("Locked {0}, #locks = {1}", Name, m_execTimeLocks);
-                if (m_execTimeLocks == 1)
-                {
-                    m_execTimeBlock.Reset();
-                    Console.WriteLine(!m_execTimeBlock.WaitOne(0));
-                }
+                if ( m_diagnostics ) Console.WriteLine("Locked {0}, #locks = {1}", Name, m_execTimeLocks);
+                if (m_execTimeLocks == 1) m_execTimeBlock.Reset();
             }
         }
 
@@ -893,7 +897,7 @@ namespace Highpoint.Sage.SimCore.Parallel
             {
                 if (m_execTimeLocks == 0) throw new AccessViolationException(string.Format(s_aveMessage2, this));
                 m_execTimeLocks--;
-                Console.WriteLine("Unlocked {0}, #locks = {1}", Name, m_execTimeLocks - 1);
+                if (m_diagnostics) Console.WriteLine("Unlocked {0}, #locks = {1}", Name, m_execTimeLocks);
                 if (@override)
                 {
                     m_execTimeLocks = 0;
@@ -919,6 +923,7 @@ namespace Highpoint.Sage.SimCore.Parallel
             else
             {
                 IParallelExec callersExecAsParallel = callersExecutive as IParallelExec;
+                if (m_diagnostics) Console.WriteLine($"Entering synchronization - caller is {callersExecAsParallel.Name}, and called exec is {this.Name}.");
                 System.Diagnostics.Debug.Assert(callersExecAsParallel != null);
                 CoExecutor.SyncAction action = Coexecutor.Synchronize(callersExecAsParallel, this, mode);
                 switch (action)
@@ -942,6 +947,7 @@ namespace Highpoint.Sage.SimCore.Parallel
                 }
                 // Successful synchronization.
                 Coexecutor.ReleaseSync(callersExecAsParallel, this);
+                if (m_diagnostics) Console.WriteLine($"Completing synchronization - caller was {callersExecAsParallel.Name}, and called exec was {this.Name}.");
             }
         }
     }
@@ -985,7 +991,7 @@ namespace Highpoint.Sage.SimCore.Parallel
         public override string ToString()
         {
             return string.Format("{0}, pri {1:N2}, call {2} with {3}. Added at {4}, {5} daemon.",
-                When, Priority, ExecEventReceiver.Method.Name, UserData, AddedWhen,
+                When, Priority, ExecEventReceiver.Method.Name, UserData??"<null>", AddedWhen,
                 IsDaemon ? "is" : "is not");
         }
     }

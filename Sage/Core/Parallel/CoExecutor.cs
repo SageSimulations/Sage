@@ -14,7 +14,7 @@ namespace Highpoint.Sage.SimCore.Parallel
     public class CoExecutor
     {
         // ReSharper disable once InconsistentNaming
-        private static readonly bool m_diagnostics = Diagnostics.DiagnosticAids.Diagnostics("CoExecutor");
+        private static readonly bool m_diagnostics = true; //Diagnostics.DiagnosticAids.Diagnostics("CoExecutor");
         private int m_nExecsAtEndTime;
         private readonly IParallelExec[] m_execs;
         private readonly DateTime m_terminateAt;
@@ -155,9 +155,8 @@ namespace Highpoint.Sage.SimCore.Parallel
                         else
                         {
                             // caller's time is earlier than the callee's. Roll back the callee.
-                            calledExecutive.IsRollbackRequester = true;
+                            callingExecutive.IsRollbackRequester = true;// <-- This determines the rollback-to time.
                             InitiateRollBack();
-                            // Still need calling executive (whose thread we're on) to await completion of the rollback.
                             callingExecutive.RollbackBlock.WaitOne();
                             retval = SyncAction.Execute;
                         }
@@ -167,12 +166,13 @@ namespace Highpoint.Sage.SimCore.Parallel
                 }
             }
             callingExecutive.IsSynching = false;
+
             return retval;
         }
 
         internal void ReleaseSync(IParallelExec callersExecutive, IParallelExec calledExecutive)
         {
-            if (calledExecutive.IsBlockedAtExecLock) calledExecutive.ReleaseExecutive();
+            calledExecutive.ReleaseExecutive();
         }
 
         internal DateTime GetEarliestExecDateTime()
@@ -181,6 +181,7 @@ namespace Highpoint.Sage.SimCore.Parallel
         }
 
         private bool m_rollbackRequested = false;
+        private AutoResetEvent m_waitForRollbackCompletion = new AutoResetEvent(false);
 
         /// <summary>
         /// Stops all execs. Any whose "now" is past the earliest time of any rollback requesters is rolled back.
@@ -194,9 +195,18 @@ namespace Highpoint.Sage.SimCore.Parallel
                 // By executing this in another thread, we allow this one, an executive thread, to proceed to its rollback lock.
                 ThreadPool.QueueUserWorkItem(state =>
                 {
+                    if (m_diagnostics) Console.WriteLine("Commencing rollback operation.");
+
                     // Wait until all execs have stopped somewhere. Could be pending read block, or could be rollback block.
-                    while (m_execs.Any(n => !(n.IsRollbackRequester || n.IsBlockedPending || n.IsBlockedAtExecLock)))
-                    {/* NOOP */}
+                    while (m_execs.Any(n => !(n.IsRollbackRequester || n.IsBlockedPending || n.IsBlockedAtExecLock || n.IsSynching)))
+                    {
+                        /* NOOP */
+                        foreach (IParallelExec n in m_execs)
+                        {
+                            if (m_diagnostics) Console.WriteLine($"{n.Name} : {n.IsRollbackRequester}, {n.IsBlockedPending}, {n.IsBlockedAtExecLock}, {n.IsSynching}");
+                        }
+                        if (m_diagnostics) Console.WriteLine();
+                    }
 
                     DateTime toWhen = m_execs.Where(exec => exec.IsRollbackRequester).Aggregate(DateTime.MaxValue, (current, exec) => Utility.DateTimeOperations.Min(current, exec.Now));
 
@@ -205,7 +215,7 @@ namespace Highpoint.Sage.SimCore.Parallel
 
                     if (m_diagnostics)
                         Console.WriteLine("Rolling back {0} to {1}.",
-                            StringOperations.ToCommasAndAndedList(targets, n => n.Name), toWhen);
+                            StringOperations.ToCommasAndAndedList(targets, n => $"{n.Name} @ {n.Now}"), toWhen);
 
                     foreach (IParallelExec target in targets)
                     {
@@ -221,25 +231,17 @@ namespace Highpoint.Sage.SimCore.Parallel
                     System.Threading.Tasks.Parallel.ForEach(targets, n => n.PerformRollback(toWhen));
 
                     m_rollbackRequested = false;
+
+                    if (m_diagnostics) Console.WriteLine($"Rollback to {toWhen} completed.");
+                    m_waitForRollbackCompletion.Set();
                 });
+
+                if (m_diagnostics) Console.WriteLine("Waiting for rollback to finish.");
+                m_waitForRollbackCompletion.WaitOne();
+                if (m_diagnostics) Console.WriteLine("Rollback has finished.");
+
             }
         }
-
-        /// <summary>
-        /// All of the execs must stop during a rollback, for now. // TODO: Maybe figure out how not to halt everyone.
-        /// 
-        /// 1.) Pause all executives somewhere (if it's a pending read block, and the exec needs to rollback, the
-        ///     Pending Read Block will be aborted.)
-        /// 2.) 
-        /// </summary>
-        /// <param name="toWhen">The time to which a rollback is desired.</param>
-        private void RollBack(DateTime toWhen)
-        {
-
-
-
-        }
-
 
         public enum SyncAction { Execute, Abort, Defer }
     }
