@@ -10,7 +10,8 @@ Sage® is our third-generation object oriented simulation class library and fram
 ...And remember, it's just code, in Visual Studio! Use your source code control system, issue tracking system, components and tools of choice, even your own development methodologies. It is a seamless and first class member of your .net development project.
 
 **Sage® is:**
- * A Discrete Event Simulation Engine built from around 25,000 lines of C# code.
+ * A Discrete-Event and Agent-Based Simulation Engine built from around 25,000 lines of C# code.
+ * Supportive of System-Dynamics techniques either standalone, or as part of a DES/ABM implementation.
  * Open source, licensed under [Affero GPL v3](./LICENSE). (Less restrictive terms are available.)
  * Proven through customers in pharma, military, mining, climate modeling, simulation tooling, and other industries.
 
