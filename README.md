@@ -29,7 +29,7 @@ Sage® is our third-generation object oriented simulation class library and fram
  
 **Contact**
 
---> [Email](support@highpointsoftware.com)
+--> [Email](mailto://support@highpointsoftware.com)
 
 **For more information:**
 
