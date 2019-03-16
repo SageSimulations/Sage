@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Highpoint.Sage.SystemDynamics.Utility
 {
-    public static class Program<T1> where T1 : StateBase<T1>, new()
+    public static class RunProgram<T1> where T1 : StateBase<T1>, new()
     {
         public static void Run(
             string[] args, 

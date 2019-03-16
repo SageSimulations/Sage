@@ -566,7 +566,8 @@
     </Compile>
     <Compile Include="Core\BaseModelObject.cs" />
     <Compile Include="SystemDynamics\Behavior.cs" />
-    <Compile Include="SystemDynamics\Program.cs" />
+    <Compile Include="SystemDynamics\Design\Interfaces.cs" />
+    <Compile Include="SystemDynamics\Utility\RunProgram.cs" />
     <Compile Include="SystemDynamics\StateBase.cs" />
     <Compile Include="Utility\Aspects.cs">
       <SubType>Code</SubType>

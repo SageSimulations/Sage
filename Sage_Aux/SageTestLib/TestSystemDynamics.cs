@@ -32,7 +32,7 @@ namespace Highpoint.Sage.SystemDynamics
             XElement parameters = null;
             string outputFileName = null;
 
-            Utility.Program<LynxHare3>.Run(
+            RunProgram<LynxHare3>.Run(
                 args,
                 Integrator.Euler,
                 parameters,
@@ -41,7 +41,7 @@ namespace Highpoint.Sage.SystemDynamics
                 (TextWriter tw, LynxHare3 s) =>
                     tw.WriteLine("{2:0.000}, {0:0.0000000}, {1:0.000000}", s.Lynx, s.Hares, s.TimeSliceNdx*s.TimeStep));
 
-            Program<LynxHare3>.Run(
+            RunProgram<LynxHare3>.Run(
                 args,
                 Integrator.RK4,
                 parameters,
