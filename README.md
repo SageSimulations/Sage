@@ -7,8 +7,6 @@ by [Highpoint Software Systems, LLC](http://www.highpointsoftware.com/index.html
 
 Sage® is our third-generation object oriented simulation class library and framework. It is written in C# and is under the active development and stewardship of a software engineer with over 25 years' experience writing simulations and simulation engines, and 20 years' experience doing object-oriented architecture, design, & development. It is built on Microsoft's .Net Foundation, so you will have the full power of that framework at hand. You can build libraries, apps, services, web services, plugins, etc, and tap the vast Windows development market for components and non-simulation professional services.
 
-...And remember, it's just code, in Visual Studio! Use your source code control system, issue tracking system, components and tools of choice, even your own development methodologies. It is a seamless and first class member of your .net development project.
-
 **Sage® is:**
  * A Discrete-Event and Agent-Based Simulation Engine built from around 25,000 lines of C# code.
  * Supportive of System-Dynamics techniques either standalone, or as part of a DES/ABM implementation.
