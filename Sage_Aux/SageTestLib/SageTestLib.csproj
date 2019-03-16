@@ -160,6 +160,7 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
@@ -179,6 +180,7 @@
     <Compile Include="TestPfcAnalyst.cs" />
     <Compile Include="TestPfcNetworks.cs" />
     <Compile Include="TestRationalizer.cs" />
+    <Compile Include="TestSystemDynamics.cs" />
     <Compile Include="TestTasks2.cs" />
     <Compile Include="TestTreeSupport.cs" />
     <Compile Include="EmissionTester.cs">
