@@ -22,7 +22,7 @@ Sage® is our third-generation object oriented simulation class library and fram
  * Paid Support & training are also available.
 
 **Development environment:**
-* You will need Visual Studio 2015 (Community Edition or better)
+* You will need Visual Studio 2015 (Community Edition) or better/more recent.
 
 **Obtain the code:**
  * The code repository is [on GitHub](https://github.com/peterbosch/Sage).
