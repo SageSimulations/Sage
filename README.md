@@ -1,6 +1,6 @@
 # Sage Simulation & Modeling Library
 
-`Support for Discrete Event, Agent-based and Block-and-Connector Flow Simulation.`
+`Support for Discrete Event, Agent-based, System Dynamics and Block-and-Connector Flow Simulation.`
 
 -------------------
 by [Highpoint Software Systems, LLC](http://www.highpointsoftware.com/index.html)
