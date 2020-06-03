@@ -197,8 +197,12 @@ namespace Highpoint.Sage.SimCore {
             if ( iExecutive != m_executive ) throw new InvalidOperationException("ExecController is starting within a model whose executive is not the same one to which it was initialized.");
             m_executive.ClockAboutToChange -= m_doThrottle; // In case we were listening from an earlier run.
             m_executive.ClockAboutToChange += m_doThrottle;
-            if (m_renderThread != null && m_renderThread.ThreadState == ThreadState.Running) {
-                m_renderThread.Abort(); 
+            if (m_renderThread != null && m_renderThread.ThreadState == ThreadState.Running)
+            {
+                m_abortRendering = true;
+                // ReSharper disable once EmptyEmbeddedStatement
+                while (m_renderThread.IsAlive);
+                m_abortRendering = false;
             }
             m_renderThread = new Thread(RunRendering)
             {
@@ -243,10 +247,11 @@ namespace Highpoint.Sage.SimCore {
 
 
         private bool m_renderPending;
+        private bool m_abortRendering = false;
         private void RunRendering() {
             _Debug.Assert(Thread.CurrentThread.Equals(m_renderThread));
 
-            while (true) {
+            while (!m_abortRendering) {
                 if (m_executive.State.Equals(ExecState.Running)) {
                     int nTicksToSleep = 500; // Check to see if we've changed frame rate from zero, every half-second.
                     if (m_frameRate > 0)

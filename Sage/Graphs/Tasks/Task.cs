@@ -250,7 +250,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		/// <returns>The time at which this task completed in the specified GraphContext.</returns>
         public DateTime GetFinishTime(IDictionary graphContext){
 			object tmp = graphContext[m_selfFinishTimeKey];
-			return tmp==null?DateTime.MinValue:(DateTime)tmp;
+			return (DateTime?) tmp ?? DateTime.MinValue;
         }
 
 		/// <summary>

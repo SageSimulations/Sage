@@ -54,7 +54,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;NETSTANDARD</DefineConstants>
     <DocumentationFile>Sage.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
@@ -575,6 +575,7 @@
     <Compile Include="Utility\CompoundComparer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utility\ConfigurationManager.cs" />
     <Compile Include="Utility\Crypto.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -601,9 +602,6 @@
     </Compile>
     <Compile Include="Utility\Exchange.cs" />
     <Compile Include="Utility\ExchangeManager.cs" />
-    <Compile Include="Utility\Expressions.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\GraphSupport.cs" />
     <Compile Include="Utility\GuidGenerator.cs" />
@@ -699,7 +697,6 @@
     <None Include="Graphs\PFC\ProcedureFunctionChart.xsx">
       <DependentUpon>ProcedureFunctionChart.xsd</DependentUpon>
     </None>
-    <None Include="Scheduling\Scheduling.cd" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

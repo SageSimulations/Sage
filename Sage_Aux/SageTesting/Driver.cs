@@ -379,11 +379,6 @@ namespace Highpoint.Sage.Testing
                         new Randoms.MersenneTester().RunIntervalTest();
                         break;
 
-                    case 150:
-                        _Debug.WriteLine("Test Evaluator Basics");
-                        new EvaluatorTester().TestEvaluatorBasics();
-                        break;
-
                     case 199:
                         _Debug.WriteLine("Test Temperature Controller");
                         new Thermodynamics.TemperatureControllerTester101().TestTCConstDeltaTargetingUp2();

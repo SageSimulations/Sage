@@ -293,7 +293,7 @@ namespace Highpoint.Sage.Graphs {
 		/// A description of this Edge.
 		/// </summary>
 		public string Description {
-			get { return m_description==null?m_name:m_description; }
+			get { return m_description ?? m_name; }
 		}
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace Highpoint.Sage.Graphs {
         public Edge AddCofinish(Edge slaveEdge) {
 			bool hasVm = (m_vm != null);
 			if ( hasVm ) m_vm.Suspend();
-			Edge retval = AddLigature(PostVertex,slaveEdge.PostVertex);
+			Edge retval = AddLigature(slaveEdge.PostVertex, PostVertex);
 			if ( StructureChangeHandler != null ) StructureChangeHandler(this,StructureChangeType.AddCofinish,false);
 			if ( hasVm ) m_vm.Resume();
 			return retval;
@@ -928,7 +928,7 @@ namespace Highpoint.Sage.Graphs {
         /// <param name="from">The 'from' vertex</param>
         /// <param name="to">The 'to' vertex</param>
         protected static void RemoveLigature(Vertex from, Vertex to) {
-			string name = Ligature.CreateName(from,to);
+			//string name = Ligature.CreateName(from,to);
 			foreach ( Edge e in from.SuccessorEdges ) {
 				if ( e is Ligature && e.Post.Equals(to) ) {
 					((Ligature)e).Disconnect();
@@ -943,7 +943,7 @@ namespace Highpoint.Sage.Graphs {
         /// <param name="from">The 'from' edge.</param>
         /// <param name="to">The 'to' edge.</param>
         protected static void RemoveLigature(Edge from, Edge to) {
-			string name = Ligature.CreateName(from,to);
+			//string name = Ligature.CreateName(from,to);
 			foreach ( Edge e in from.PostVertex.SuccessorEdges ) {
 				if ( e is Ligature && e.PostVertex.Equals(to.PreVertex) ) {
 					((Ligature)e).Disconnect();

@@ -49,6 +49,7 @@ namespace Highpoint.Sage.SimCore {
             m_guid = execGuid;
             m_currentEventType = ExecEventType.None;
 
+#if !NETSTANDARD
             #region >>> Set up from-config-file parameters <<<
             int desiredMinWorkerThreads = 100;
             int desiredMaxWorkerThreads = 900;
@@ -103,8 +104,8 @@ namespace Highpoint.Sage.SimCore {
                     _Debug.WriteLine(msg);
                 }
             }
-
-            #endregion
+#endregion
+#endif
         }
 
         private static void Swap(ref int a, ref int b) { int tmp = a; a = b; b = tmp; }
@@ -250,6 +251,31 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         /// <returns>A long, which is a number that serves as a key. This key is used, for example, to unrequest the event.</returns>
         public long RequestEvent(ExecEventReceiver eer, DateTime when, double priority, object userData, ExecEventType execEventType){
             return RequestEvent(eer,when,priority,userData,execEventType,false);
+        }
+
+        /// <summary>
+        /// Creates an event that looks like an event already in queue, but for a new time. Optionally deletes the old event.
+        /// </summary>
+        /// <param name="eventID">The ID number assigned to the event when it was initially requested.</param>
+        /// <param name="newTime">The new time.</param>
+        /// <param name="deleteOldOne">The old event will be removed.</param>
+        /// <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
+        public long ResubmitEventAtTime(long eventID, DateTime newTime, bool deleteOldOne)
+        {
+            long newKey = long.MinValue;
+            foreach (IExecEvent @event in EventList)
+            {
+                if (@event.Key == eventID)
+                {
+                    newKey = RequestEvent(@event.ExecEventReceiver, newTime, @event.Priority, @event.UserData,
+                        @event.EventType, @event.IsDaemon);
+                    if ( deleteOldOne ) UnRequestEvent(eventID);
+                    break;
+                }
+
+            }
+            return newKey;
+
         }
 
         /// <summary>
@@ -1151,7 +1177,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             ServiceCompleted = null;
         }
 
-        public bool IsDaemon;
+        public bool IsDaemon { get; set; }
         public ExecEventReceiver Eer;
         public DateTime m_when;
         public double m_priority;
@@ -1236,6 +1262,13 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         /// </summary>
         /// <value>The key.</value>
         long Key { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is a daemon event.
+        /// </summary>
+        /// <value><c>true</c> if this instance is daemon; otherwise, <c>false</c>.</value>
+        bool IsDaemon { get; }
+    
         /// <summary>
         /// Returns a <see cref="System.String" /> that represents this instance.
         /// </summary>

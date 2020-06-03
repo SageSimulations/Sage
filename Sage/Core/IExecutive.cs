@@ -312,11 +312,19 @@ namespace Highpoint.Sage.SimCore {
 		/// <param name="execEventType">The way the event is to be served by the executive.</param>
 		/// <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
 		long RequestEvent(ExecEventReceiver eer, DateTime when, double priority, object userData, ExecEventType execEventType);
-		/// <summary>
-		/// Removes an already-submitted request for a time-based notification.
-		/// </summary>
-		/// <param name="eventHashCode">The code that identifies the event request to be removed.</param>
-		void UnRequestEvent(long eventHashCode);
+        /// <summary>
+        /// Resubmits a copy of an event already in queue, optionally .
+        /// </summary>
+        /// <param name="eventID">The ID number assigned to the event when it was initially requested.</param>
+        /// <param name="newTime">The new time.</param>
+        /// <param name="deleteOldOne">If true, will submit the old one for deletion.</param>
+        /// <returns>A code that can subsequently be used to identify the request, e.g. for removal.</returns>
+        long ResubmitEventAtTime(long eventID, DateTime newTime, bool deleteOldOne);
+        /// <summary>
+        /// Removes an already-submitted request for a time-based notification.
+        /// </summary>
+        /// <param name="eventHashCode">The code that identifies the event request to be removed.</param>
+        void UnRequestEvent(long eventHashCode);
 		/// <summary>
 		/// Removes an already-submitted request for a time-based notification based on a user-provided selector object.
 		/// </summary>

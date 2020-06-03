@@ -3,6 +3,7 @@ using System;
 using Highpoint.Sage.Graphs.Tasks;
 using Highpoint.Sage.SimCore;
 using System.Collections;
+using Highpoint.Sage.Graphs.Analysis;
 
 namespace Demo.SequenceControl
 {
@@ -63,6 +64,9 @@ multiple instance execution (let's make three batches of brownies.)
                 bakeBrownies.AddPredecessor(preparePan);
                 bakeBrownies.AddPredecessor(assembleBrownies);
 
+//                CpmAnalyst cpa = new CpmAnalyst(bakeBrownies);
+//                cpa.Analyze();
+
                 model.Starting += delegate(IModel theModel)
                 {          
                     theModel.Executive.RequestEvent((exec, data) => makeBrownies.Start(graphContext1), startTime);
@@ -77,6 +81,20 @@ multiple instance execution (let's make three batches of brownies.)
                     Console.WriteLine("It was recorded that {0} started at {1} and took {2}.", testTask.Name,
                         testTask.GetStartTime(graphContext1), testTask.GetRecordedDuration(graphContext1));
                 }
+
+                Console.WriteLine("\n\n\n\n\n");
+                //And if you want to alter the task graph, and run the model again...
+                TestTask hollerComeAndGetItTask = new TestTask(model, "<Top of Lungs>Holler \"COME AND GET IT!!!\"", 1);
+
+                removePanFromOven.RemoveSuccessor(bakeBrownies);
+                removePanFromOven.AddSuccessor(hollerComeAndGetItTask);
+                bakeBrownies.AddCofinish(hollerComeAndGetItTask);
+
+                graphContext1.Clear();
+                model.Reset();
+
+                model.Start();
+
             }
 
             private class TestTask : Task

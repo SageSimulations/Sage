@@ -32,4 +32,5 @@ namespace Highpoint.Sage.SimCore {
 			return retval;
 		}
 	}
+
 }

@@ -2705,8 +2705,6 @@ namespace Highpoint.Sage.Mathematics {
 
     }
 
-    // 
-
     /// <summary>
     /// A Weibull Cumulative Density Function. See http://www.itl.nist.gov/div898/handbook/eda/section3/eda366.htm
     /// </summary>
@@ -2978,132 +2976,6 @@ namespace Highpoint.Sage.Mathematics {
     #endregion
 
     /// <summary>
-    /// The DistributionCatalog provides a catalog of known distributions, enabling the caller to enumerate all known
-    /// distributions, or all known distributions that implement a specific interface. It reads from a section in the
-    /// app config file so that it can import all distributions, or just specific distributions, from any assemblies
-    /// the user desires to have included in the catalog.
-    /// <p></p>
-    /// The general config section impact is as follows:<p></p>
-    /// 	&lt;configSections&gt; <p></p>   
-    /// 		&lt;section name="Distributions" type="Highpoint.Sage.Mathematics.DistributionSectionHandler, VR_Sim" /&gt;<p></p>
-    /// 	&lt;/configSections&gt;<p></p>
-    /// 	&lt;Distributions&gt;<p></p>
-    /// 		&lt;Library libName="VR_Sim"&gt;<p></p>
-    /// 			&lt;InterfaceType typeName="Highpoint.Sage.Mathematics.IDoubleDistribution" autoImportAllImplementers="true"/&gt;<p></p>
-    /// 			&lt;InterfaceType typeName="Highpoint.Sage.Mathematics.ITimeSpanDistribution" autoImportAllImplementers="true"/&gt;<p></p>
-    /// 		&lt;/Library&gt;<p></p>
-    /// 	&lt;/Distributions&gt;<p></p>
-    /// 	If there is no config section in the config file, it initializes with all of the Sage® distributions and interfaces.
-    /// </summary>
-    public sealed class DistributionCatalog : IEnumerable {
-        private static volatile DistributionCatalog _instance;
-        /// <summary>
-        /// Retrieves the singleton instance of this catalog.
-        /// </summary>
-        public static DistributionCatalog Instance => _instance ?? (_instance = new DistributionCatalog());
-
-        private readonly HashtableOfLists m_htol;
-        private DistributionCatalog() {
-            m_htol = (HashtableOfLists)System.Configuration.ConfigurationManager.GetSection("Distributions");
-            if (m_htol == null) {
-                m_htol = new HashtableOfLists();
-                Assembly assy = GetType().Assembly;
-                foreach (Type distributionInterfaceType in new[] { typeof(IDoubleDistribution), typeof(ITimeSpanDistribution) }) {
-                    foreach (Type type in assy.GetTypes().Where(type => distributionInterfaceType.IsAssignableFrom(type) && !type.IsAbstract))
-                    {
-                        m_htol.Add(distributionInterfaceType, type);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the whole collection of Distributions.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator"></see> object that can be used to iterate through the collection.
-        /// </returns>
-        public IEnumerator GetEnumerator() { return m_htol.GetEnumerator(); }
-
-        /// <summary>
-        /// Gets a collection of all of the known interfaces.
-        /// </summary>
-        /// <value>The known interfaces.</value>
-        public ICollection KnownInterfaces => m_htol.Keys;
-
-        /// <summary>
-        /// Gets the distributions that implement a given interface such as ITimeSpanDistribution.
-        /// </summary>
-        /// <param name="iEnumeratorType">Type of the enumerator.</param>
-        /// <returns></returns>
-        public IList GetDistributionsForInterface(Type iEnumeratorType) {
-            object obj = m_htol[iEnumeratorType];
-            if (obj != null) return (IList)obj;
-            return new ArrayList();
-        }
-
-    }
-
-    internal class DistributionSectionHandler : System.Configuration.IConfigurationSectionHandler
-    {
-        private static bool _defaultAutoImportSetting = true;
-        private HashtableOfLists m_distributions;
-
-        #region IConfigurationSectionHandler Members
-
-        public object Create(object parent, object configContext, XmlNode section)
-        {
-            if (m_distributions == null)
-            {
-                m_distributions = new HashtableOfLists();
-
-                XmlNodeList xmlNodeList = section.SelectNodes("Library");
-                if (xmlNodeList != null)
-                    foreach (XmlNode libNode in xmlNodeList)
-                    {
-                        if (libNode.Attributes != null)
-                        {
-                            XmlAttribute assemblyStringAttr = libNode.Attributes["libName"];
-                            if (assemblyStringAttr == null)
-                                throw new ApplicationException(
-                                    "Missing \"Library\" attribute in Distribution Section Handler in Config File.");
-                            string assemblyString = assemblyStringAttr.InnerText;
-                            Assembly assy = Assembly.Load(assemblyString);
-
-                            XmlNodeList distroIfTypeNodes = libNode.SelectNodes("InterfaceType");
-                            if (distroIfTypeNodes != null)
-                                foreach (XmlNode distroIfTypeNode in distroIfTypeNodes)
-                                {
-                                    if (distroIfTypeNode.Attributes == null) continue;
-
-                                    XmlAttribute distroIfTypeNameAttr = distroIfTypeNode.Attributes["typeName"];
-                                    string distroIfTypeName = distroIfTypeNameAttr.InnerText;
-                                    Type distributionInterfaceType = assy.GetType(distroIfTypeName, false);
-                                    if (distributionInterfaceType == null) continue;
-
-                                    XmlAttribute autoImportAttr =
-                                        distroIfTypeNode.Attributes["autoImportAllImplementers"];
-                                    bool autoImport = autoImportAttr == null
-                                        ? _defaultAutoImportSetting
-                                        : XmlConvert.ToBoolean(autoImportAttr.InnerText);
-                                    if (!autoImport) continue;
-
-                                    foreach (Type type in assy.GetTypes().Where(type => distributionInterfaceType.IsAssignableFrom(type) &&
-                                                                                        !type.IsAbstract))
-                                    {
-                                        m_distributions.Add(distributionInterfaceType, type);
-                                    }
-                                }
-                        }
-                    }
-            }
-            return m_distributions;
-        }
-
-        #endregion
-    }
-
-    /// <summary>
     /// An attribute that decorates any class that can have a distribution as a member.
     /// </summary>
     public class SupportsDistributionsAttribute : Attribute {
@@ -3123,14 +2995,6 @@ namespace Highpoint.Sage.Mathematics {
         public SupportsDistributionsAttribute(Type distributionInterface, string memberNameOfDistribution) {
             m_distroInterface = distributionInterface;
             m_whereToPutTheDistribution = memberNameOfDistribution;
-        }
-
-        /// <summary>
-        /// Gets a list of Distribution types that are candidates for the declared member of the class that is decorated by this attribute.
-        /// </summary>
-        /// <returns></returns>
-        public IList GetCandidateTypes() {
-            return DistributionCatalog.Instance.GetDistributionsForInterface(m_distroInterface);
         }
 
         /// <summary>

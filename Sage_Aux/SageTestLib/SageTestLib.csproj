@@ -211,9 +211,6 @@
     <Compile Include="TestEmissionModels.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TestEvaluators.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="TestExecutive.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -144,7 +144,6 @@ namespace Highpoint.Sage.SimCore  {
 			m_steve = 12;
 			SmartPropertyBag spb1 = new SmartPropertyBag();
 			spb1.AddValue("Fred",12);
-			spb1.AddExpression("Bill","Math.Max(Fred,13)+15",new string[]{"Fred"});
 			spb1.AddDelegate("Steve",new SmartPropertyBag.SPBDoubleDelegate(ComputeSteve));
 			spb1.AddString("Name","SPB1");
             
@@ -155,7 +154,6 @@ namespace Highpoint.Sage.SimCore  {
 			Debug.WriteLine("The new snapshot is " + (mem1==mem2?"":"not ") + "equal to the one preceding it.\r\n");
             Assert.IsTrue(mem2 == mem1,"Memento 1 is not equal Memento 2");
 
-            Assert.IsTrue((double)spb1["Bill"] == 28,"Bill is not 28");
             Assert.IsTrue((double)spb1["Steve"] == 12,"Steve is not 12");
             Assert.IsTrue("SPB1".Equals(spb1["Name"]),"Name is not SPB1");
 
@@ -174,16 +172,11 @@ namespace Highpoint.Sage.SimCore  {
 			Debug.WriteLine("The new snapshot is " + (mem2==mem3a?"":"not ") + "equal to the one preceding it.\r\n");
             Assert.IsTrue(mem2!=mem3a,"Memento 2 is equal to memento 3a");
 
-            Assert.IsTrue((double)spb1["Bill"] == 29,"Bill is not 29");	// changing Fred to 14 on line 120 changes Bill too
-
 			spb1.AddValue("_Connie",99);
 
 			SmartPropertyBag spb2 = new SmartPropertyBag();
 			spb2.AddValue("_Pete",14);
 			spb1.AddAlias("Pete",spb2,"_Pete");
-			spb1.AddExpression("Marvin","Pete+Bill",new string[]{"Pete","Bill"});
-            Assert.IsTrue((double)spb1["Marvin"] == 43,"Marvin is not 43");
-
 
 			Highpoint.Sage.Utility.Mementos.IMemento mem4 = spb1.Memento;
 			Highpoint.Sage.Utility.Mementos.IMemento mem5 = spb1.Memento;
@@ -237,7 +230,7 @@ namespace Highpoint.Sage.SimCore  {
 		public void TestMementoRestorationAndEquality(){
             SmartPropertyBag spb1 = new SmartPropertyBag();
             spb1.AddValue("Fred",12);
-            spb1.AddExpression("Bill","Math.Max(Fred,17)",new string[]{"Fred"});
+            //spb1.AddExpression("Bill","Math.Max(Fred,17)",new string[]{"Fred"});
             spb1.AddDelegate("Steve",new SmartPropertyBag.SPBDoubleDelegate(ComputeSteve));
             spb1.AddString("Donkey","Kong");
             spb1.AddBoolean("HabaneroHot",true);

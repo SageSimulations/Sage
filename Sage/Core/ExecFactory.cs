@@ -146,12 +146,14 @@ namespace Highpoint.Sage.SimCore {
         public IExecutive CreateExecutive(Guid execGuid) {
             if (m_requiredType == null) {
                 m_requiredType = "Highpoint.Sage.SimCore.Executive, Sage";
+#if !NETSTANDARD
                 NameValueCollection nvc = (NameValueCollection)ConfigurationManager.GetSection("Sage");
                 if (nvc == null) {
                     _Debug.WriteLine("Warning - <Sage> section missing from config file for " + Process.GetCurrentProcess().ProcessName);
                 } else if (nvc["ExecutiveType"] != null) {
                     m_requiredType = nvc["ExecutiveType"];
                 }
+#endif
             }
             return CreateExecutive(m_requiredType, execGuid);
         }

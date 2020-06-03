@@ -102,7 +102,7 @@ namespace Highpoint.Sage.Materials.Chemistry.Emissions {
 	        {
 	            try
 	            {
-	                configData = (Hashtable) ConfigurationManager.GetSection("EmissionsService");
+	                configData = (Hashtable) System.Configuration.ConfigurationManager.GetSection("EmissionsService");
 	            }
 	            catch (ConfigurationException)
 	            {

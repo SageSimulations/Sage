@@ -142,6 +142,7 @@ namespace Highpoint.Sage.SimCore {
         /// </summary>
         /// <param name="execGuid">The GUID by which this executive will be known.</param>
         public ExecutiveFastLight(Guid execGuid) {
+#if !NETSTANDARD
             NameValueCollection nvc = (NameValueCollection)System.Configuration.ConfigurationManager.GetSection("Sage");
             if (nvc != null)
             {
@@ -162,7 +163,7 @@ namespace Highpoint.Sage.SimCore {
             {
                 Console.WriteLine("No Sage initialization section found in app.config.");
             }
-
+#endif
             m_execGuid = execGuid;
             m_runNumber = 0;
             Reset();
@@ -333,7 +334,12 @@ namespace Highpoint.Sage.SimCore {
 			return RequestEvent(eer,when,priority,userData);
 		}
 
-#region Unrequest Events - not supported
+        public long ResubmitEventAtTime(long eventID, DateTime newTime, bool deleteOldOne)
+        {
+            throw new NotSupportedException("The selected executive type does not support event deletion.");
+        }
+
+        #region Unrequest Events - not supported
         /// <summary>
         /// This executive does not support unrequesting already-submitted event requests.
         /// </summary>

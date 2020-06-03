@@ -78,14 +78,15 @@ namespace Highpoint.Sage.Graphs.Analysis {
                 }
             }
 
-            if ( targetEdge.Equals(Finish.PrincipalEdge) ) return Finish;
+            if ( targetEdge != null && targetEdge.Equals(Finish.PrincipalEdge) ) return Finish;
 
             throw new ApplicationException("The vertex " + vertex.Name + " is not on the critical path.");
         }
 
-        public ArrayList CriticalPath { get { return ArrayList.ReadOnly(m_criticalPath); } }
-        public TimeSpan  CriticalPathMean { get { return TimeSpan.FromTicks((long)m_criticalPathMean); } }
-        public TimeSpan  CriticalPathVariance { 
+        public ArrayList CriticalPath => ArrayList.ReadOnly(m_criticalPath);
+	    public TimeSpan  CriticalPathMean => TimeSpan.FromTicks((long)m_criticalPathMean);
+
+	    public TimeSpan  CriticalPathVariance { 
             get { 
                 long ticks = (long)Math.Sqrt(m_criticalPathVariance);
                 return TimeSpan.FromTicks(ticks); 

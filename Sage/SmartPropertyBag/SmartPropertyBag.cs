@@ -1,5 +1,4 @@
 /* This source code licensed under the GNU Affero General Public License */
-
 using System;
 using _Debug = System.Diagnostics.Debug;
 using System.Collections;
@@ -62,7 +61,7 @@ namespace Highpoint.Sage.SimCore {
 		/// </summary>
 		public bool IsLeaf => m_isLeaf;
 
-	    #region >>> IXmlPersistable Support
+#region >>> IXmlPersistable Support
 
         /// <summary>
         /// Stores this object to the specified XmlSerializationContext.
@@ -84,7 +83,7 @@ namespace Highpoint.Sage.SimCore {
 		}
 
 
-		#endregion
+#endregion
 	}
 
 
@@ -129,16 +128,16 @@ namespace Highpoint.Sage.SimCore {
 	/// </summary>
 	public class SmartPropertyBag : ISupportsMementos, IHasWriteLock, IEnumerable, ISPBTreeNode, IXmlPersistable {
 
-        #region Private Fields
+#region Private Fields
         private readonly MementoHelper m_ssh;
         private static readonly bool s_diagnostics = Diagnostics.DiagnosticAids.Diagnostics("SmartPropertyBag");
         private readonly WriteLock m_writeLock = new WriteLock(true);
         private readonly IDictionary m_dictionary = new Hashtable();
         private IMemento m_memento;
 
-        #endregion Private Fields
+#endregion Private Fields
 
-        #region Constructors
+#region Constructors
         /// <summary>
         /// Creates a SmartPropertyBag.
         /// </summary>
@@ -146,7 +145,7 @@ namespace Highpoint.Sage.SimCore {
             m_ssh = new MementoHelper(this, true);
         }
 
-        #endregion Constructors
+#endregion Constructors
 
 		/// <summary>
 		/// Any item added to a SPB must implement this interface.
@@ -216,121 +215,6 @@ namespace Highpoint.Sage.SimCore {
         }
 
         #region SPB Contents' Inner Classes - all but SPBExpressionWrapper and DoubleDelegateWrapper are persistable.
-        private class SPBExpressionWrapper : IHasValue, ISPBTreeNode {
-			public event MementoChangeEvent MementoChangeEvent { 
-				add { m_ssh.MementoChangeEvent+=value; }
-				remove { m_ssh.MementoChangeEvent-=value; }
-			}
-			private MementoHelper m_ssh;
-			private IMemento m_memento;
-
-			private SmartPropertyBag m_spb;
-			private string[] m_args;
-			private Evaluator m_evaluator;
-			public SPBExpressionWrapper(SmartPropertyBag spb, Evaluator eval, string[] args){
-				m_ssh = new MementoHelper(this,true);
-				m_spb = spb;
-				m_evaluator = eval;
-				m_args = args;
-				foreach ( string arg in args) {
-					ISupportsMementos iss = spb.GetContentsOfKey(arg);
-					m_ssh.AddChild(iss);
-				}
-				m_memento = new SPBExpressionWrapperMemento(this);
-			}
-
-			public bool Equals(ISupportsMementos otherGuy){
-				if ( !( otherGuy is SPBExpressionWrapper ) ) return false;
-				SPBExpressionWrapper spbew = (SPBExpressionWrapper)otherGuy;
-				if ( m_spb==spbew.m_spb && m_evaluator.Equals(spbew.m_evaluator) ) return true;
-				return false;
-			}
-
-			public IMemento Memento {
-				get {
-					return m_memento;
-				}
-				set {
-					((SPBExpressionWrapperMemento)value).Load(this);
-				}
-			}
-
-            #region Implementation of IHasValue
-			public object GetValue(){
-				object[] argvals = new object[m_args.Length];
-				for ( int i = 0 ; i < m_args.Length ; i++ ) {
-					double thisArgval = (double)((IHasValue)m_spb.GetContentsOfKey(m_args[i])).GetValue();
-					argvals[i] = thisArgval;
-				}
-				object obj = m_evaluator(argvals);
-				return (double)obj;
-			}
-			public bool IsLeaf => true;
-		    public bool IsWritable => false;
-
-		    #endregion
-
-			public object GetSnapshot(){ return GetValue(); }
-
-			public bool HasChanged => m_ssh.HasChanged;
-// An expression only changes when its terms change. 
-
-			public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
-
-		    private class SPBExpressionWrapperMemento : IMemento {
-		        private readonly SPBExpressionWrapper m_ew;                
-
-				public SPBExpressionWrapperMemento(SPBExpressionWrapper ew){
-					m_ew = ew;
-				}
-
-				public ISupportsMementos CreateTarget(){
-					return m_ew;
-				}
-
-				public void Load(ISupportsMementos ism){
-					SPBExpressionWrapper spbew = (SPBExpressionWrapper)ism;
-					spbew.m_ssh = new MementoHelper(spbew,true);
-					spbew.m_spb = m_ew.m_spb;
-					spbew.m_evaluator = m_ew.m_evaluator;
-					spbew.m_args = m_ew.m_args;
-					foreach ( string arg in spbew.m_args) {
-						ISupportsMementos iss = spbew.m_spb.GetContentsOfKey(arg);
-						spbew.m_ssh.AddChild(iss);
-					}
-					spbew.m_memento = new SPBExpressionWrapperMemento(spbew);
-
-                    OnLoadCompleted?.Invoke(this);
-                }
-
-				public IDictionary GetDictionary(){
-					IDictionary retval = new ListDictionary();
-					retval.Add("Value",m_ew.GetValue());
-					return retval;
-				}
-
-				public bool Equals(IMemento otheOneMemento){
-					if ( otheOneMemento == null ) return false;
-					if ( this == otheOneMemento ) return true;
-					if ( !(otheOneMemento is SPBExpressionWrapperMemento) ) return false;
-
-					if ( m_ew == ((SPBExpressionWrapperMemento)otheOneMemento).m_ew ) return true;
-					return false;
-				}
-
-                /// <summary>
-                /// This event is fired once this memento has completed its Load(ISupportsMementos ism) invocation.
-                /// </summary>
-                public event MementoEvent OnLoadCompleted;
-
-                /// <summary>
-                /// This holds a reference to the memento, if any, that contains this memento.
-                /// </summary>
-                /// <value></value>
-                public IMemento Parent { get; set; }
-		    }
-		}
-
 		private class SPBAlias : IHasValue, ISPBTreeNode, IXmlPersistable {
 			public event MementoChangeEvent MementoChangeEvent { 
 				add { m_ssh.MementoChangeEvent+=value; }
@@ -367,7 +251,7 @@ namespace Highpoint.Sage.SimCore {
 				return false;
 			}
 
-            #region IHasValue Implementation
+#region IHasValue Implementation
 			public object GetValue(){
 				object val = m_spb[m_key];
 				if ( val is IHasValue ) val = ((IHasValue)val).GetValue();
@@ -376,13 +260,13 @@ namespace Highpoint.Sage.SimCore {
 			public bool IsLeaf => true;
 		    public bool IsWritable => false;
 
-		    #endregion
+#endregion
 
 			public bool HasChanged => m_ssh.HasChanged;
 
 		    public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
 
-		    #region IXmlPersistable Members
+#region IXmlPersistable Members
 
 			/// <summary>
 			/// A default constructor, to be used for creating an empty object prior to reconstitution from a serializer.
@@ -411,15 +295,15 @@ namespace Highpoint.Sage.SimCore {
 				m_ssh.AddChild(m_spb.GetContentsOfKey(m_key));
 			}
 
-			#endregion
+#endregion
 
 			private class SPBAliasMemento : IMemento {
 
-                #region Private Fields
+#region Private Fields
                 private readonly SPBAlias m_orig;
 				private readonly object m_value;
 
-			    #endregion
+#endregion
 
                 public SPBAliasMemento(SPBAlias orig) {
 					m_orig = orig;
@@ -493,12 +377,12 @@ namespace Highpoint.Sage.SimCore {
 				}
 			}
 
-            #region Implementation of IHasValue
+#region Implementation of IHasValue
 			public object GetValue(){ return m_del(); }
 			public bool IsLeaf => true;
 		    public bool IsWritable => false;
 
-		    #endregion
+#endregion
 
 
 			public bool Equals(ISupportsMementos otherGuy){
@@ -513,11 +397,11 @@ namespace Highpoint.Sage.SimCore {
 
 		    class SPBDoubleDelegateWrapperMemento : IMemento {
 
-                #region Private Fields
+#region Private Fields
 
 		        private readonly SPBDoubleDelegateWrapper m_dw;
 				private readonly double m_value;
-                #endregion
+#endregion
 
                 public SPBDoubleDelegateWrapperMemento(SPBDoubleDelegateWrapper dw){
 					m_dw = dw;
@@ -589,12 +473,12 @@ namespace Highpoint.Sage.SimCore {
 				}
 			}
 
-            #region Implementation of IHasValue
+#region Implementation of IHasValue
 			public object GetValue(){ return m_value; }
 			public bool IsLeaf => true;
 		    public bool IsWritable => true;
 
-		    #endregion
+#endregion
 
 			public bool HasChanged => m_ssh.HasChanged;
 		    public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
@@ -608,7 +492,7 @@ namespace Highpoint.Sage.SimCore {
 				return m_value==spbvh?.m_value;
 			}
 
-			#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
+#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
 			public void SerializeTo(XmlSerializationContext xmlsc) {
 				//base.SerializeTo(node,xmlsc);
 				xmlsc.StoreObject("Value",m_value);
@@ -618,14 +502,14 @@ namespace Highpoint.Sage.SimCore {
 				//base.DeserializeFrom(xmlsc);
 					m_value = (double)xmlsc.LoadObject("Value");
 			}
-			#endregion
+#endregion
 
 			class SPBValueHolderMemento : IMemento {
 
-                #region Private Fields
+#region Private Fields
                 private readonly double m_value;
 
-			    #endregion
+#endregion
 
                 public SPBValueHolderMemento(double val) {
 					m_value = val;
@@ -698,12 +582,12 @@ namespace Highpoint.Sage.SimCore {
 				}
 			}
 
-            #region Implementation of IHasValue
+#region Implementation of IHasValue
 			public object GetValue(){ return m_value; }
 			public bool IsLeaf => true;
 		    public bool IsWritable => true;
 
-		    #endregion
+#endregion
 
 			public bool HasChanged => m_ssh.HasChanged;
 		    public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
@@ -718,7 +602,7 @@ namespace Highpoint.Sage.SimCore {
 				return m_value.Equals(spbvh.m_value);
 			}
 
-			#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
+#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
 			public void SerializeTo(XmlSerializationContext xmlsc) {
 				//base.SerializeTo(node,xmlsc);
 				xmlsc.StoreObject("Value",m_value);
@@ -728,14 +612,14 @@ namespace Highpoint.Sage.SimCore {
 				//base.DeserializeFrom(xmlsc);
 				m_value = (string)xmlsc.LoadObject("Value");
 			}
-			#endregion
+#endregion
 
 			class SPBStringHolderMemento : IMemento {
 
-                #region Private Fields
+#region Private Fields
                 private readonly string m_value;
 
-			    #endregion
+#endregion
 
                 public SPBStringHolderMemento(string val) {
 					m_value = val;
@@ -809,14 +693,14 @@ namespace Highpoint.Sage.SimCore {
 				}
 			}
 
-            #region Implementation of IHasValue
+#region Implementation of IHasValue
 			public object GetValue(){
 				return m_value;
 			}
 			public bool IsLeaf => true;
 		    public bool IsWritable => true;
 
-		    #endregion
+#endregion
 
 			public bool HasChanged => m_ssh.HasChanged;
 		    public bool ReportsOwnChanges => m_ssh.ReportsOwnChanges;
@@ -831,7 +715,7 @@ namespace Highpoint.Sage.SimCore {
 				return m_value.Equals(spbbh.m_value);
 			}
 
-			#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
+#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
 			public void SerializeTo(XmlSerializationContext xmlsc) {
 				//base.SerializeTo(node,xmlsc);
 				xmlsc.StoreObject("Value",m_value);
@@ -841,14 +725,14 @@ namespace Highpoint.Sage.SimCore {
 				//base.DeserializeFrom(xmlsc);
 				m_value = (bool)xmlsc.LoadObject("Value");
 			}
-			#endregion
+#endregion
 
 			class SPBBooleanHolderMemento : IMemento {
 
-                #region Private Fields
+#region Private Fields
                 private readonly bool m_value;
 
-			    #endregion
+#endregion
 
                 public SPBBooleanHolderMemento(bool val) {
 					m_value = val;
@@ -918,7 +802,7 @@ namespace Highpoint.Sage.SimCore {
 //			#endregion
 //		}
 
-        #endregion
+#endregion
 		/// <summary>
 		/// Retrieves an enumerator that cycles through all of the entries in this SPB.
 		/// If the entry is not a leaf node, then it can have its enumerator invoked,
@@ -957,22 +841,7 @@ namespace Highpoint.Sage.SimCore {
 			return al.GetEnumerator();
 		}
 
-		#region Methods for adding things to, and removing them from, the SPB.
-
-		/// <summary>
-		/// Adds an expression to this SPB. 
-		/// </summary>
-		/// <param name="key">The key by which this expression will be known. (e.g. "PackagingRate")</param>
-		/// <param name="expression">The expression. (e.g. "InFlowRate*SelectedPackageSize")</param>
-		/// <param name="argNames">The names of the arguments in the expression (e.g. new string[]{"InFlowRate","SelectedPackageSize"}</param>
-		public void AddExpression(string key, string expression, string[] argNames)
-		{
-			if ( !m_writeLock.IsWritable ) throw new WriteProtectionViolationException(this,m_writeLock);
-			Evaluator eval = EvaluatorFactory.CreateEvaluator("",expression,argNames);
-			SPBExpressionWrapper spbew = new SPBExpressionWrapper(this,eval,argNames);
-			AddSPBEntry(key,spbew);
-			m_ssh.AddChild(spbew);
-		}
+        #region Methods for adding things to, and removing them from, the SPB.
 
 		/// <summary>
 		/// Adds an alias to this SPB. An alias points to an entry in another SPB. The other SPB
@@ -1116,7 +985,7 @@ namespace Highpoint.Sage.SimCore {
 			m_ssh.ReportChange();
 		}
 
-		#endregion
+#endregion
 		
         /// <summary>
 		/// Retrieves an entry from this SPB. Compound keys may be specified if appropriate.
@@ -1344,11 +1213,11 @@ namespace Highpoint.Sage.SimCore {
 
         private class SmartPropertyBagMemento : IMemento {
 
-            #region Private Fields
+#region Private Fields
             private readonly IDictionary m_mementoDict;
 			private readonly SmartPropertyBag m_spb;
 
-		    #endregion
+#endregion
 
             public SmartPropertyBagMemento(SmartPropertyBag spb){
 				m_spb = spb;
@@ -1457,7 +1326,7 @@ namespace Highpoint.Sage.SimCore {
             /// <value></value>
             public IMemento Parent { get; set; }
 		}
-		#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
+#region >>> Serialization Support (incl. IXmlPersistable Members) <<<
         /// <summary>
         /// Stores this object to the specified XmlSerializationContext.
         /// </summary>
@@ -1486,7 +1355,7 @@ namespace Highpoint.Sage.SimCore {
 				AddSPBEntry((string)de.Key,de.Value);
 			}
 		}
-		#endregion
+#endregion
 	}
 
 	/// <summary>
