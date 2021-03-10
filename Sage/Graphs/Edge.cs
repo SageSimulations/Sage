@@ -451,7 +451,7 @@ namespace Highpoint.Sage.Graphs {
         public Edge AddCofinish(Edge slaveEdge) {
 			bool hasVm = (m_vm != null);
 			if ( hasVm ) m_vm.Suspend();
-			Edge retval = AddLigature(slaveEdge.PostVertex, PostVertex);
+			Edge retval = AddLigature(PostVertex,slaveEdge.PostVertex);
 			if ( StructureChangeHandler != null ) StructureChangeHandler(this,StructureChangeType.AddCofinish,false);
 			if ( hasVm ) m_vm.Resume();
 			return retval;
