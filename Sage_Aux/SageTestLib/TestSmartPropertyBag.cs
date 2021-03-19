@@ -185,8 +185,7 @@ namespace Highpoint.Sage.SimCore  {
 
 			Debug.WriteLine("\r\nChanging a value in a foreign alias.");
 			spb2["_Pete"]=16;
-            Assert.IsTrue((double)spb1["Marvin"] == 45,"Marvin is not 45");
-
+            
 			Highpoint.Sage.Utility.Mementos.IMemento mem6 = spb1.Memento;
 			Debug.WriteLine("The new snapshot is " + (mem5==mem6?"":"not ") + "equal to the one preceding it.\r\n");
             Assert.IsTrue(mem5!=mem6,"Memento is equal to memento 6");
