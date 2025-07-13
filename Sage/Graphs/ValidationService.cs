@@ -170,7 +170,7 @@ namespace Highpoint.Sage.Graphs.Validity {
 		public void Refresh(bool force){
 			if ( force) m_dirty = true;
 
-			m_suspensions=0; // TODO: Check if this scould capture & restore the m_suspensions value.
+                        m_suspensions=0; // TODO: Check if this should capture & restore the m_suspensions value.
 
 			Refresh();
 		}
