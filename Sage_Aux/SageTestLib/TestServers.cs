@@ -78,9 +78,14 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 			outPatientTreat.ServiceBeginning+=new ServiceEvent(Server_ServiceBeginning);
 			outPatientTreat.ServiceCompleted+=new ServiceEvent(Server_ServiceCompleted);
 
-			m_model.Start();
+                        m_model.Start();
 
-			Console.WriteLine("NoAdmit = " + m_noAdmitCount + ", and admitted = " + m_admitCount);
+                        Console.WriteLine("NoAdmit = " + m_noAdmitCount + ", and admitted = " + m_admitCount);
+
+                        Assert.AreEqual(500, m_admitCount + m_noAdmitCount,
+                            "All generated patients should have been processed.");
+                        Assert.IsTrue(m_admitCount > 0 && m_noAdmitCount > 0,
+                            "Both admitted and non-admitted counts should be greater than zero.");
 
 		}
 
