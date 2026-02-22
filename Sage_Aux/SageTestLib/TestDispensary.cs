@@ -3,7 +3,7 @@
 using System;
 using System.Diagnostics;
 using Highpoint.Sage.Materials.Chemistry;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Randoms;
 
@@ -13,7 +13,7 @@ namespace Highpoint.Sage.Materials {
     /// <summary>
     /// Summary description for zTestDispensary.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class DispensaryTester {
 
         #region Private Fields
@@ -24,7 +24,7 @@ namespace Highpoint.Sage.Materials {
         private MaterialType m_mt2;
         #endregion Private Fields
 
-        [TestInitialize] 
+        [SetUp] 
 		public void Init() {
             m_model = new Model();
             m_dispensary = new Dispensary(m_model.Executive);
@@ -32,19 +32,19 @@ namespace Highpoint.Sage.Materials {
             m_mt2 = new MaterialType(m_model, "Cyclohexane", Guid.NewGuid(), 1.0000, 4.1800, MaterialState.Liquid);
 
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Simple set of puts and takes.")]
         public void TestBaseFunctionality() {
             m_model.Executive.ExecutiveStarted_SingleShot += new ExecutiveEvent(Executive_ExecutiveStarted_SingleShot1);
             m_model.Start();
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Simple set of puts and takes.")]
         public void TestRandomFunctionality() {
             m_model.Executive.ExecutiveStarted_SingleShot += new ExecutiveEvent(Executive_ExecutiveStarted_SingleShot2);

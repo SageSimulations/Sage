@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Graphs;
 using Highpoint.Sage.Graphs.Analysis;
@@ -10,14 +10,14 @@ using Highpoint.Sage.Graphs.Tasks;
 
 namespace SchedulerDemoMaterial  {
 
-    [TestClass]
+    [TestFixture]
     public class TaskTester {
 
         private Random m_random = new Random();
 
         public TaskTester(){}
 
-        [TestMethod] public void TestBaseFunctionality(){
+        [Test] public void TestBaseFunctionality(){
 
             long oneDay = TimeSpan.FromDays(1.0).Ticks;
             long oneHour = TimeSpan.FromHours(1.0).Ticks;

@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.ItemBased.Ports;
 using Highpoint.Sage.ItemBased.SplittersAndJoiners;
@@ -11,14 +11,14 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 	/// <summary>
 	/// Summary description for zTestBranchBlocks.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class SplitterTester {
 
 		#region MSTest Goo
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -28,7 +28,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 		int m_nPorts = 6;
 		public SplitterTester() {}
 
-		[TestMethod]
+		[Test]
 		public void TestSplitters(){
 
 			Model model = new Model();
@@ -50,14 +50,14 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 	/// <summary>
 	/// Summary description for zTestBranchBlocks.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class JoinerTester {
 
 		#region MSTest Goo
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -67,7 +67,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 		int m_nPorts = 6;
 		public JoinerTester() {}
 
-		[TestMethod]
+		[Test]
 		public void TestJoiner(){
 
 			Model model = new Model();

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using K = Highpoint.Sage.Materials.Chemistry.VaporPressure.VaporPressureTester.Constants;
 
 namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
@@ -12,7 +12,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
     /// <summary>
     /// Summary description for zTestTemperatureController.
     /// </summary>
-    [TestClass]
+    [TestFixture]
 	public class VaporPressureTester	{
 
 		public class Constants : Highpoint.Sage.Materials.Chemistry.Constants {
@@ -27,7 +27,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 
 		public VaporPressureTester(){Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureInPascals = new Hashtable();
@@ -68,13 +68,13 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 			}
 		}
 
-		[TestCleanup]
+		[TearDown]
 		public void Destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test runs a series of known scenarios, and compares their VP's to known-correct values.")]
 		public void TestKnownVaporPressureValues(){
 			string[] knownBad = new string[]{};//"Hydrazine"};
@@ -93,7 +93,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 			}
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test runs a vapor pressure computation on Hydrazine, which uses a Henry's Law computation.")]
         public void TestHenrysLawScenario() {
             MaterialType mt = m_brs.MyMaterialCatalog["Hydrazine"];
@@ -106,7 +106,7 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
             Assert.IsTrue(pctError < 0.01, "Vapor Pressure", mt.Name + " Vapor Pressure at 35 deg C == " + svp + " Pascals");
         }
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test runs a series of computations against known water vapor pressure computations.")]
 		public void TestEmpiricalWaterVaporPressureScenarios(){
 			double vp;

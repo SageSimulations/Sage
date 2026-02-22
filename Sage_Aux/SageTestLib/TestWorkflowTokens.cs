@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 using Highpoint.Sage.Utility;
 using System.IO;
@@ -21,7 +21,7 @@ namespace Highpoint.Sage.Workflow {
     /// <summary>
     /// Summary description for zTestWorkflowTokens.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class zTestWorkflowTokens {
 
         class DummyElement : IWorkflowElement {
@@ -143,10 +143,10 @@ namespace Highpoint.Sage.Workflow {
         delegate void Action();
 
         #region MSTest Goo
-        [TestInitialize]
+        [SetUp]
         public void Init() {
         }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -158,7 +158,7 @@ namespace Highpoint.Sage.Workflow {
 
         public zTestWorkflowTokens() { }
 
-        [TestMethod]
+        [Test]
         public void TestTokenStateTransitions_Basic() {
 
             Token t;
@@ -228,7 +228,7 @@ namespace Highpoint.Sage.Workflow {
             Debug.Assert(m_sb.ToString().Equals(m_stbExpected_TestTokenStateTransitions_Basic));
         }
 
-        [TestMethod]
+        [Test]
         public void TestTokenPropagation_Basic() {
             Token t;
             m_sb = new StringBuilder();

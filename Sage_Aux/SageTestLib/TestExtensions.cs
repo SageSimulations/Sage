@@ -3,14 +3,14 @@
 using System;
 using System.Linq;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Utility;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Highpoint.Sage.Utility {
 
-    [TestClass]
+    [TestFixture]
     public class ExtensionTester {
 
         #region Private Fields
@@ -18,16 +18,16 @@ namespace Highpoint.Sage.Utility {
 
         public ExtensionTester() { Init(); }
 
-        [TestInitialize]
+        [SetUp]
         public void Init() { }
 
-        [TestCleanup]
+        [TearDown]
         public void destroy() { Debug.WriteLine("Done."); }
 
         /// <summary>
         /// Tests the PercentileGetter extension.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Tests the Byte XOR extension.")]
         public void TestByteXOR() {
             byte[] ba1 = new byte[] { 0xF0, 0xF0 };
@@ -46,7 +46,7 @@ namespace Highpoint.Sage.Utility {
             Assert.AreEqual(ba3[1], 0x00, "Comparison 3b.");
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Tests the CommasAndAndedList operations.")]
         public void TestCommasAndAndedListOperations() {
 
@@ -102,7 +102,7 @@ namespace Highpoint.Sage.Utility {
 
 namespace Highpoint.Sage.Mathematics {
 
-    [TestClass]
+    [TestFixture]
     public class ExtensionTester {
 
         #region Private Fields
@@ -110,16 +110,16 @@ namespace Highpoint.Sage.Mathematics {
 
         public ExtensionTester() { Init(); }
 
-        [TestInitialize]
+        [SetUp]
         public void Init() { }
 
-        [TestCleanup]
+        [TearDown]
         public void destroy() { Debug.WriteLine("Done."); }
 
         /// <summary>
         /// Tests the PercentileGetter extension.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Tests the PercentileGetter extension.")]
         public void TestPercentileGetter() {
             double[] testData = new double[] { -99.9, -.4, .9, 1.1, 3.6, 12.5, 42.2 };
@@ -134,7 +134,7 @@ namespace Highpoint.Sage.Mathematics {
         /// <summary>
         /// Tests the PercentileGetter extension.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Tests the  BoundBySigmas extension.")]
         public void TestSigmaBounding() {
 

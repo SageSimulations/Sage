@@ -4,11 +4,11 @@ using System.Collections;
 using Highpoint.Sage.SimCore;
 using System.Xml;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Graphs.PFC {
 
-    [TestClass]
+    [TestFixture]
     public class PFCGraphTester {
 
         private enum LinkSuperType { ParallelConvergent, SeriesConvergent, ParallelDivergent, SeriesDivergent }
@@ -20,7 +20,7 @@ namespace Highpoint.Sage.Graphs.PFC {
             m_pfcTestFileName = Path.GetTempFileName();
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesConvergentStepStep() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_000}
@@ -36,7 +36,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesConvergentStepTransition() {
             string shouldBe =
 @"{S_000-->[L_000(SFC 1.Root)]-->T_Edna}
@@ -53,7 +53,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesConvergentTransitionStep() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_Edna}
@@ -65,7 +65,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesConvergentTransitionTransition() {
             string shouldBe =
 @"{S_000-->[L_000(SFC 1.Root)]-->T_Edna}
@@ -78,7 +78,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelConvergentStepStep() {
             string shouldBe =
 @"{T_000-->[L_000(SFC 1.Root)]-->S_Edna}
@@ -91,7 +91,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelConvergentStepTransition() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_Edna}
@@ -103,7 +103,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelConvergentTransitionStep() {
             string shouldBe =
 @"{T_000-->[L_000(SFC 1.Root)]-->S_Edna}
@@ -120,7 +120,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelConvergentTransitionTransition() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_000}
@@ -136,7 +136,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelDivergentStepStep() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_000}
@@ -149,7 +149,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelDivergentStepTransition() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_000}
@@ -166,7 +166,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelDivergentTransitionStep() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_Bob}
@@ -178,7 +178,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_ParallelDivergentTransitionTransition() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_000}
@@ -194,7 +194,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesDivergentStepStep() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_000}
@@ -210,7 +210,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesDivergentStepTransition() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_Bob}
@@ -222,7 +222,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesDivergentTransitionStep() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_000}
@@ -239,7 +239,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SeriesDivergentTransitionTransition() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_000}
@@ -252,7 +252,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SimpleBindingStepStep() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_000}
@@ -262,7 +262,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SimpleBindingStepTransition() {
             string shouldBe =
 @"{S_Alice-->[L_000(SFC 1.Root)]-->T_Bob}
@@ -271,7 +271,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SimpleBindingTransitionStep() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_Bob}
@@ -280,7 +280,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SimpleBindingTransitionTransition() {
             string shouldBe =
 @"{T_Alice-->[L_000(SFC 1.Root)]-->S_000}
@@ -290,7 +290,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SynchronizerConstruct_Transitions() {
             Model model = new Model("SFC Test 1");
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, "SFC 1", "", Guid.NewGuid());
@@ -328,7 +328,7 @@ namespace Highpoint.Sage.Graphs.PFC {
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_SynchronizerConstruct_Steps() {
             Model model = new Model("SFC Test 1");
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, "SFC 1", "", Guid.NewGuid());
@@ -369,7 +369,7 @@ namespace Highpoint.Sage.Graphs.PFC {
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Test_InsertStepAndTransition() {
             Model model = new Model("SFC Test 1");
             ProcedureFunctionChart pfc = new ProcedureFunctionChart(model, "SFC 1", "", Guid.NewGuid());
@@ -404,7 +404,7 @@ namespace Highpoint.Sage.Graphs.PFC {
 
         }
 
-        [TestMethod]
+        [Test]
         public void Test_RemoveStep() {
             string testName = "PFC With Simultaneous Branch";
 
@@ -485,7 +485,7 @@ namespace Highpoint.Sage.Graphs.PFC {
             Assert.IsTrue(pfc.Steps[step4.Name] == null, "Step4 Should be Deleted");
         }
 
-        [TestMethod]
+        [Test]
         public void Test_InsertStepIntoLoop() {
             string testName = "PFC with loop gets the loop extended";
 

@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Utility {
 
@@ -11,17 +11,17 @@ namespace Highpoint.Sage.Utility {
     /// <summary>
 	/// Summary description for zTestTemperatureController.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class TreeNodeHelperTester {
         public TreeNodeHelperTester() {
             Init();
         }
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
 
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -29,7 +29,7 @@ namespace Highpoint.Sage.Utility {
 		private string AdamsResult                     = "Joseph Adams 1654-1736\r\n\tJohn Adams Sr, 1690-1761\r\n\t\tJohn Adams, Jr 1735-1826\r\n\t\t\tAbigail Adams 1765-1813\r\n\t\t\tSusanna Adams 1768-1770\r\n\t\t\tCharles Adams b. 1770\r\n\t\t\tThomas Boylston Adams b. 1772\r\n\t\t\tJohn Quincy Adams 1767-1848\r\n\t\t\t\tGeorge Washington Adams b. 1801\r\n\t\t\t\tJohn Adams, III b. 1803\r\n\t\t\t\tCharles Francis Adams b. 1807\r\n\t\t\t\tLouisa Catherine Adams b. 1811\r\n";
 		private string AdamsResultJQAChildrenSequenced = "Joseph Adams 1654-1736\r\n\tJohn Adams Sr, 1690-1761\r\n\t\tJohn Adams, Jr 1735-1826\r\n\t\t\tAbigail Adams 1765-1813\r\n\t\t\tSusanna Adams 1768-1770\r\n\t\t\tCharles Adams b. 1770\r\n\t\t\tThomas Boylston Adams b. 1772\r\n\t\t\tJohn Quincy Adams 1767-1848\r\n\t\t\t\tCharles Francis Adams b. 1807\r\n\t\t\t\tGeorge Washington Adams b. 1801\r\n\t\t\t\tJohn Adams, III b. 1803\r\n\t\t\t\tLouisa Catherine Adams b. 1811\r\n";
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test creates and navigates a tree built of the TreeNodeHelper proxy.")]
 		public void TestTreeNodeHelperBasics(){
 
@@ -65,7 +65,7 @@ namespace Highpoint.Sage.Utility {
             Assert.IsTrue(AdamsResult.Equals(result),"TestTreeNodeHelperBasics");
 		}
 
-        [TestMethod]
+        [Test]
         public void TestReadOnlyTreeNodeHelperBasics() {
 
 
@@ -113,7 +113,7 @@ namespace Highpoint.Sage.Utility {
             Assert.IsTrue(AdamsResult.Equals(result),"TestReadOnlyTreeNodeHelperBasics");
 		}
 
-        [TestMethod]
+        [Test]
         public void TestTreeNodeHelperChildSequencing() {
 
 

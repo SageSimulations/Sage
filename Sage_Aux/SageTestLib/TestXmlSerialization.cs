@@ -3,18 +3,18 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Materials.Chemistry;
 
 
 namespace Highpoint.Sage.Persistence {
 
-	[TestClass]
+	[TestFixture]
 	public class PersistenceTester {
 
 		public PersistenceTester(){}
 
-		[TestMethod] public void TestPersistenceBasics(){
+		[Test] public void TestPersistenceBasics(){
 
 			XmlSerializationContext xsc = new XmlSerializationContext();
 
@@ -50,7 +50,7 @@ namespace Highpoint.Sage.Persistence {
 
 		}
 	
-		[TestMethod] public void TestPersistenceWaterStorage(){
+		[Test] public void TestPersistenceWaterStorage(){
 
 			MaterialType mt = new MaterialType(null,"Water",Guid.NewGuid(),1.234,4.05,MaterialState.Liquid,18.0,1034);
 
@@ -73,7 +73,7 @@ namespace Highpoint.Sage.Persistence {
 
 		}
 
-		[TestMethod] public void TestPersistenceWaterRestoration(){
+		[Test] public void TestPersistenceWaterRestoration(){
 
 			XmlSerializationContext xsc = new XmlSerializationContext();
             xsc.Load(Highpoint.Sage.Utility.DirectoryOperations.GetAppDataDir() + "water.xml");
@@ -84,7 +84,7 @@ namespace Highpoint.Sage.Persistence {
 		}
 
 		
-		[TestMethod] public void TestPersistenceChemistryStorage(){
+		[Test] public void TestPersistenceChemistryStorage(){
 			BasicReactionSupporter brs = new BasicReactionSupporter();
 			Initialize(brs);
 			XmlSerializationContext xsc = new XmlSerializationContext();

@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 //using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 //using ProcessStep = Highpoint.Sage.Servers.SimpleServerWithPreQueue;
@@ -12,14 +12,14 @@ namespace Highpoint.Sage.Utility {
 	/// <summary>
 	/// Summary description for zTestLocalEventQueue.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class LocalEventQueueTester : IHasName {
 
 		#region MSTest Goo
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -28,7 +28,7 @@ namespace Highpoint.Sage.Utility {
 		private int m_numEvents;
 		LocalEventQueue m_leq; 
 
-		[TestMethod]
+		[Test]
 		public void TestLocalEventQueue(){
 			IExecutive exec = ExecFactory.Instance.CreateExecutive();
 
@@ -49,7 +49,7 @@ namespace Highpoint.Sage.Utility {
 
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestLocalEventQueue2(){
 			IExecutive exec = ExecFactory.Instance.CreateExecutive();
 

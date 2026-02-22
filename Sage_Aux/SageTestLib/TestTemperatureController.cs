@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Thermodynamics;
 using IContainer = Highpoint.Sage.Materials.Chemistry.IContainer;
@@ -10,7 +10,7 @@ namespace Highpoint.Sage.Thermodynamics {
 	/// <summary>
 	/// Summary description for zTestTemperatureController.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class TemperatureControllerTester101	{
 		public TemperatureControllerTester101(){Init();}
 
@@ -18,15 +18,15 @@ namespace Highpoint.Sage.Thermodynamics {
 		private static readonly TemperatureControllerMode CONST_DLTA = TemperatureControllerMode.ConstantDeltaT;
 		private static readonly TemperatureControllerMode CONST_RAMP = TemperatureControllerMode.Constant_RampRate;
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST Delta method")]
 		public void TestTCConstDeltaTargetingUp(){
 			Debug.WriteLine("\r\nTesting temperature drive up from constant delta.");
@@ -36,7 +36,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST Delta method")]
 		public void TestTCConstDeltaTargetingUp2(){
 			Debug.WriteLine("\r\nTesting temperature drive up from constant delta.");
@@ -46,7 +46,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST TSRC method")]
 		public void TestTCConstTSrcTargetingUp(){
 			Debug.WriteLine("\r\nTesting temperature drive up from constant TSrc.");
@@ -56,18 +56,18 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using CONST TSRC and src==setpoint")]
-        [ExpectedException(typeof(Highpoint.Sage.Materials.Thermodynamics.TemperatureController.IncalculableTimeToSetpointException))]
 		public void TestTCConstTSrcTargetingLevel(){
 			Debug.WriteLine("\r\nTesting temperature drive up from constant TSrc.");
-			//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
-			TCTestJig tj = new TCTestJig(60.0,20.0,34.0,60.0,5.0,01.0,CONST_TSRC,true);
-
-			_TestTargeting(tj);
+			Assert.Throws<Highpoint.Sage.Materials.Thermodynamics.TemperatureController.IncalculableTimeToSetpointException>(() => {
+				//                           SRC  MIX  AMB  SET  RMP ERR  MODE       ENBL
+				TCTestJig tj = new TCTestJig(60.0,20.0,34.0,60.0,5.0,01.0,CONST_TSRC,true);
+				_TestTargeting(tj);
+			});
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 20 degreesC to 60 degrees C using the CONST RampRate method")]
 		public void TestTCConstTRampRateTargetingUp(){
 			Debug.WriteLine("\r\nTesting temperature drive up from constant RampRate.");
@@ -77,7 +77,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 17 degreesC to 35 degrees C using the CONST RampRate method")]
 		public void TestTCConstTRampRateKlendathu(){
 			Debug.WriteLine("\r\nTesting temperature drive up from constant RampRate.");
@@ -87,7 +87,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 50 degrees C using the CONST Delta method")]
 		public void TestTCConstDeltaTargetingDown(){
 			Debug.WriteLine("\r\nTesting temperature drive down from constant delta.");
@@ -97,7 +97,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 50 degrees C using the CONST TSRC method")]
 		public void TestTCConstTSrcTargetingDown(){
 			Debug.WriteLine("\r\nTesting temperature drive down from constant TSrc.");
@@ -107,7 +107,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 50 degrees C using the CONST RampRate method")]
 		public void TestTCConstTRampRateTargetingDown(){
 			Debug.WriteLine("\r\nTesting temperature drive down from constant RampRate.");
@@ -117,7 +117,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 70 degreesC to 60 degrees C due to ambient 34 degreesC using the CONST Delta method")]
 		public void TestTCDriftDown(){
 			Debug.WriteLine("\r\nTesting temperature downdrift due to ambient.");
@@ -127,7 +127,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 34 degreesC to 44 degrees C due to ambient 70 degreesC using the CONST Delta method")]
 		public void TestTCDriftUp(){
 			Debug.WriteLine("\r\nTesting temperature updrift due to ambient.");
@@ -137,7 +137,7 @@ namespace Highpoint.Sage.Thermodynamics {
 			_TestTargeting(tj);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 34 degreesC for a longer period of time then to reach 60 degrees C using the CONST Delta method")]
 		public void TestOverShootWhileOff(){
 			Debug.WriteLine("\r\nTesting what happens when temperature overshoots the setpoint.");
@@ -157,7 +157,7 @@ namespace Highpoint.Sage.Thermodynamics {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 34 degreesC for a longer period of time then to reach 30 degrees C using the CONST Delta method")]
 		public void TestUnderShootWhileOff(){
 			Debug.WriteLine("\r\nTesting what happens when temperature undershoots the setpoint.");
@@ -177,7 +177,7 @@ namespace Highpoint.Sage.Thermodynamics {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test heats a mix from 34 degreesC for a longer period of time then to reach 60 degrees C using the CONST Delta method")]
 		public void TestOverShootWhileOn(){
 			Debug.WriteLine("\r\nTesting what happens when temperature overshoots the setpoint.");
@@ -197,7 +197,7 @@ namespace Highpoint.Sage.Thermodynamics {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 34 degreesC for a longer period of time then to reach 30 degrees C using the CONST Delta method")]
 		public void TestUnderShootWhileOn(){
 			Debug.WriteLine("\r\nTesting what happens when temperature undershoots the setpoint.");
@@ -217,7 +217,7 @@ namespace Highpoint.Sage.Thermodynamics {
 
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test cools off a mix from 34 degreesC for a longer period of time then to reach 30 degrees C using the CONST Delta method")]
         public void TestReplicateFailAfterTurningOffTCEnabled() {
             Debug.WriteLine("\r\nTesting what happens when temperature control is turned off, but ambient cannot drive achievement of the setpoint.");

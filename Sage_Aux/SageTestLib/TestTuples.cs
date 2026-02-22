@@ -5,13 +5,13 @@ using System.Diagnostics;
 namespace Highpoint.Sage.Utility {
 	using System;
 		using System.Collections;
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+	using NUnit.Framework;
 	using Highpoint.Sage.SimCore;
 
     /// <summary>
     /// Summary description for TupleTester.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class TupleTester {
 		private ITupleSpace m_tsut; // ExchangeUnderTest.
 		private ArrayList m_results;
@@ -38,14 +38,14 @@ namespace Highpoint.Sage.Utility {
             m_blockTilGone = new ExecEventReceiver(BlockTilGoneTuple);
 		}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestTupleBasics(){
 			string[] expected = new string[]{"632254657940000000:RT1:" + HashCode(k1), "632254657940000000:RT2b:" + HashCode(k1), "632254657940000000:PT1:" + HashCode(k1), "632254657940000000:PT2:" + HashCode(k1), "632254657940000000:TT1:" + HashCode(k1), "632254657940000000:TT2a:" + HashCode(k1)};
 			InitTest();
@@ -60,7 +60,7 @@ namespace Highpoint.Sage.Utility {
             return k1.GetHashCode().ToString();
         }
 
-		[TestMethod]
+		[Test]
 		public void TestRead(){
             string[] expected = new string[] { "632254657940000000:PT1:" + HashCode(k1), "632254657940000000:PT2:" + HashCode(k1), "632254659740000000:RT1:" + HashCode(k1), "632254659740000000:RT2a:" + HashCode(k1) };
 			InitTest();
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Utility {
 			m_exec.Start();
 			EvaluateTest(expected,false);
 		}
-		[TestMethod]
+		[Test]
 		public void TestTake(){
             string[] expected = new string[] { "632254657940000000:PT1:" + HashCode(k1), "632254657940000000:PT2:" + HashCode(k1), "632254659740000000:TT1:" + HashCode(k1), "632254659740000000:TT2a:" + HashCode(k1) };
 			InitTest();
@@ -79,7 +79,7 @@ namespace Highpoint.Sage.Utility {
 			m_exec.Start();
 			EvaluateTest(expected,false);
 		}
-		[TestMethod]
+		[Test]
 		public void TestBlockingPost(){
 			string[] expected = new string[]{"632254657940000000:BPT1:" + HashCode(k1), "632254657940000000:RT1:" + HashCode(k1), "632254657940000000:RT2a:" + HashCode(k1), "632254657940000000:RT1:" + HashCode(k1), "632254657940000000:RT2a:" + HashCode(k1), "632254657940000000:TT1:" + HashCode(k1), "632254657940000000:TT2a:" + HashCode(k1), "632254657940000000:BPT2:" + HashCode(k1)};
 			InitTest();
@@ -92,7 +92,7 @@ namespace Highpoint.Sage.Utility {
 			EvaluateTest(expected,false);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestBlockingRead(){
 			string[] expected = new string[]{"632254657940000000:RT1:" + HashCode(k1), "632254657940000000:RT2b:" + HashCode(k1), "632254657940000000:BRT1:" + HashCode(k1), "632254657940000000:PT1:" + HashCode(k1), "632254657940000000:PT2:" + HashCode(k1), "632254657940000000:BRT2:" + HashCode(k1), "632254657940000000:TT1:" + HashCode(k1), "632254657940000000:TT2a:" + HashCode(k1)};
 			InitTest();
@@ -104,7 +104,7 @@ namespace Highpoint.Sage.Utility {
 			EvaluateTest(expected,false);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestBlockingTake(){
 			string[] expected = new string[]{"632254657940000000:RT1:" + HashCode(k1), "632254657940000000:RT2b:" + HashCode(k1), "632254657940000000:BTT1:" + HashCode(k1), "632254657940000000:PT1:" + HashCode(k1), "632254657940000000:PT2:" + HashCode(k1), "632254657940000000:BTT2:" + HashCode(k1), "632254657940000000:RT1:" + HashCode(k1), "632254657940000000:RT2b:" + HashCode(k1)};
 			InitTest();
@@ -116,7 +116,7 @@ namespace Highpoint.Sage.Utility {
 			EvaluateTest(expected,false);
 		}
 
-        [TestMethod]
+        [Test]
         public void TestBlock() {
             string[] expected = new string[] { "632254657940000000:PT1:" + HashCode(k1), "632254657940000000:PT2:" + HashCode(k1), "632254658540000000:WTG1:" + HashCode(k1), "632254659140000000:RT1:" + HashCode(k1), "632254659140000000:RT2a:" + HashCode(k1), "632254659740000000:TT1:" + HashCode(k1), "632254659740000000:TT2a:" + HashCode(k1), "632254659740000000:WTG2:" + HashCode(k1) };
             InitTest();

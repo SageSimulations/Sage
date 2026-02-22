@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 
 namespace Highpoint.Sage.Scheduling {
@@ -10,7 +10,7 @@ namespace Highpoint.Sage.Scheduling {
 	/// <summary>
 	/// Summary description for zTestTimePeriods.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class MilestoneRelationshipTester {
 		public MilestoneRelationshipTester() {
 			Now = DateTime.Now;
@@ -38,15 +38,15 @@ namespace Highpoint.Sage.Scheduling {
 		private DateTime TwentyMinsOn;
 		private DateTime TwentyMinsAgo;
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMilestones(){
 			Milestone ms1 = new Milestone(DateTime.Now);
 			ms1.ChangeEvent +=new ObservableChangeHandler(ChangeEvent);

@@ -2,30 +2,30 @@
 #if NYRFPT
 using System;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Graphs;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Persistence;
 
 namespace Highpoint.Sage.Graphs.Tasks {
 
-	[TestClass]
+	[TestFixture]
 	public class TaskGraphPersistenceTester {
 		private Random m_random = new Random();
 
 		public TaskGraphPersistenceTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
 		// Ta(4 hr) -> Tb(1 hr)
 		// Tc(1 hr) -> Td(1 hr) Check to see that Td starts at T=1.
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that a plain graph can be created, stored and reloaded.  It also confirms that Td still starts at T=1")]
 		public void TestPlainGraphPersistence(){
 
@@ -57,7 +57,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
 		// Ta(4 hr) -> Tb(1 hr)
 		// Tc(1 hr) -> Td(1 hr) (Td costart-slaved to Tb, so it starts at t=4, not t=1.)
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that store and reload also works with a costart relationship defined.  It also confirms that Td still costart-slaved to Tb, so it starts at t=4, not t=1.")]
 		public void TestCoStartPersistance(){
 
@@ -78,7 +78,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
 		// Ta(4 hr) -> Tb(1 hr)
 		// Tc(1 hr) -> Td(1 hr) (Tc cofinish-slaved to Ta, so it ends at t=4, not t=1.)
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that store and reload also works with a cofinish relationship defined.  It also confirms that Tc still cofinish-slaved to Ta, so it ends at t=4, not t=1.")]
 		public void TestCoFinishPersistence(){
 
@@ -99,7 +99,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
 		// Ta(4 hr) -> Tb(1 hr)
 		// Tc(1 hr) -> Td(1 hr) (Tc.finish synched to Ta.finish, so tb and td start at t=4.)
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that store and reload also works with a synchro start relationship defined.  It also confirms that Td still SynchroStart-slaved to Tb as well as Tc still SynchroStart-slaved to Tb.")]
 		[Ignore(/*"Vertex deserialization not yet implemented in VertexSynchronizers."*/)]
 		public void TestSynchroStartPersistence(){
@@ -144,7 +144,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		
 		// Ta(4 hr) -> Tb(1 hr)
 		// Tc(1 hr) -> Td(1 hr) (Tc.finish synched to Ta.finish, so tb and td start at t=4.)
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that store and reload also works with a synchro finish relationship defined."
 			 +"It also confirms that Tc still SynchroFinish-slaved to Ta as well as Ta still SynchroFinish-slaved to Tc.")]
 		[Ignore(/*"Synchro-finish is a future feature - not yet implemented in code."*/)]

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sage_SampleCode", "Sage_Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sage4", "Sage\Sage4.csproj", "{CDC5CBDB-B488-45B2-BCED-008A3C351E0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinSage", "WinSage/WinSage.csproj", "{B9FE7136-0D21-4D1D-9C0E-79C593847C17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,26 @@ Global
 		{CDC5CBDB-B488-45B2-BCED-008A3C351E0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CDC5CBDB-B488-45B2-BCED-008A3C351E0D}.Release|x64.ActiveCfg = Release|x64
 		{CDC5CBDB-B488-45B2-BCED-008A3C351E0D}.Release|x64.Build.0 = Release|x64
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug_Product|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug_Product|Any CPU.Build.0 = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug_Product|x64.ActiveCfg = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug_Product|x64.Build.0 = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.DEBUG_RFPTO|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.DEBUG_RFPTO|Any CPU.Build.0 = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.DEBUG_RFPTO|x64.ActiveCfg = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.DEBUG_RFPTO|x64.Build.0 = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Debug|x64.Build.0 = Debug|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release_Product|Any CPU.ActiveCfg = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release_Product|Any CPU.Build.0 = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release_Product|x64.ActiveCfg = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release_Product|x64.Build.0 = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release|x64.ActiveCfg = Release|Any CPU
+		{B9FE7136-0D21-4D1D-9C0E-79C593847C17}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

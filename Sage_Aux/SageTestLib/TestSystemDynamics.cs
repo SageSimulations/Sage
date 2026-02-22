@@ -7,25 +7,25 @@ using System.Xml.Linq;
 using Highpoint.Sage.Mathematics;
 using Highpoint.Sage.SystemDynamics;
 using Highpoint.Sage.SystemDynamics.Utility;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 // ReSharper disable ExpressionIsAlwaysNull
 namespace Highpoint.Sage.SystemDynamics
 {
 
-    [TestClass]
+    [TestFixture]
     public class BoilingPointTester
     {
        public BoilingPointTester() { Init(); }
 
-        [TestInitialize]
+        [SetUp]
         public void Init()
             {
                 XElement parameters = null;
                 string outputPath = null;
             }
 
-        [TestMethod]
+        [Test]
         public void TestLynxHare() {
 
             string[] args = new string[] {};

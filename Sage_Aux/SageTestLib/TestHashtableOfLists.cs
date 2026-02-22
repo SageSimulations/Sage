@@ -1,24 +1,24 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Highpoint.Sage.Utility {
-	[TestClass]
+	[TestFixture]
 	public class HashtableOfListsTester {
 
 		public HashtableOfListsTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the HashtableOfLists.")]
         public void TestHTOL() {
 
@@ -42,7 +42,7 @@ namespace Highpoint.Sage.Utility {
 
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the HashtableOfLists.")]
         public void TestHTOLTemplate() {
 
@@ -77,7 +77,7 @@ namespace Highpoint.Sage.Utility {
                 Console.WriteLine(key + " --> " + StringOperations.ToCommasAndAndedList(htol[key]));
             }
         }
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the HashtableOfLists.")]
         public void TestSortedHTOLTemplate() {
 

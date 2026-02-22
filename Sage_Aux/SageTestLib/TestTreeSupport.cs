@@ -4,7 +4,7 @@
 using System;
 using System.Text;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -13,7 +13,7 @@ namespace Highpoint.Sage.Utility
     /// <summary>
     /// Summary description for TreeNodeTester.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class TreeNodeTester
     {
         public TreeNodeTester()
@@ -21,12 +21,12 @@ namespace Highpoint.Sage.Utility
             Init();
         }
 
-        [TestInitialize]
+        [SetUp]
         public void Init()
         {
         }
 
-        [TestCleanup]
+        [TearDown]
         public void destroy()
         {
             Debug.WriteLine("Done.");
@@ -35,7 +35,7 @@ namespace Highpoint.Sage.Utility
         /// <summary>
         /// This test manipulates a tree that holds primitive elements that have no knowledge of their participation in a tree.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestTreeConstructionAndTraversalMethodsOverPrimitiveTree()
         {
 
@@ -77,7 +77,7 @@ namespace Highpoint.Sage.Utility
         /// <summary>
         /// This test manipulates a tree that holds primitive elements that have no knowledge of their participation in a tree, through the use of NodeWrappers.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestTreeConstructionAndTraversalMethodsOverNodeWrapperTree()
         {
 
@@ -119,7 +119,7 @@ namespace Highpoint.Sage.Utility
         /// <summary>
         /// This test manipulates a tree that holds elements that derive from TreeNode.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestTreeConstructionAndTraversalMethodsOverTreeOfNodeDerivedObjects()
         {
 
@@ -167,7 +167,7 @@ namespace Highpoint.Sage.Utility
         /// <summary>
         /// This test manipulates a tree that holds elements that implement ITreeNode.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestTreeConstructionAndTraversalMethodsOverTreeOfNodeITreeNodeImplementingObjects()
         {
 
@@ -248,7 +248,7 @@ Dingus";
         #endregion
     
 
-        [TestMethod]
+        [Test]
         public void TestCreateCircularTree()
         {
             try
@@ -267,7 +267,7 @@ Dingus";
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestChildSorting()
         {
 
@@ -305,7 +305,7 @@ Dingus";
             return tn2.Payload.Name.CompareTo(tn1.Payload.Name);
         }
 
-        [TestMethod]
+        [Test]
         
         public void TestNodeRemoval()
         {
@@ -332,7 +332,7 @@ Dingus";
 
 
 
-        [TestMethod]
+        [Test]
         public void TestNodeRemoval2()
         {
 

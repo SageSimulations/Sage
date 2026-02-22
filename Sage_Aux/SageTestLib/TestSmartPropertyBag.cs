@@ -2,28 +2,28 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Diagnostics;
 
 
 namespace Highpoint.Sage.SimCore  {
 
-    [TestClass]
+    [TestFixture]
     public class SmartPropertyBagTester {
 
         private Random m_random = new Random();
 
         public SmartPropertyBagTester(){Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks the base functionality of Name/Value, Name/String, Name/SPB, and set a value in a referenced SPB")]
 		public void TestSubsidiaries(){
 			SmartPropertyBag animals = new SmartPropertyBag();
@@ -80,7 +80,7 @@ namespace Highpoint.Sage.SimCore  {
             Assert.IsTrue((bool)labs["Faithful"],"Labs are faithful");
 		}
 
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks the base functionality of Name/Value, Name/String, Name/SPB, and set a value in a referenced SPB")]
 		public void TestRepeatedSnapshottingAndRestoration(){
 			SmartPropertyBag animals = new SmartPropertyBag();
@@ -138,7 +138,7 @@ namespace Highpoint.Sage.SimCore  {
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks the functionality of the memento concept")]
 		public void TestMementoCaching(){
 			m_steve = 12;
@@ -224,7 +224,7 @@ namespace Highpoint.Sage.SimCore  {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks that a smart property bag can copy information through simply copying the memento from one instance to the other")]
 		public void TestMementoRestorationAndEquality(){
             SmartPropertyBag spb1 = new SmartPropertyBag();
@@ -248,7 +248,7 @@ namespace Highpoint.Sage.SimCore  {
 
         }
 
-        [TestMethod] 
+        [Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks managing values, strings, booleans, and aliases over more levels.")]
 		public void TestStringsAndBooleans(){
             SmartPropertyBag spb1 = new SmartPropertyBag();
@@ -319,7 +319,7 @@ namespace Highpoint.Sage.SimCore  {
 
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that a smart property bag implements IEnumerable interface correctly")]
         public void TestEnumerationAndIsLeaf() {
             SmartPropertyBag animals = new SmartPropertyBag();
@@ -347,7 +347,7 @@ namespace Highpoint.Sage.SimCore  {
 
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks to make sure that a SPB, when asked for an object that is not present in the bag, returns null, not smoke.")]
         public void TestRetrieveNonexistentItem() {
             SmartPropertyBag sciences = new SmartPropertyBag();

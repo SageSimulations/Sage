@@ -2,7 +2,7 @@
 #if NYRFPT
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using System.Text;
 using Highpoint.Sage.Utility;
@@ -10,12 +10,12 @@ using Highpoint.Sage.Graphs.PFC.Execution.Actions;
 
 namespace Highpoint.Sage.Graphs.PFC.Execution {
 
-    [TestClass]
+    [TestFixture]
     public class ExecutablePfcExtensionTester {
 
-        [TestInitialize]
+        [SetUp]
         public void Init() { }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -28,7 +28,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         /// <summary>
         ///
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestSequencers() {
 
             Model model = new Model("MyTestModel");

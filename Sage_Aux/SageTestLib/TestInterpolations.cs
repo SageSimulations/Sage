@@ -1,20 +1,20 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Mathematics {
     /// <summary>
     /// Summary description for zTestInterpolations.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class Interpolations101 {
         public Interpolations101() {Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -22,7 +22,7 @@ namespace Highpoint.Sage.Mathematics {
 		/// <summary>
 		/// One line segment defined, tests outsides, vertices and middle of the segment.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("One line segment defined, tests outsides, vertices and middle of the segment")]
 		public void TestInterpolationFrom2Points(){
 			IWriteableInterpolable interp = new SmallDoubleInterpolable(2);
@@ -43,7 +43,7 @@ namespace Highpoint.Sage.Mathematics {
 		/// <summary>
 		/// One line segment defined, tests outsides, vertices and middle of the segment.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("One line segment defined, Replace each Y value, ensure that it was actually replaced.")]
 		public void TestInterpolationPointReplacement(){
 			IWriteableInterpolable interp = new SmallDoubleInterpolable(2);
@@ -61,7 +61,7 @@ namespace Highpoint.Sage.Mathematics {
 		/// <summary>
 		/// One line segment defined, tests outsides, vertices and middle of the segment with negative slope.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("One line segment defined, tests outsides, vertices and middle of the segment with negative slope")]
 		public void TestInterpolationFrom2PointsNegativeSlope(){
 			IWriteableInterpolable interp = new SmallDoubleInterpolable(2);
@@ -84,7 +84,7 @@ namespace Highpoint.Sage.Mathematics {
 		/// <summary>
         /// Three line segments defined, tests outsides, vertices and middles of each.
         /// </summary>
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("Three line segments defined, tests outsides, vertices and middles of each")]
         public void TestInterpolationFrom4Points(){
             IWriteableInterpolable interp = new SmallDoubleInterpolable(4);

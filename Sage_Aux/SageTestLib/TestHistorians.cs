@@ -1,23 +1,23 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Randoms;
 
 namespace Highpoint.Sage.Utility {
 
-	[TestClass]
+	[TestFixture]
 	public class HistorianTester {
 		private readonly RandomServer m_rs;
 		public HistorianTester() {
 			m_rs = new RandomServer();
 		}
 		
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -27,7 +27,7 @@ namespace Highpoint.Sage.Utility {
 		TimeSpan m_accumulatedDeviation = TimeSpan.Zero;
 	    readonly DateTime m_startDate = new DateTime(2006,01,27,09,26,00);
 		
-		[TestMethod]
+		[Test]
 		public void TestEventTimeHistorian(){
 			IRandomChannel irc = m_rs.GetRandomChannel();
 			IExecutive exec = ExecFactory.Instance.CreateExecutive();

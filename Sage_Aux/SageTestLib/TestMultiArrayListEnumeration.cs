@@ -2,13 +2,13 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Utility {
     /// <summary>
     /// Summary description for zTestInterpolations.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class MultiArrayListEnumerationTester {
 		private ArrayList m_al1, m_al2, m_al3, m_ale;
 		private static string m_expected123 = "AlphaBravoCharleyDeltaEchoFoxtrotGolfHotelIndia";
@@ -23,10 +23,10 @@ namespace Highpoint.Sage.Utility {
 			m_ale = new ArrayList();
 		}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -34,7 +34,7 @@ namespace Highpoint.Sage.Utility {
 		/// <summary>
 		/// Basic test.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Simple test to aggregate three non-empty arraylists under one enumerator.")]
 		public void TestBasicsOfEnumerator(){
 			MultiArrayListEnumerable male = new MultiArrayListEnumerable(new ArrayList[]{m_al1,m_al2,m_al3});
@@ -48,7 +48,7 @@ namespace Highpoint.Sage.Utility {
 		/// <summary>
 		/// Basic test.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Simple test to aggregate three non-empty arraylists and one empty one in various locations under one enumerator.")]
 		public void TestEnumeratorWithEmptyArrays(){
 			Validate(new ArrayList[]{m_ale,m_al1,m_al2,m_al3},m_expected123,"Leading","Empty Arraylist at leading element of arraylists.");

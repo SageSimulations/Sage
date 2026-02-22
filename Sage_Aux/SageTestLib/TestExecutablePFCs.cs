@@ -4,19 +4,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using System.Text;
 using Highpoint.Sage.Utility;
 
 namespace Highpoint.Sage.Graphs.PFC.Execution {
 
-    [TestClass]
+    [TestFixture]
     public class ExecutablePfcTester {
 
-        [TestInitialize]
+        [SetUp]
         public void Init() { }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -29,7 +29,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         /// <summary>
         ///
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestSmallLoopback() {
             Assert.Fail();
             Model model = new Model("MyTestModel");
@@ -53,7 +53,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         /// <summary>
         ///
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestSmallLoopbackHierarchical() {
             DateTime start = DateTime.Now;
             Model model = new Model("MyTestModel");
@@ -90,7 +90,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         private static int nECs = 0;
         private static int nSteps = 100000;
         private static int nAvgKids = 50;
-        [TestMethod]
+        [Test]
         public void TestCreationOfABazillionEECs() {
             Assert.Fail();
 
@@ -124,7 +124,7 @@ namespace Highpoint.Sage.Graphs.PFC.Execution {
         /// <summary>
         ///
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestScheduleHierarchical() {/*
             DateTime start = DateTime.Now;
             Model model = new Model("MyTestModel");

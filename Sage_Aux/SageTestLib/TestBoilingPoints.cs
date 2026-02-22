@@ -7,19 +7,19 @@ using System.IO;
 using System.Reflection;
 using Highpoint.Sage.Materials.Chemistry;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 // ReSharper disable UnusedVariable
 
 namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 
-    [TestClass]
+    [TestFixture]
     public class BoilingPointTester {
 
         public BoilingPointTester(){Init();}
 
 		private BasicReactionSupporter m_brs;
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 			m_brs = new BasicReactionSupporter();
 
@@ -54,12 +54,12 @@ namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 				m_brs.MyMaterialCatalog.Add(mt);
 			}
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod] 
+		[Test] 
         public void TestBoilingPoints(){
 			Substance h2o = (Substance)m_brs.MyMaterialCatalog["Water"].CreateMass(1.0,31);
 
@@ -89,7 +89,7 @@ namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 			Console.WriteLine("BP of " + m.Name + " is " + m.GetEstimatedBoilingPoint(pressure_1Atm) + ".");
 		}
 
-		[TestMethod] 
+		[Test] 
         public void TestBoilingPoints2(){
 
 
@@ -114,7 +114,7 @@ namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
 			Console.WriteLine("\r\n...By the way, BP of water is " + water.GetEstimatedBoilingPoint(pressure_1Atm) + ".  ;-)");
 		}
 
-		[TestMethod] 
+		[Test] 
         public void TestBoilingPoints3(){
 
             MaterialType mtSodiumChloride = new MaterialType(null, "Potassium Carbonate", Guid.NewGuid(), 2.29, 4.17, MaterialState.Solid, 44.0, 1200);
@@ -135,7 +135,7 @@ namespace Highpoint.Sage.Materials.Chemistry.BoilingPoints {
             }
 		}
 
-        [TestMethod]
+        [Test]
         public void TestBoilingPointElevation() {
             m_brs.MyMaterialCatalog["Water"].EbullioscopicConstant = 0.512;
 			double pressure_1Atm = 101325.0; // pascals.

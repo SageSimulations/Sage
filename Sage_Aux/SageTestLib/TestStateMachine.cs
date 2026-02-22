@@ -3,11 +3,11 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.SimCore {
 
-    [TestClass]
+    [TestFixture]
     public class StateMachineTester {
 
         private Random m_random = new Random();
@@ -19,13 +19,13 @@ namespace Highpoint.Sage.SimCore {
 
         public enum States : int { Idle = 0, Validated = 1, Running = 2, Paused = 3, Finished = 4 }
 
-        [TestInitialize]
+        [SetUp]
         public void Init() {
             m_batch = new Hashtable();
             m_testCounter = 0;
             m_batch.Add("Batch", m_testCounter);
         }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -42,7 +42,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This test confirms some base information about the transition matrix.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test confirms some base information about the transition matrix.")]
         public void TestStateMachine() {
 
@@ -67,7 +67,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This test confirms some base information about the transition matrix.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test confirms some base information about the transition matrix.")]
         public void TestStateMachinePerformance() {
 
@@ -100,7 +100,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This test has been set up so that it should succeed and endup in a 'Finished' state.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up so that it should succeed and end up in a 'Finished' state.")]
         public void TestTransitionSuccessWithFollowon() {
             StateMachine sm = Initialize(true);
@@ -117,7 +117,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This test has been set up so that it should succeed and endup in a 'Valid' state.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up so that it should succeed and end up in a 'Validated' state.")]
         public void TestTransitionSuccessWithoutFollowon() {
             StateMachine sm = Initialize(false);
@@ -135,7 +135,7 @@ namespace Highpoint.Sage.SimCore {
         /// This test has been set up so that the preparation fails, 
         /// which means the state machine has to stay in the 'Idle' state.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up so that the preparation fails, which means the state machine has to stay in the 'Idle' state.")]
         public void TestTransitionFailure() {
             StateMachine sm = Initialize();
@@ -156,7 +156,7 @@ namespace Highpoint.Sage.SimCore {
         /// This test has been set up so that we attempt an illegle transition from 'Idle' to 'Paused', 
         /// which means the state machine has to stay in the 'Idle' state.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up so that we attempt an illegal transition from 'Idle' to 'Paused', "
                     + "which means the state machine has to stay in the 'Idle' state.")]
         public void TestTransitionIllegal() {
@@ -178,20 +178,21 @@ namespace Highpoint.Sage.SimCore {
         /// This test has been set up so that we attempt to set up an illegle TransitionHandler from 'Idle' to 'Paused', 
         /// which means the state machine has to throw an ApplicationException.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up so that we attempt to set up an illegal TransitionHandler from 'Idle' to 'Paused', "
-                    + "which means the state machine has to throw an ApplicationException.")]
-        [ExpectedException(typeof(TransitionFailureException))]
+                + "which means the state machine has to throw an ApplicationException.")]
         public void TestTransitionIllegalToo() {
-            StateMachine sm = Initialize();
-            sm.TransitionHandler(States.Idle, States.Paused).Prepare += new PrepareTransitionEvent(PrepareToTransitiontoValidWithSuccess);
-            sm.DoTransition(States.Paused, m_batch);
+            Assert.Throws<TransitionFailureException>(() => {
+                StateMachine sm = Initialize();
+                sm.TransitionHandler(States.Idle, States.Paused).Prepare += new PrepareTransitionEvent(PrepareToTransitiontoValidWithSuccess);
+                sm.DoTransition(States.Paused, m_batch);
+            });
         }
 
         /// <summary>
         /// This test has been set up so that a complete cicle through all states successfully completes.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up so that a complete cycle through all states successfully completes.")]
         public void TestTransitionChainSuccess() {
 
@@ -236,7 +237,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This test has been set up to see if multiple TransitionHandler can be defined successfully.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up to see if multiple TransitionHandler can be defined successfully.")]
         public void TestTransitionMultipleHandlers() {
 
@@ -287,7 +288,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// This test has been set up to see if multiple TransitionHandler can successfully be defined in a sorted order.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test has been set up to see if multiple TransitionHandler can successfully be defined in a sorted order.")]
         public void TestTransitionMultipleHandlersSorted() {
 

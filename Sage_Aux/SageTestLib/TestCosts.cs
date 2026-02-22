@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Utility;
 
@@ -12,14 +12,14 @@ namespace Highpoint.Sage.Scheduling.Cost {
     /// <summary>
     /// Summary description for zTestCost.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class zTestCost1 {
         public zTestCost1() { Init(); }
 
-        [TestInitialize]
+        [SetUp]
         public void Init() {
         }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -28,7 +28,7 @@ namespace Highpoint.Sage.Scheduling.Cost {
 
 
 
-        [TestMethod]
+        [Test]
         public void TestCostBasics1() {
 
             SetUpTree();
@@ -41,7 +41,7 @@ namespace Highpoint.Sage.Scheduling.Cost {
             DumpCostData(alice);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCostBasics2() {
 
             SetUpTree();

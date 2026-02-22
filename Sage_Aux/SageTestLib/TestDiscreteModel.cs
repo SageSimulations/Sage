@@ -2,11 +2,11 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.SimCore {
 
-    [TestClass]
+    [TestFixture]
     public class DiscreteTester {
 
         private Random m_random = new Random();
@@ -17,15 +17,15 @@ namespace Highpoint.Sage.SimCore {
 		private DateTime _timelast = new DateTime();
 		private TimeSpan _timedifference = TimeSpan.FromMinutes(10);
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test check if a defined metronome fires the defined amount of events in the correct constant time difference")]
 		public void TestDiscreteModel(){
             Model model = new Model();

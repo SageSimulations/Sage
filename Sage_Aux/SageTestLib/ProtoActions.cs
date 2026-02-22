@@ -2,13 +2,13 @@
 using System;
 using Trace = System.Console;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 
 namespace SchedulerDemoMaterial  {
 
-    [TestClass]
+    [TestFixture]
     public class TestActions {
 
 		#region Predefined Timespans
@@ -18,7 +18,7 @@ namespace SchedulerDemoMaterial  {
 		private static TimeSpan TWENTY_MINS  = TimeSpan.FromMinutes(20.0);
 		#endregion
 
-		[TestMethod]
+		[Test]
 		public void DoActionTest1(){
 
 			#region Create Actions

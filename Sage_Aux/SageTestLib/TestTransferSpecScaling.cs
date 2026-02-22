@@ -2,26 +2,26 @@
 using System;
 using System.Diagnostics;
 using Highpoint.Sage.Mathematics.Scaling;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Materials.Chemistry
 {
 	/// <summary>
 	/// Summary description for TransferSpecTester101.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
     public class TransferSpecTester101	{
         public TransferSpecTester101(){Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]public void TestNonScaledByMassTransfer(){
+		[Test]public void TestNonScaledByMassTransfer(){
             TSTestJig tj = new TSTestJig(100,100);
             Debug.WriteLine(tj.Mixture);
             MaterialTransferSpecByMass msbm = new MaterialTransferSpecByMass(tj.H2O_Type,50,TimeSpan.FromMinutes(50));
@@ -30,7 +30,7 @@ namespace Highpoint.Sage.Materials.Chemistry
             Debug.WriteLine(tj.Mixture);
         }
 
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks the different settings for scaling mass and time of a recipe")]
 		public void TestMassScaling(){
             LinearScalingAdapterTest(2,.5,double.NaN,75,TimeSpan.FromMinutes(50));
@@ -47,7 +47,7 @@ namespace Highpoint.Sage.Materials.Chemistry
 
         }
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks another settings for scaling mass and time of a recipe")]
 		public void TestScalingWithGreedAndSuperLinearDurationScaling(){
             LinearScalingAdapterTest(2,2,.5,100,TimeSpan.FromMinutes(50)); // We will have run out of water in the effluent!

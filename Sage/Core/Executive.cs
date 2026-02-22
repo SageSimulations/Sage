@@ -137,12 +137,43 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
     #endregion
 
-        internal ArrayList RunningDetachables = new ArrayList();
+        private readonly List<DetachableEvent> m_runningDetachables = new List<DetachableEvent>();
+        private readonly object m_runningDetachablesLock = new object();
 
         /// <summary>
         /// Returns a read-only list of the detachable events that are currently running.
         /// </summary>
-        public ArrayList LiveDetachableEvents { get { return ArrayList.ReadOnly(RunningDetachables); } }
+        public ArrayList LiveDetachableEvents {
+            get {
+                lock (m_runningDetachablesLock) {
+                    return ArrayList.ReadOnly(new ArrayList(m_runningDetachables));
+                }
+            }
+        }
+
+        internal void RegisterRunningDetachable(DetachableEvent detachableEvent) {
+            lock (m_runningDetachablesLock) {
+                m_runningDetachables.Add(detachableEvent);
+            }
+        }
+
+        internal void UnregisterRunningDetachable(DetachableEvent detachableEvent) {
+            lock (m_runningDetachablesLock) {
+                m_runningDetachables.Remove(detachableEvent);
+            }
+        }
+
+        private List<DetachableEvent> SnapshotRunningDetachables() {
+            lock (m_runningDetachablesLock) {
+                return new List<DetachableEvent>(m_runningDetachables);
+            }
+        }
+
+        private bool HasRunningDetachables() {
+            lock (m_runningDetachablesLock) {
+                return m_runningDetachables.Count > 0;
+            }
+        }
 
         /// <summary>
         /// Returns a read-only list of the ExecEvents currently in queue for execution.
@@ -552,10 +583,10 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     m_state = ExecState.Finished;
                 }
 
-                if (RunningDetachables.Count > 0) {
+                List<DetachableEvent> runningDetachables = SnapshotRunningDetachables();
+                if (runningDetachables.Count > 0) {
                     // TODO: Move this error reporting into a StringBuilder, and report it upward, rather than just to Console.
-                    ArrayList tmp = new ArrayList(RunningDetachables);
-                    foreach (DetachableEvent de in tmp) {
+                    foreach (DetachableEvent de in runningDetachables) {
                         bool issuedError = false;
                         if (de.IsWaiting()) {
                             if (!de.HasAbortHandler) {
@@ -573,7 +604,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     }
                     m_currentDetachableEvent = null;
 
-                    while (RunningDetachables.Count > 0)
+                    while (HasRunningDetachables())
                         Thread.SpinWait(1);
 
                     if (m_executiveAborted != null)
@@ -711,7 +742,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             // running. Second, we need to scrub all possible graphcontexts that could have been in process
             // in those detachable events.
             m_abortRequested = true;
-            foreach ( DetachableEvent de in RunningDetachables ) de.Abort();
+            foreach ( DetachableEvent de in SnapshotRunningDetachables() ) de.Abort();
 
             Reset();
         }
@@ -1000,7 +1031,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         public DetachableEvent(Executive exec, ExecEvent currentEvent){
             m_exec = exec;
             m_currEvent = currentEvent;
-            m_exec.RunningDetachables.Add(this);
+            m_exec.RegisterRunningDetachable(this);
         }
 
         public void Begin(){
@@ -1113,7 +1144,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         private void End(IAsyncResult iar){
 
             try {
-                m_exec.RunningDetachables.Remove(this);
+                m_exec.UnregisterRunningDetachable(this);
                 //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is finishing." + GetHashCode());
                 lock (m_lock) {
                     m_currEvent.OnServiceCompleted();

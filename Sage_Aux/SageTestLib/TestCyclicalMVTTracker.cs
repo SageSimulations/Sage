@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Materials;
 using Highpoint.Sage.Materials.Chemistry;
 
@@ -14,15 +14,15 @@ namespace SchedulerDemoMaterial {
     /// <summary>
     /// Tests charge sources.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class MVTTrackerTester {
 
         public MVTTrackerTester(){Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -30,7 +30,7 @@ namespace SchedulerDemoMaterial {
         /// <summary>
         /// Exercises an MVTTracker.
         /// </summary>
-		[TestMethod] public void TestMVTTracker(){
+		[Test] public void TestMVTTracker(){
 			Highpoint.Sage.SimCore.Model model = new Highpoint.Sage.SimCore.Model("MVTTracker model");
 			BasicReactionSupporter brs = new BasicReactionSupporter();
 			InitializeForTesting(brs);
@@ -65,7 +65,7 @@ namespace SchedulerDemoMaterial {
         /// <summary>
         /// Exercises an MVTTracker.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TestMVTrackerWithNullMixtures() {
             Highpoint.Sage.SimCore.Model model = new Highpoint.Sage.SimCore.Model("MVTTracker model");
             BasicReactionSupporter brs = new BasicReactionSupporter();

@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Utility;
 using Highpoint.Sage.ItemBased.Ports;
@@ -12,20 +12,20 @@ using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 
 namespace Highpoint.Sage.Materials  {
 
-	[TestClass]
+	[TestFixture]
 	public class MaterialServiceTester {
 
         public MaterialServiceTester() { Init(); }
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Test to remove material from a mixture")]
 		public void TestChargeWithSufficientSupply(){
 			Model model = new Model("Test Model",Guid.NewGuid());

@@ -2,11 +2,11 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.SimCore {
 
-	[TestClass]
+	[TestFixture]
 	public class DESynchTester {
 
 		private int NUM_EVENTS = 12;
@@ -19,15 +19,15 @@ namespace Highpoint.Sage.SimCore {
 		private int _secondary = 0;
 		private DateTime _synchtime = new DateTime();
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks the submission of detached events and synchronization of those events with an ISynchChannel")]
 		public void TestBaseFunctionality() {
 

@@ -3,26 +3,26 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 namespace Highpoint.Sage.Graphs.Tasks {
 
-    [TestClass]
+    [TestFixture]
     public class TaskTester {
 
         private Random m_random = new Random();
 
         public TaskTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test runs a parent task, which spans over the length of the five child tasks running in a sequence.")]
 		public void TestChildSequencing(){
             Model model = new Model();
@@ -61,7 +61,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
         // Ta(4 hr) -> Tb(1 hr)
         // Tc(1 hr) -> Td(1 hr) Check to see that Td starts at T=1.
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that Td starts at T=1")]
 		public void TestPlainGraph(){
 
@@ -91,7 +91,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
         // Ta(4 hr) -> Tb(1 hr)
         // Tc(1 hr) -> Td(1 hr) (Td costart-slaved to Tb, so it starts at t=4, not t=1.)
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks Td costart-slaved to Tb, so it starts at t=4, not t=1.")]
 		public void TestCoStart(){
 
@@ -108,7 +108,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
         // Ta(4 hr) -> Tb(1 hr)
         // Tc(1 hr) -> Td(1 hr) (Tc cofinish-slaved to Ta, so it ends at t=4, not t=1.)
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks Tc cofinish-slaved to Ta, so it ends at t=4, not t=1.")]
 		public void TestCoFinish(){
 
@@ -125,7 +125,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
         // Ta(4 hr) -> Tb(1 hr)
         // Tc(1 hr) -> Td(1 hr) (Tc.finish synched to Ta.finish, so tb and td start at t=4.)
-        [TestMethod] 
+        [Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks if two tasks can be synchronized to start at the the same time.")]
 		public void TestSynchroStart(){
 
@@ -159,7 +159,7 @@ namespace Highpoint.Sage.Graphs.Tasks {
 		/*
         // Ta(4 hr) -> Tb(1 hr)
         // Tc(1 hr) -> Td(1 hr) (Tc.finish synched to Ta.finish, so tb and td start at t=4.)
-        [TestMethod] 
+        [Test] 
 		[Highpoint.Sage.Utility.Description("Checks if two tasks can be synchronized to end at the the same time.")]
 		[Ignore("This is a future feature - not yet implemented in code.")]
 		public void TestSynchroFinish(){

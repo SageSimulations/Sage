@@ -2,27 +2,27 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Materials.Chemistry {
 
 	/// <summary>
 	/// Summary description for zTestChemistry.
 	/// </summary>
-    [TestClass]
+    [TestFixture]
 	public class Chemistry101 {
         public Chemistry101() {Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test checks the basic reaction of two substances including the mixture temperature")]
         public void TestReactionBasics() {
             BasicReactionSupporter brs = new BasicReactionSupporter();
@@ -82,7 +82,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
 
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test checks the basic reaction of two substances and a catalyst.")]
         public void TestCatalyticReactionBasics() {
             BasicReactionSupporter brs = new BasicReactionSupporter();
@@ -142,7 +142,7 @@ namespace Highpoint.Sage.Materials.Chemistry {
 
         }
 
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks that materials only can be combined, if there is a reaction definition")]
         public void TestRP_CombineAPI(){
 			// AEL: I am not sure if we should test more here or if it is sufficient to check if reactions happened or not?

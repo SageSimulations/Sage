@@ -4,7 +4,7 @@ using System.Collections;
 using System.Diagnostics;
 using Highpoint.Sage.Graphs.Tasks;
 using Highpoint.Sage.SimCore;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 
 namespace Highpoint.Sage.Graphs {
@@ -12,14 +12,14 @@ namespace Highpoint.Sage.Graphs {
 	/// <summary>
 	/// 
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class GraphLoopingTester {
 
 		#region MSTest Goo
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -33,7 +33,7 @@ namespace Highpoint.Sage.Graphs {
 		
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestBasicLooping(){
 
 			m_out = new System.Text.StringBuilder();
@@ -62,7 +62,7 @@ namespace Highpoint.Sage.Graphs {
 
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestBasicBranching(){
 			m_out = new System.Text.StringBuilder();
 			Model model = new Model("Model");

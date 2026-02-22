@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.ItemBased.Ports;
 using Highpoint.Sage.ItemBased.SplittersAndJoiners;
@@ -13,14 +13,14 @@ namespace Highpoint.Sage.ItemBased {
 	/// <summary>
 	/// Summary description for zTestBranchBlocks.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class BranchBlockTester {
 
 		#region MSTest Goo
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -34,7 +34,7 @@ namespace Highpoint.Sage.ItemBased {
 		                                      1,0,0,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,};
 		private int m_itemNumber;
 
-		[TestMethod]
+		[Test]
 		public void TestStochasticBranchBlock(){
 			Model model = new Model();
 		    model.RandomServer = new Randoms.RandomServer(12345, 100);
@@ -50,7 +50,7 @@ namespace Highpoint.Sage.ItemBased {
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestDelegatedBranchBlock(){
 			Model model = new Model();
 			DelegTwoChoice d2cbb = new DelegTwoChoice(model,"s2c",Guid.NewGuid());

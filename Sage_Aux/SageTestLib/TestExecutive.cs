@@ -3,13 +3,13 @@
 using System;
 using System.Diagnostics;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Threading;
 using System.Collections.Generic;
 
 namespace Highpoint.Sage.SimCore {
 
-	[TestClass]
+	[TestFixture]
 	public class ExecTester {
 
         #region Private Fields
@@ -26,10 +26,10 @@ namespace Highpoint.Sage.SimCore {
 
 		public ExecTester(){Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -37,7 +37,7 @@ namespace Highpoint.Sage.SimCore {
 		/// <summary>
 		/// Checks to see that an executive can store & service all submitted events.
 		/// </summary>
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can store & service all submitted events.")]
 		public void TestExecutiveCount(){
 
@@ -82,7 +82,7 @@ namespace Highpoint.Sage.SimCore {
 		/// Checks to see that an executive can store & service all submitted events, 
 		/// using RequestEvent method without the event type parameter.
 		/// </summary>
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can store & service all submitted events, using RequestEvent method without the event type parameter.")]
 		public void TestExecutiveCountDefaultParameter(){
 
@@ -127,7 +127,7 @@ namespace Highpoint.Sage.SimCore {
 		/// Checks to see that an executive can store & service all submitted events, 
 		/// ordered by the requested callback priority at the same callback time.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can store & service all submitted events, ordered by the requested callback priority at the same callback time.")]
 		public void TestExecutivePriority(){
 
@@ -171,7 +171,7 @@ namespace Highpoint.Sage.SimCore {
 		/// Checks to see that an executive can store & service all submitted events, 
 		/// ordered by the requested callback time.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can store & service all submitted events, ordered by the requested callback time.")]
 		public void TestExecutiveWhen(){
 
@@ -215,7 +215,7 @@ namespace Highpoint.Sage.SimCore {
 		/// Checks to see that an executive can unrequest submitted events, 
 		/// identifying the events by a hash code
 		/// </summary>
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can unrequest submitted events, identifying the events by a hash code.")]
 		public void TestExecutiveUnRequestHash(){
 
@@ -275,7 +275,7 @@ namespace Highpoint.Sage.SimCore {
 		/// Checks to see that an executive can unrequest submitted events, 
 		/// identifying the events by a target object.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can unrequest submitted events, identifying the events by a target object.")]
 		public void TestExecutiveUnRequestTarget(){
 
@@ -333,7 +333,7 @@ namespace Highpoint.Sage.SimCore {
 		/// <summary>
 		/// Checks to see that an executive can unrequest submitted events, identifying the events by a delegate method.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can unrequest submitted events, identifying the events by a delegate method.")]
 		public void TestExecutiveUnRequestDelegate(){
 
@@ -389,7 +389,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// Checks to see that an executive can start, then stop and restart.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can start, then stop and restart.")]
         public void TestExecutiveStopStart() {
 
@@ -429,7 +429,7 @@ namespace Highpoint.Sage.SimCore {
         /// <summary>
         /// Checks to see that an executive can start, then stop and restart.
         /// </summary>
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can start, then stop and restart.")]
         public void TestExecutivePauseResume() {
             DateTime startTime;
@@ -556,7 +556,7 @@ namespace Highpoint.Sage.SimCore {
 		/// Checks to see that an executive can unrequest submitted events, 
 		/// identifying the events by a selector.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can unrequest submitted events, identifying the events by a selector.")]
 		public void TestExecutiveUnRequestSelector(){
 
@@ -628,7 +628,7 @@ namespace Highpoint.Sage.SimCore {
 		/// <summary>
 		/// Checks to see that an executive can handle seperate threads.
 		/// </summary>
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks to see that an executive can handle seperate threads.")]
 		public void TestThreadSepFunctionality(){
 
@@ -716,7 +716,7 @@ namespace Highpoint.Sage.SimCore {
 											 "9/1/1998 1:06:39 AM"};
         #endregion Test Times
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Test the Heap collection.")]
 		public void RecreateFailure(){
 			IExecutive exec = ExecFactory.Instance.CreateExecutive("Highpoint.Sage.SimCore.ExecutiveFastLight, Sage", Guid.NewGuid());
@@ -738,7 +738,7 @@ namespace Highpoint.Sage.SimCore {
 			Console.WriteLine("At " + exec.Now + ", servicing event that was requested for " + userData.ToString() + errMsg);
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test different mechanisms for acquiring an instance of IExecutive.")]
         public void TestExecAcquisition() {
 
@@ -764,7 +764,7 @@ namespace Highpoint.Sage.SimCore {
             Console.WriteLine(exec4.ToString());
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the event that is supposed to fire each time the clock is supposed to change.")]
         public void TestClockAboutToChangeEvent() {
 
@@ -803,7 +803,7 @@ namespace Highpoint.Sage.SimCore {
         }
 
         private int m_exec1_ExecutiveStarted_SingleShot_Count = 0;
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the single shot event (fires once when the first event is about to fire, then unregisters.")]
         public void TestSingleShotEvent() {
             IExecutive exec1 = ExecFactory.Instance.CreateExecutive();
@@ -833,7 +833,7 @@ namespace Highpoint.Sage.SimCore {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Executive's capability to run fast with a range of event type mixes.")]
         public void TestPerformance() {
             IExecutive exec1 = ExecFactory.Instance.CreateExecutive("Highpoint.Sage.SimCore.Executive", Guid.NewGuid());
@@ -869,7 +869,7 @@ namespace Highpoint.Sage.SimCore {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Executive's capability to execute a simple event join.")]
         public void TestEventJoinDetachable() {
             IExecutive exec1 = ExecFactory.Instance.CreateExecutive("Highpoint.Sage.SimCore.Executive",Guid.NewGuid());

@@ -3,14 +3,14 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Graphs;
 using Highpoint.Sage.Graphs.Tasks;
 using Highpoint.Sage.SimCore;
 
 namespace Highpoint.Sage.Tasks {
 
-	[TestClass]
+	[TestFixture]
 	public class GraphValidityTester {
 
 		private Random m_random = new Random();
@@ -22,15 +22,15 @@ namespace Highpoint.Sage.Tasks {
 
 		public GraphValidityTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-//		[TestMethod]
+//		[Test]
 //		[Highpoint.Sage.Utility.Description("This test initializes a model and runs a validation")]
 ////		public void TestTaskEnumerators() {
 //			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t31,t32,t33");
@@ -51,7 +51,7 @@ namespace Highpoint.Sage.Tasks {
 //			}
 //		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test initializes a model and runs a validation")]
 		public void TestBasicValidation() {
 			InitializeModel("t,t1,t2,t3,t12,t13,t21,t23,t31,t32");
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Tasks {
 		/// - Adding a task in front of another task sets both task invalid
 		/// - Adding a downstream task to an upstream task leaves the upstream task in its state, but sets the downstream task invalid
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test adds tasks before and behind another task")]
 		public void TestAddTasks() {
 			InitializeModel("t,t1,t2,t3,t12,t21,t23,t32");
@@ -127,7 +127,7 @@ namespace Highpoint.Sage.Tasks {
 		/// - Adding a task in front of another task sets both task invalid
 		/// - Adding a downstream task to an upstream task leaves the upstream task in its state, but sets the downstream task invalid
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test (used to cause) a resume failure. It is here to ensure that bug does not return.")]
 		public void TestToCauseResumeFailure() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t31,t32");
@@ -152,7 +152,7 @@ namespace Highpoint.Sage.Tasks {
 		/// - Synchronize an existing valid task with a new task, leaves the existing task valid and the new task invalid
 		/// - Synchronize a new task with an existing valid task, leaves the new task invalid and sets the existing task invalid
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test synchronizes two task in various combinations and validates the model")]
 		public void TestSynchronizeTasks() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t31,t32");
@@ -234,7 +234,7 @@ namespace Highpoint.Sage.Tasks {
 		/// <summary>
 		/// - Synchronize two parents and two first children under them.
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test synchronizes two task in two levels and validates the model")]
 		public void TestSynchronizeTasksInTwoLevels() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t21,t22,t31,t32");
@@ -274,7 +274,7 @@ namespace Highpoint.Sage.Tasks {
 		}
 
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test synchronizes two task and adds tasks to the synchronized tasks.")]
 		public void TestSynchronizeAndAddTasks() {
 			InitializeModel("t,t1,t2,t3,t12,t21,t23,t31,t32");
@@ -346,7 +346,7 @@ namespace Highpoint.Sage.Tasks {
 		/// - Remove a downstream task in a task list leaves all upstream tasks unchanged
 		/// - Remove an upstream task in a task list and all downstream tasks will be set invalid
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test removes upstream and downstream tasks in a task list")]
 		public void TestRemoveTasks() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t32");
@@ -395,7 +395,7 @@ namespace Highpoint.Sage.Tasks {
 		/// - Remove a downstream task in a task list leaves all upstream tasks unchanged
 		/// - Remove an upstream task in a task list and all downstream tasks will be set invalid
 		/// </summary>
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test rmoves upstream and downstrem tasks in a task list")]
 		public void TestSynchronizeAndRemoveTasks() {
 			InitializeModel("t,t1,t2,t3,t11,t12,t13,t21,t22,t23,t32");
@@ -496,7 +496,7 @@ namespace Highpoint.Sage.Tasks {
 
 
 		// Not sure if we still need this test since I have done extensive testing above
-//		[TestMethod] public void TestValidation(){
+//		[Test] public void TestValidation(){
 //
 //			InitializeModel("t,t1,t2,t3,t12,t13,t21,t23,t31,t32");												// AEL
 //

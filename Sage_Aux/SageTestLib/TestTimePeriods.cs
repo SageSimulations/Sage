@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 // TODO: Debug failing tests.
 
@@ -10,7 +10,7 @@ namespace Highpoint.Sage.Scheduling {
 	/// <summary>
 	/// Summary description for zTestTimePeriods.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class TimePeriodTester {
 		public TimePeriodTester() {
 			Now = new DateTime(2001,05,16,12,0,0);
@@ -34,15 +34,15 @@ namespace Highpoint.Sage.Scheduling {
 		private DateTime TenMinsAgo;
 		private DateTime TenMinsOn;
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestTimePeriodBasics(){
 
 			TimePeriod tp;
@@ -134,7 +134,7 @@ namespace Highpoint.Sage.Scheduling {
 #endregion
 		}
 
-        [TestMethod]
+        [Test]
         public void TestTimePeriodEnvelope() {
 
             TimePeriod tp1 = new TimePeriod(FiveMinsAgo, Now, TimeAdjustmentMode.FixedDuration);
@@ -165,7 +165,7 @@ namespace Highpoint.Sage.Scheduling {
 
 
         }
-        [TestMethod]
+        [Test]
         public void TestNestedTimePeriodEnvelope() {
 
             TimePeriod tp1 = new TimePeriod("FivePast", Guid.NewGuid(), FiveMinsAgo, Now, TimeAdjustmentMode.FixedDuration);

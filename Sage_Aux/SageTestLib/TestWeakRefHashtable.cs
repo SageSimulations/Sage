@@ -5,24 +5,24 @@ using System.Diagnostics;
 namespace Highpoint.Sage.Utility {
 	using System;
 		using System.Collections;
-	using Microsoft.VisualStudio.TestTools.UnitTesting;
+	using NUnit.Framework;
 
 	/// <summary>
 	/// Summary description for zTestChemistry.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class WeakReferenceHashtableTester {
 		public WeakReferenceHashtableTester() {}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestWRHTBasics(){
 			ArrayList keepers = new ArrayList();
 			WeakHashtable wht = new WeakHashtable();

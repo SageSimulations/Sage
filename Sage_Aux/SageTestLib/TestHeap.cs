@@ -1,19 +1,19 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Utility;
 
 namespace SageTestLib {
-	[TestClass]
+	[TestFixture]
 	public class HeapTester {
 
 		public HeapTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -69,7 +69,7 @@ namespace SageTestLib {
 											 "9/1/1998 1:06:52 AM",
 											 "9/1/1998 1:06:39 AM"};
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Test the Heap collection.")]
 		public void RecreateFailure(){
 			Heap heap = new Heap(Heap.HEAP_RULE.MinValue);
@@ -85,7 +85,7 @@ namespace SageTestLib {
 			} while ( ho != null );
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Test the Heap collection.")]
 		public void TestHeap(){
 

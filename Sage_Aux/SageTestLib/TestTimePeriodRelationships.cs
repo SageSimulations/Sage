@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Utility;
 
 
@@ -11,7 +11,7 @@ namespace Highpoint.Sage.Scheduling {
 	/// <summary>
 	/// Summary description for zTestTimePeriods.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class TimePeriodRelationshipTester {
 		
 		#region Private Fields
@@ -60,17 +60,17 @@ namespace Highpoint.Sage.Scheduling {
 		#endregion
 
 		#region Test Setup & TearDown
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		#endregion
 
 		#region Basics
-		[TestMethod]
+		[Test]
 		public void TestBasics(){
 			TimePeriod tpA=null;
 			TimePeriod tpB=null;

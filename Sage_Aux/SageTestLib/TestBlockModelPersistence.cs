@@ -2,21 +2,21 @@
 
 
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 namespace Highpoint.Sage.ItemBased.Blocks {
 
     /// <summary>BlockModelPersistence.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class BlockModelTester {
 
         #region MSTest Goo
-        [TestInitialize]
+        [SetUp]
         public void Init() {
         }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -24,7 +24,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         public BlockModelTester() { }
 
-        [TestMethod]
+        [Test]
         public void TestBlockModelPersistence() {
 
             Model model = new Model();

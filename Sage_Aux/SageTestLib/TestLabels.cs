@@ -1,9 +1,9 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Highpoint.Sage.Utility {
-    [TestClass]
+    [TestFixture]
     public class LabelTester {
 
         public void BasicTest() {

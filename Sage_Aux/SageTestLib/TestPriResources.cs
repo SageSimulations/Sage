@@ -1,12 +1,12 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 namespace Highpoint.Sage.Resources  {
 
-	[TestClass]
+	[TestFixture]
 	public class ResourceTesterExt {
 
 		public ResourceTesterExt(){Init();}
@@ -16,9 +16,9 @@ namespace Highpoint.Sage.Resources  {
 		//       a resource manager, in assuming that the collection is now dirty.
 
 		#region MSTest Goo
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
@@ -28,7 +28,7 @@ namespace Highpoint.Sage.Resources  {
 		private static string m_resultString;
 
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("First functional test of Resource Tester Infrastructural Class")]
 		public void TestBasicFuctionality(){
 			#region Expected Result
@@ -57,7 +57,7 @@ namespace Highpoint.Sage.Resources  {
 		}
 
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("First functional test of Resource Tester Infrastructural Class")]
 		public void TestPrioritizedResourceRequestHandling(){
 			#region Expected Result
@@ -93,7 +93,7 @@ namespace Highpoint.Sage.Resources  {
 		}
         private string StripCRLF(string structureString) => structureString.Replace("\r", "").Replace("\n", "");
 
-        [TestMethod]
+        [Test]
 		[Highpoint.Sage.Utility.FieldDescription("First functional test of Resource Tester Infrastructural Class")]
 		public void TestPrioritizedResourceRequestWRemoval_1(){
 			#region Expected Result
@@ -128,7 +128,7 @@ namespace Highpoint.Sage.Resources  {
             Assert.IsTrue(StripCRLF(m_resultString).Equals(StripCRLF(expected)),"TestPrioritizedResourceRequestWRemoval_2","Results didn't match!");
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("First functional test of Resource Tester Infrastructural Class")]
 		public void TestPrioritizedResourceRequestWRemoval_2(){
 			#region Expected Result

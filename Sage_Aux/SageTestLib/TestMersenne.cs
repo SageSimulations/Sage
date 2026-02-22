@@ -1,33 +1,33 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 //using _Debug = System.Diagnostics.Debug;
 
 namespace Highpoint.Sage.Randoms {
 
-	[TestClass]
+	[TestFixture]
 	public class MersenneTester {
-        [TestMethod]
+        [Test]
         public void TestMersenneAgainstMatumotosGoldNoBuffering() {
             RunGoldTest(0);
         }
-        [TestMethod]
+        [Test]
         public void RunIntervalTest() {
             _RunIntervalTest();
         }
-        [TestMethod]
+        [Test]
 		public void TestMersenneAgainstMatumotosGoldWithBuffering() {
 			RunGoldTest(10000);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestMersenneAgainstMatumotosGoldWithBufferingMulti() {
 			for ( int i = 0 ; i < 20 ; i++ ) RunGoldTest(10);
 		}
 
-		[TestMethod]
+		[Test]
 		public void PerformanceTestNoThreading(){
 			RandomServer rs = new RandomServer();
 			Randoms.IRandomChannel rc = rs.GetRandomChannel(new ulong[]{0x123, 0x234, 0x345, 0x456},0);
@@ -39,7 +39,7 @@ namespace Highpoint.Sage.Randoms {
 			rc.Dispose(); // For symmetry. Doesn't actually do anything when buffer size is zero.
 		}
 
-		[TestMethod]
+		[Test]
 		public void PerformanceTestWithThreading(){
 			RandomServer rs = new RandomServer();
 			Randoms.IRandomChannel rc = rs.GetRandomChannel(new ulong[]{0x123, 0x234, 0x345, 0x456},100);

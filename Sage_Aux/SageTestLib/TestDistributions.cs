@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 //using Highpoint.Sage.Materials.Chemistry;
 
 namespace Highpoint.Sage.Mathematics {
 
-    [TestClass]
+    [TestFixture]
     public class Distributions101 {
         private static readonly bool m_visuallyVerify = false;
         public Distributions101() {
@@ -19,16 +19,16 @@ namespace Highpoint.Sage.Mathematics {
             Init();
         }
 
-        [TestInitialize]
+        [SetUp]
         public void Init() {
         }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
         private IModel m_model = null;
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a normal distribution")]
         public void TestDistributionNormal() {
             IDoubleDistribution dist = new NormalDistribution(m_model, "NormalDistribution", Guid.NewGuid(), 5, 1);
@@ -149,7 +149,7 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(others == 0 && ratio > ( 0.7 - delta ) && ratio < ( 0.7 + delta ), "Failed custom CDF.");
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a triangular distribution")]
         public void TestDistributionTriangular() {
             IDoubleDistribution dist = new TriangularDistribution(m_model, "TriangularDistribution", Guid.NewGuid(), 2.0, 5.0, 9.0);
@@ -186,7 +186,7 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a uniform distribution")]
         public void TestDistributionUniform() {
             IDoubleDistribution dist = new UniformDistribution(m_model, "UniformDistribution", Guid.NewGuid(), 3.5, 7.0);
@@ -223,7 +223,7 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a exponential distribution")]
         public void TestDistributionExponential() {
             IDoubleDistribution dist = new ExponentialDistribution(m_model, "ExponentialDistribution", Guid.NewGuid(), 3.0, 3.0);
@@ -263,7 +263,7 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this timespan distribution equals a exponential distribution")]
         public void TestDistributionTimeSpanExponential() {
             IDoubleDistribution dist = new ExponentialDistribution(m_model, "ExponentialDistribution", Guid.NewGuid(), 3.0, 3.0);
@@ -303,7 +303,7 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a weibull distribution")]
         public void TestDistributionWeibull() {
             IDoubleDistribution dist = new WeibullDistribution(m_model, "WeibullDistribution", Guid.NewGuid(), 2, 0, 2.0);
@@ -340,7 +340,7 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a cauchy distribution")]
         public void TestDistributionCauchy() {
             IDoubleDistribution dist = new CauchyDistribution(m_model, "CauchyDistribution", Guid.NewGuid(), 3.0, 3.0);
@@ -377,7 +377,7 @@ namespace Highpoint.Sage.Mathematics {
             }
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a poisson distribution")]
         public void TestDistributionPoisson()
         {
@@ -430,30 +430,30 @@ namespace Highpoint.Sage.Mathematics {
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class Histograms101 {
         private IModel m_model = new Model();
         public Histograms101() { }
-        [TestMethod]
+        [Test]
         public void TestHistogramUniformDistDouble() {
             IDoubleDistribution dist = new UniformDistribution(m_model, "UniformDistribution", Guid.NewGuid(), 5, 35);
             _TestDoubleHistogram(dist, 1500, 7, 33, ( 33 - 7 ));
         }
 
-        [TestMethod]
+        [Test]
         public void TestHistogramExponentialDistDouble() {
             IDoubleDistribution dist = new ExponentialDistribution(m_model, "ExponentialDistribution", Guid.NewGuid(), 15, 15);
             _TestDoubleHistogram(dist, 1500, 5, 35, 10);
         }
 
-        [TestMethod]
+        [Test]
         public void TestHistogramUniformDistTimeSpan() {
             IDoubleDistribution dist = new UniformDistribution(m_model, "UniformDistribution", Guid.NewGuid(), (double)TimeSpan.FromMinutes(10).Ticks, (double)TimeSpan.FromMinutes(25).Ticks);
             _TestTimeSpanHistogram(dist, 1500, TimeSpan.FromMinutes(12).Ticks, TimeSpan.FromMinutes(24).Ticks, 10);
 
         }
 
-        [TestMethod]
+        [Test]
         public void TestUniformDistTimeSpanPerformance() {
             IDoubleDistribution dist = new NormalDistribution(m_model, "NormalDist", Guid.NewGuid(), (double)TimeSpan.FromMinutes(25).Ticks, (double)TimeSpan.FromMinutes(10).Ticks);
 

@@ -3,26 +3,26 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using Highpoint.Sage.Materials.Chemistry;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 
 namespace Highpoint.Sage.Resources  {
 
-	[TestClass]
+	[TestFixture]
 	public class ResourceTester {
 
 		public ResourceTester(){Init();}
 
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Allocates and deallocates resources and checks the behavior")]
 		public void TestPersistentResourceBasics(){
 
@@ -105,7 +105,7 @@ namespace Highpoint.Sage.Resources  {
 		}
 
 		
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("Checks if resources can be augmented or depleted")]
 		public void TestConsumableResourceBasics(){
 
@@ -167,7 +167,7 @@ namespace Highpoint.Sage.Resources  {
 
 		}
 
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("AEL, not sure what this is testing")]
 		public void TestMaterialConduits(){
 
@@ -241,7 +241,7 @@ namespace Highpoint.Sage.Resources  {
 
 		}
 
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("AEL, not sure what this is testing")]
 		public void TestEarmarking(){
 			Model model = new Model("Test model");
@@ -278,7 +278,7 @@ namespace Highpoint.Sage.Resources  {
 		}
 		
 
-		[TestMethod] 
+		[Test] 
 		[Highpoint.Sage.Utility.FieldDescription("AEL, not sure what this is testing")]
 		public void TestAdvancedEarmarking(){
 			Model model = new Model("Test model");
@@ -348,7 +348,7 @@ namespace Highpoint.Sage.Resources  {
 
 		
 		private IResourceManager m_resourcePoolForStarvation;
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Allocates and deallocates resources and checks the behavior")]
 		public void TestStarvation(){
 

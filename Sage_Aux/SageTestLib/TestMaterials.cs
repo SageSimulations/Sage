@@ -2,27 +2,27 @@
 using System;
 using System.Diagnostics;
 using System.Collections;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Diagnostics;
 using Highpoint.Sage.Materials.Chemistry.VaporPressure;
 
 namespace Highpoint.Sage.Materials.Chemistry  {
 
-	[TestClass]
+	[TestFixture]
 	public class MaterialTester {
 
 		public MaterialTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Test to remove material from a mixture")]
 		public void TestRemoval(){
 			Model model = new Model("Test Model",Guid.NewGuid());
@@ -47,7 +47,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 			DiagnosticAids.DumpMaterial(mixture);
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("Test composite construction of material")]
 		public void TestCompositeConstruction(){
 			BasicReactionSupporter brs = new BasicReactionSupporter();
@@ -70,7 +70,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 			DiagnosticAids.DumpMaterial(mixture);
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test adds and removes substances to and from a mixture.  When adding the different substances with different masses and temperatures a temperature computation is performed.")]
                 public void TestCombinatorics() {
             Model model = new Model("Test Model", Guid.NewGuid());
@@ -102,7 +102,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
             Assert.IsTrue(mixture.Mass.Equals(300D), "Mass is not 300 kg");
 
         }
-        [TestMethod]
+        [Test]
 
         [Highpoint.Sage.Utility.FieldDescription("Test volumes of mixtures with various combinations of liquids and gases.")]
         public void TestVolumetricsOfDissolvedGases() {
@@ -130,7 +130,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
         }
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks the calculation of a simple mixing process.")]
 		public void TestReactions(){
 			Model model = new Model("Test Model",Guid.NewGuid());
@@ -180,7 +180,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks that two reactions can be defined in series")]
 		public void TestSecondaryReactions(){
 			Model model = new Model("Hello, world.",Guid.NewGuid());
@@ -236,7 +236,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks if mass can be removed from the mixture within a specified time")]
 		public void TestRemovalByMassFromMixture(){
 			Model model = new Model("Hello, world.",Guid.NewGuid());
@@ -299,7 +299,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks if mass can be removed from a substance within a specified time")]
 		public void TestRemovalByMassFromSubstance() {
 			Model model = new Model("Hello, world.",Guid.NewGuid());
@@ -326,7 +326,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks if mass in percentage can be removed from the mixture within a specified time")]
 		public void TestRemovalByPercentageFromMixture(){
 			Model model = new Model("Hello, world.",Guid.NewGuid());
@@ -390,7 +390,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
       
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test checks if mass in percentage can be removed from a substance within a specified time")]
 		public void TestRemovalByPercentageFromSubstance() {
 			Model model = new Model("Hello, world.",Guid.NewGuid());
@@ -435,7 +435,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the computed boiling point of a mixture with multiple materials each with valid antoines' coefficients.")]
         public void TestMixtureBoilingPointAntoines() {
             Model model = new Model("Test Model", Guid.NewGuid());
@@ -459,7 +459,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test adds and removes substances to and from a mixture, ensuring material specifications are handled properly.")]
         public void TestMaterialSpecifications() {
 			Model model = new Model("Test Model",Guid.NewGuid());
@@ -510,7 +510,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
 		}
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test adds and removes substances to and from a mixture, ensuring material specifications are handled properly.")]
         public void TestChangeNotifications() {
 
@@ -580,7 +580,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
         private static readonly string RESULT3 = "Mixture (37.0 deg C) of 100.00 kg of Water changed in Temperature\r\nMixture (37.0 deg C) of 100.00 kg of Water changed in Contents\r\nMixture (41.0 deg C) of 100.00 kg of Water and 100.00 kg of Acetone changed in Temperature\r\nMixture (41.0 deg C) of 100.00 kg of Water and 100.00 kg of Acetone changed in Contents\r\n";
         private static readonly string RESULT4 = "Mixture (79.7 deg C) of 300.00 kg of Water and 300.00 kg of Acetone changed in Contents\r\nMixture (79.7 deg C) of 300.00 kg of Water and 300.00 kg of Acetone changed in Temperature\r\n";
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test adds and removes substances to and from a mixture, ensuring material specifications are handled properly.")]
         public void TestReactions2()
         {
@@ -621,28 +621,26 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 
         }
 
-        [TestMethod]
-        [Highpoint.Sage.Utility.FieldDescription("Test exception throw on illegal reaction definition.")]
-        [ExpectedException(typeof(ReactionDefinitionException), "Permitted creation of a faulty reaction (same product and reactants.)")]
-        public void TestBadReactionDefinition1()
-        {
+		[Test]
+		[Highpoint.Sage.Utility.FieldDescription("Test exception throw on illegal reaction definition.")]
+		public void TestBadReactionDefinition1()
+		{
+			Assert.Throws<ReactionDefinitionException>(() =>
+			{
+				Model model = new Model("Test Model", Guid.NewGuid());
+				BasicReactionSupporter brs = new BasicReactionSupporter();
+				InitializeForTesting(brs);
 
-            Model model = new Model("Test Model", Guid.NewGuid());
-            BasicReactionSupporter brs = new BasicReactionSupporter();
-            InitializeForTesting(brs);
-
-            MaterialType waterType = (MaterialType)brs.MyMaterialCatalog["Water"];
-
-            Reaction r1 = new Reaction(model, "Reaction 1", Guid.NewGuid());
-            r1.AddReactant(brs.MyMaterialCatalog["Water"], 2.0);
-            r1.AddProduct(brs.MyMaterialCatalog["Water"], 2.0);
-            r1.HeatOfReaction = 0;
-            brs.MyReactionProcessor.AddReaction(r1);
-
-        }
+				Reaction r1 = new Reaction(model, "Reaction 1", Guid.NewGuid());
+				r1.AddReactant(brs.MyMaterialCatalog["Water"], 2.0);
+				r1.AddProduct(brs.MyMaterialCatalog["Water"], 2.0);
+				r1.HeatOfReaction = 0;
+				brs.MyReactionProcessor.AddReaction(r1);
+			});
+		}
 
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test adds and removes substances to and from a mixture, ensuring material specifications are handled properly.")]
         public void TestReactions3() {
             Model model = new Model("Test Model", Guid.NewGuid());
@@ -688,7 +686,7 @@ namespace Highpoint.Sage.Materials.Chemistry  {
 	    private static string EXPECTED_3 =
 	        "\r\nBefore = Mixture (37.00 deg C) of 100.0000 kg of Potassium Sulfate and 100.0000 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 120.0000 kg of Hexane, 60.0000 kg of Potassium Sulfate and 20.0000 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 120.0000 kg of Hexane, 60.0000 kg of Potassium Sulfate and 20.0000 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 144.0000 kg of Hexane, 52.0000 kg of Potassium Sulfate and 4.0000 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 144.0000 kg of Hexane, 52.0000 kg of Potassium Sulfate and 4.0000 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 148.8000 kg of Hexane, 50.4000 kg of Potassium Sulfate and 0.8000 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 148.8000 kg of Hexane, 50.4000 kg of Potassium Sulfate and 0.8000 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 149.7600 kg of Hexane, 50.0800 kg of Potassium Sulfate and 0.1600 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 149.7600 kg of Hexane, 50.0800 kg of Potassium Sulfate and 0.1600 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 149.9520 kg of Hexane, 50.0160 kg of Potassium Sulfate and 0.0320 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 149.9520 kg of Hexane, 50.0160 kg of Potassium Sulfate and 0.0320 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 149.9904 kg of Hexane, 50.0032 kg of Potassium Sulfate and 0.0064 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 149.9904 kg of Hexane, 50.0032 kg of Potassium Sulfate and 0.0064 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 149.9981 kg of Hexane, 50.0006 kg of Potassium Sulfate and 0.0013 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 149.9981 kg of Hexane, 50.0006 kg of Potassium Sulfate and 0.0013 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 149.9996 kg of Hexane, 50.0001 kg of Potassium Sulfate and 0.0003 kg of Acetone\r\n\r\nBefore = Mixture (37.00 deg C) of 149.9996 kg of Hexane, 50.0001 kg of Potassium Sulfate and 0.0003 kg of Acetone\r\nAfter = Mixture (37.00 deg C) of 149.9999 kg of Hexane, 50.0000 kg of Potassium Sulfate and 0.0001 kg of Acetone\r\n";
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test has a supplier push to a consumer over a time period.")]
         public void TestMaterialTransferrer() {
 

@@ -1,11 +1,11 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.Utility;
 
 namespace SageTestLib {
-    [TestClass]
+    [TestFixture]
     public class EventedListTester {
 
         public EventedListTester() {}
@@ -75,13 +75,13 @@ namespace SageTestLib {
             m_responses += "m_uut_AboutToAddItem" + " " + item + " | ";
         }
 
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         } 
         #endregion
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Add mechanism.")]
         public void TestAdd() {
             Init();
@@ -93,7 +93,7 @@ namespace SageTestLib {
             Console.WriteLine(m_responses);
         }
         
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the AddRange mechanism.")]
         public void TestAddRange() {
             Init();
@@ -107,7 +107,7 @@ namespace SageTestLib {
             Console.WriteLine(m_responses);
         }
         
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Remove mechanism.")]
         public void TestRemove() {
             Init();
@@ -121,7 +121,7 @@ namespace SageTestLib {
             Console.WriteLine(m_responses);
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the RemoveAll mechanism.")]
         public void TestRemoveAll() {
             Init();
@@ -134,7 +134,7 @@ namespace SageTestLib {
             Console.WriteLine(m_responses);
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the RemoveAt mechanism.")]
         public void TestRemoveAt() {
             Init();
@@ -148,7 +148,7 @@ namespace SageTestLib {
             Console.WriteLine(m_responses);
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Clear mechanism.")]
         public void TestClear() {
             Init();
@@ -161,7 +161,7 @@ namespace SageTestLib {
             Console.WriteLine(m_responses);
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Indexer mechanism.")]
         public void TestIndexer() {
             Init();
@@ -175,7 +175,7 @@ namespace SageTestLib {
             Assert.AreEqual("m_uut_AboutToAddItems System.String[] | m_uut_AddedItems System.String[] | m_uut_ContentsChanged | m_uut_AboutToReplaceItem Mary with Steve | m_uut_ReplacedItem Mary with Steve | m_uut_ContentsChanged | ", m_responses);
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the Insert mechanism.")]
         public void TestInsert()
         {
@@ -195,7 +195,7 @@ namespace SageTestLib {
                 );
         }
 
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("Test the InsertRange mechanism.")]
         public void TestInsertRange() {
             Init();

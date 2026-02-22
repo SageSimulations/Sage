@@ -4,22 +4,22 @@ using System;
 using Highpoint.Sage.ItemBased.Ports;
 using Highpoint.Sage.ItemBased.Connectors;
 using Highpoint.Sage.SimCore;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Highpoint.Sage.ItemBased.Blocks {
 
 
-    [TestClass]
+    [TestFixture]
     public class PortsAndConnectorsTester {
-        [TestMethod] public void TestPortBasics(){
+        [Test] public void TestPortBasics(){
             new PortTester().TestSimplePortNetwork();
         }
 
     }
 
-    [TestClass]
+    [TestFixture]
     public class PortTester {
         Model m_model;
         int m_nBlocks = 10;
@@ -30,7 +30,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
             m_blocks = new SimplePassThroughPortOwner[m_nBlocks];
         }
 
-        [TestMethod]
+        [Test]
         public void TestSimplePortNetwork() {
 
             for (int i = 0 ; i < m_nBlocks ; i++) {
@@ -46,7 +46,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
             Debug.WriteLine(m_blocks[m_nBlocks - 1].Out.Take(null));
         }
 
-        [TestMethod]
+        [Test]
         public void TestProxyPorts() {
 
             SimpleProxyPortOwner sppo = new SimpleProxyPortOwner(m_model, "Proxy", Guid.NewGuid());
@@ -57,7 +57,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class ManagementFacadeTester {
 
         public void TestManagementBasics() {
@@ -81,7 +81,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
         private InputPortManager facadeIn0, facadeIn1;
         private OutputPortManager facadeOut0, facadeOut1;
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedFacadeTest() {
 
             PortManagementFacade pmf = Setup(out in0, out in1, out out0, out out1, out facadeIn0, out facadeIn1, out facadeOut0, out facadeOut1, out entryPoint0, out entryPoint1);
@@ -96,7 +96,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedSimplePushTest() {
 
             PortManagementFacade pmf = Setup(out in0, out in1, out out0, out out1, out facadeIn0, out facadeIn1, out facadeOut0, out facadeOut1, out entryPoint0, out entryPoint1);
@@ -116,7 +116,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedSimplePullTest() {
 
             PortManagementFacade pmf = Setup(out in0, out in1, out out0, out out1, out facadeIn0, out facadeIn1, out facadeOut0, out facadeOut1, out entryPoint0, out entryPoint1);
@@ -134,7 +134,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedInputSideBufferedPullTest() {
             // Put a value into the input. Read the output several times. Replace the input, read the output twice more.
 
@@ -158,7 +158,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedOutputSideBufferedPullTest() {
             // Put a value into the input. Read the output several times. Replace the input, read the output twice more.
 
@@ -182,7 +182,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedSimplePushPullTestWithOutputBuffering() {
 
             PortManagementFacade pmf = Setup(out in0, out in1, out out0, out out1, out facadeIn0, out facadeIn1, out facadeOut0, out facadeOut1, out entryPoint0, out entryPoint1);
@@ -204,7 +204,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void DoAbbreviatedSimplePushPullTestNoOutputBuffering() {
 
             PortManagementFacade pmf = Setup(out in0, out in1, out out0, out out1, out facadeIn0, out facadeIn1, out facadeOut0, out facadeOut1, out entryPoint0, out entryPoint1);
@@ -227,7 +227,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void OneActiveOnePassiveInputDeterminesOneBufferedPassiveOutputTest() {
 
             PortManagementFacade pmf = Setup(out in0, out in1, out out0, out out1, out facadeIn0, out facadeIn1, out facadeOut0, out facadeOut1, out entryPoint0, out entryPoint1);
@@ -258,7 +258,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
 
         }
 
-        [TestMethod]
+        [Test]
         public void TestOnePullValue() {
             OnePullValue opv = new OnePullValue(null, null, null, Guid.NewGuid());
             opv.ConstValue = 12.345;
@@ -267,7 +267,7 @@ namespace Highpoint.Sage.ItemBased.Blocks {
             Console.WriteLine(opv.Ports.Outputs[0].Take(null));
         }
 
-        [TestMethod]
+        [Test]
         public void TestOneInOneOutPushPullTransform() {
             DLog dlog = new DLog(null, null, null, Guid.NewGuid());
 

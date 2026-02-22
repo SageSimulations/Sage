@@ -1,7 +1,7 @@
 /* This source code licensed under the GNU Affero General Public License */
 using System;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 using Highpoint.Sage.Mathematics;
 using Highpoint.Sage.ItemBased.Ports;
@@ -18,13 +18,13 @@ namespace Highpoint.Sage.ItemBased.Queues {
     /// <summary>
     /// Summary description for zTestQueues.
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class QueueTester {
 
         #region MSTest Goo
-        [TestInitialize]
+        [SetUp]
         public void Init() { }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
@@ -34,7 +34,7 @@ namespace Highpoint.Sage.ItemBased.Queues {
 
         public QueueTester() { }
 
-        [TestMethod]
+        [Test]
         public void TestQueueBasics() {
 
             m_model = new Model();
@@ -63,7 +63,7 @@ namespace Highpoint.Sage.ItemBased.Queues {
         }
 
 #if ORACLE_CLIENT
-        [TestMethod]
+        [Test]
         public void TestQueueSerialization() {
             Guid qg1 = Guid.NewGuid();
             Guid qg2 = Guid.NewGuid();

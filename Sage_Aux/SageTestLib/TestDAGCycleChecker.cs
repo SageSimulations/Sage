@@ -3,12 +3,12 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Highpoint.Sage.SimCore;
 
 namespace Highpoint.Sage.Graphs {
 
-	[TestClass]
+	[TestFixture]
 	public class DAGCycleCheckerTester {
 
 		private Random m_random;
@@ -16,15 +16,15 @@ namespace Highpoint.Sage.Graphs {
 
 		public DAGCycleCheckerTester(){Init();}
         
-		[TestInitialize] 
+		[SetUp] 
 		public void Init() {
 		}
-		[TestCleanup]
+		[TearDown]
 		public void destroy() {
 			Debug.WriteLine( "Done." );
 		}
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test initializes a model and runs a validation")]
 		public void TestBasicValidation() {
 			m_random = new Random(98765);
@@ -72,7 +72,7 @@ namespace Highpoint.Sage.Graphs {
 		}
 		
 		
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test initializes a model and runs a validation")]
 		public void TestValidationWithImpliedRelationships() {
 			DateTime start;
@@ -100,7 +100,7 @@ namespace Highpoint.Sage.Graphs {
 	
 		}
 
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test initializes a model and runs a validation")]
 		public void TestValidationPerformance() {
 
@@ -133,7 +133,7 @@ namespace Highpoint.Sage.Graphs {
 				Console.WriteLine(i.ToString() + "," + (TimeSpan.FromTicks(totalTicks/nSeeds)).TotalSeconds);
 			}
 		}
-		[TestMethod]
+		[Test]
 		[Highpoint.Sage.Utility.FieldDescription("This test initializes a model and runs a validation")]
 		public void TestInnerEdgePerformance() {
 

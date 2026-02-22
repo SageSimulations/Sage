@@ -1,22 +1,22 @@
 /* This source code licensed under the GNU Affero General Public License */
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Diagnostics;
 using Highpoint.Sage.Mathematics;
 
 namespace SageTestLib {
 
-    [TestClass]
+    [TestFixture]
     public class zTestRationalizer {
-        [TestInitialize]
+        [SetUp]
         public void Init() {
         }
-        [TestCleanup]
+        [TearDown]
         public void destroy() {
             Debug.WriteLine("Done.");
         }
-        [TestMethod]
+        [Test]
         [Highpoint.Sage.Utility.FieldDescription("This test checks the basic function of a rationalizer to five digits, and fractions up to ninths.")]
         public void TestBaseFunctionality() {
             Rationalizer r = new Rationalizer(9, 5); // Up to ninths, out to 5 places.
