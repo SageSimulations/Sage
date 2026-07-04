@@ -358,19 +358,27 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
         public void UnRequestEvent(long requestedEventHashCode){
             if ( requestedEventHashCode == long.MinValue ) return; // illegitimate key.
-            m_removals.Push(new ExecEventRemover(requestedEventHashCode));
+            lock (m_removals) {
+                m_removals.Push(new ExecEventRemover(requestedEventHashCode));
+            }
         }
 
         public void UnRequestEvents(object execEventReceiverTarget){
-            m_removals.Push(new ExecEventRemover(execEventReceiverTarget));
+            lock (m_removals) {
+                m_removals.Push(new ExecEventRemover(execEventReceiverTarget));
+            }
         }
 
         public void UnRequestEvents(IExecEventSelector eventSelector){
-            m_removals.Push(new ExecEventRemover(eventSelector));
+            lock (m_removals) {
+                m_removals.Push(new ExecEventRemover(eventSelector));
+            }
         }
 
         public void UnRequestEvents(Delegate execEventReceiverMethod){
-            m_removals.Push(new ExecEventRemover((Delegate)execEventReceiverMethod));
+            lock (m_removals) {
+                m_removals.Push(new ExecEventRemover((Delegate)execEventReceiverMethod));
+            }
         }
 
         #region Join Handling
@@ -478,18 +486,26 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     m_eventCount++;
 
                     #region Process queued-up event removal requests
-                    while (m_removals.Count > 0) {
-                        ExecEventRemover er = (ExecEventRemover)m_removals.Pop();
-                        er.Filter(ref m_events);
+                    if (m_removals.Count > 0) {
+                        Stack removals;
+                        lock (m_removals) {
+                            removals = (Stack)m_removals.Clone();
+                            m_removals.Clear();
+                        }
+                        lock (m_events) {
+                            while (removals.Count > 0) {
+                                ExecEventRemover er = (ExecEventRemover)removals.Pop();
+                                er.Filter(ref m_events);
+                            }
 
-                        // Now determine the correct number of regular and daemon events in the executive.
-                        // TODO: Can we do this outside the while loop?
-                        m_numDaemonEventsInQueue = 0;
-                        m_numEventsInQueue = 0;
-                        foreach (ExecEvent ee in m_events.Keys) {
-                            m_numEventsInQueue++;
-                            if (ee.IsDaemon)
-                                m_numDaemonEventsInQueue++;
+                            // Now determine the correct number of regular and daemon events in the executive.
+                            m_numDaemonEventsInQueue = 0;
+                            m_numEventsInQueue = 0;
+                            foreach (ExecEvent ee in m_events.Keys) {
+                                m_numEventsInQueue++;
+                                if (ee.IsDaemon)
+                                    m_numDaemonEventsInQueue++;
+                            }
                         }
                     }
                     #endregion Process queued-up event removal requests
@@ -497,17 +513,14 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     ExecEvent currentEvent;
                     #region Identify and select the current event
                     lock (m_events) {
-                        // TODO: While awaiting this lock, the last even may have been resc
-                        if (m_numEventsInQueue > 0) {
-                            try {  // MTHACK
-                                currentEvent = (ExecEvent)m_events.GetKey(0);
-                                m_events.RemoveAt(0);
-                                m_currentPriorityLevel = currentEvent.m_priority;
-                                m_lastEventServiceTime = m_now;
-                                m_now = currentEvent.m_when;
-                            } catch { // MTHACK 
-                                break;  // MTHACK 
-                            } // MTHACK 
+                        if (m_events.Count > 0) {
+                            currentEvent = (ExecEvent)m_events.GetKey(0);
+                            m_events.RemoveAt(0);
+                            if (currentEvent.IsDaemon) m_numDaemonEventsInQueue--;
+                            m_numEventsInQueue--;
+                            m_currentPriorityLevel = currentEvent.m_priority;
+                            m_lastEventServiceTime = m_now;
+                            m_now = currentEvent.m_when;
                         } else {
                             break;
                         }
@@ -518,8 +531,6 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
                     try {
                         m_currentEventType = currentEvent.m_eventType;
-                        if (currentEvent.IsDaemon) m_numDaemonEventsInQueue--;
-                        m_numEventsInQueue--;
                         if (s_diagnostics)
                             _Debug.WriteLine(string.Format(_eventSvcMsg, currentEvent, currentEvent.Eer.Target, currentEvent.Eer.Target.GetHashCode(), currentEvent.Eer.Method.Name));
                         switch (currentEvent.m_eventType) {
@@ -556,12 +567,14 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     }
 
                     if (m_clockAboutToChange != null) {
-                        if (m_numEventsInQueue > m_numDaemonEventsInQueue ) {
-                            DateTime nextEventTime = ( (ExecEvent)m_events.GetKey(0) ).m_when;
-                            //DateTime nextEventTime = ((ExecEvent)m_events[0]).m_when;
-                            if (nextEventTime > m_now) {
-                            m_clockAboutToChange(this);
+                        DateTime? nextEventTime = null;
+                        lock (m_events) {
+                            if (m_numEventsInQueue > m_numDaemonEventsInQueue && m_events.Count > 0) {
+                                nextEventTime = ((ExecEvent)m_events.GetKey(0)).m_when;
                             }
+                        }
+                        if (nextEventTime.HasValue && nextEventTime.Value > m_now) {
+                            m_clockAboutToChange(this);
                         }
                     }
                 }
@@ -994,7 +1007,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
     /// <param name="idec">The detachable event controller.</param>
     /// <param name="args">The arguments that were to have been provided to the ExecEventReceiver.</param>
     public delegate void DetachableEventAbortHandler(IExecutive exec, IDetachableEventController idec, params object[] args);
-    
+
     internal class DetachableEvent : IDetachableEventController {
 
         #region >>> Private Fields <<<
