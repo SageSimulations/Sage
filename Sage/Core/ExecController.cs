@@ -190,7 +190,8 @@ namespace Highpoint.Sage.SimCore {
 
         public void Dispose()
         {
-            m_renderThread?.Abort();
+            m_abortRendering = true;
+            try { m_renderThread?.Interrupt(); } catch (ThreadStateException) { }
         }
 
         internal void Begin(IExecutive iExecutive, object userData) {
@@ -251,6 +252,14 @@ namespace Highpoint.Sage.SimCore {
         private void RunRendering() {
             _Debug.Assert(Thread.CurrentThread.Equals(m_renderThread));
 
+            try {
+                RenderLoop();
+            } catch (ThreadInterruptedException) {
+                // Dispose interrupts this thread to shut it down.
+            }
+        }
+
+        private void RenderLoop() {
             while (!m_abortRendering) {
                 if (m_executive.State.Equals(ExecState.Running)) {
                     int nTicksToSleep = 500; // Check to see if we've changed frame rate from zero, every half-second.

@@ -443,6 +443,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
 
             m_pauseMgr = new Thread(new ThreadStart(_DoPause));
             m_pauseMgr.Name = "Pause Management";
+            m_pauseMgr.IsBackground = true;
             m_pauseMgr.Start();
 
             lock (this) {
@@ -632,7 +633,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 //}
             }
 
-            m_pauseMgr.Abort();
+            m_pauseMgr.Interrupt();
 
             m_executiveFinished?.Invoke(this);
 
@@ -708,8 +709,8 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                     }
                     m_state = ExecState.Running;
                 }
-            } catch (ThreadAbortException) {
-                Thread.ResetAbort();
+            } catch (ThreadInterruptedException) {
+                // The executive interrupts this thread to shut it down at the end of a run, or on Dispose.
             }
         }
         /// <summary>
@@ -901,7 +902,7 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
         /// </summary>
         /// <value></value>
         public void Dispose() {
-            try { if (m_pauseMgr != null && m_pauseMgr.IsAlive) m_pauseMgr.Abort(); } catch { }
+            try { if (m_pauseMgr != null && m_pauseMgr.IsAlive) m_pauseMgr.Interrupt(); } catch { }
         }
 
         /// <summary>
@@ -1008,6 +1009,14 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
     /// <param name="args">The arguments that were to have been provided to the ExecEventReceiver.</param>
     public delegate void DetachableEventAbortHandler(IExecutive exec, IDetachableEventController idec, params object[] args);
 
+    /// <summary>
+    /// Thrown on a detachable event's service thread to unwind it when the event is aborted.
+    /// Replaces the Thread.Abort mechanism, which is unsupported on .NET 5 and later.
+    /// </summary>
+    internal sealed class DetachableEventAbortException : Exception {
+        public DetachableEventAbortException() : base("The detachable event was aborted.") { }
+    }
+
     internal class DetachableEvent : IDetachableEventController {
 
         #region >>> Private Fields <<<
@@ -1053,7 +1062,10 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             // This method runs in the executive's event service thread.
             lock ( m_lock ) {
                 object userData = m_currEvent.m_userData;
-                IAsyncResult iar = m_currEvent.Eer.BeginInvoke(m_exec,userData,new AsyncCallback(End),null);
+                Thread serviceThread = new Thread(ServiceEvent);
+                serviceThread.Name = "DetachableEvent service thread";
+                serviceThread.IsBackground = true;
+                serviceThread.Start(userData);
                 Interlocked.Increment(ref m_isWaitingCount);
                 m_timeOfLastWait = m_exec.Now;
                 Monitor.Wait(m_lock); // Keeps exec from running off and launching another event.
@@ -1132,7 +1144,9 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                 Debugger.Break();
             }
 
-            Thread.CurrentThread.Abort();
+            // Unwinds the service thread cooperatively - Thread.Abort is unsupported on .NET 5+.
+            // Caught in ServiceEvent; user code that catches all exceptions can swallow this.
+            throw new DetachableEventAbortException();
 
         }
         
@@ -1154,22 +1168,27 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             }
         }
 
-        private void End(IAsyncResult iar){
-
+        private void ServiceEvent(object userData){
+            // This method is the body of the DE's dedicated service thread. It replaces the
+            // Eer.BeginInvoke(...)/End(IAsyncResult)/EndInvoke pattern, which is unsupported on .NET 5+.
+            Exception modelError = null;
             try {
-                m_exec.UnregisterRunningDetachable(this);
-                //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is finishing." + GetHashCode());
-                lock (m_lock) {
-                    m_currEvent.OnServiceCompleted();
-                    Monitor.Pulse(m_lock);
-                }
-                //_Debug.WriteLine(this.m_currEvent.m_eer.Target+"."+this.m_currEvent.m_eer.Method + "de is really finishing." + GetHashCode());
-                m_currEvent.Eer.EndInvoke(iar);
-            } catch (ThreadAbortException) {
-                //_Debug.WriteLine(tae.Message); // Must explicitly catch the ThreadAbortException or it bubbles up.
+                m_currEvent.Eer(m_exec, userData);
+            } catch (DetachableEventAbortException) {
+                // The event was deliberately aborted - not an error.
             } catch (Exception e) {
+                modelError = e;
+            }
+
+            m_exec.UnregisterRunningDetachable(this);
+            lock (m_lock) {
+                m_currEvent.OnServiceCompleted();
+                Monitor.Pulse(m_lock);
+            }
+
+            if (modelError != null) {
                 // TODO: Report this to an Executive Errors & Warnings collection.
-                _Debug.WriteLine("Caught model error : " + e);
+                _Debug.WriteLine("Caught model error : " + modelError);
                 m_exec.Stop();
             }
         }

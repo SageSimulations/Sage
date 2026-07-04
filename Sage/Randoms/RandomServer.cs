@@ -436,8 +436,8 @@ namespace Highpoint.Sage.Randoms {
                         }
                     }
                 }
-            } catch (ThreadAbortException) {
-                Thread.ResetAbort();
+            } catch (ThreadInterruptedException) {
+                // Dispose interrupts this thread to shut it down.
             }
 		}
 
@@ -445,7 +445,7 @@ namespace Highpoint.Sage.Randoms {
 		public override void Dispose() {
 			try
 			{
-			    m_bufferThread?.Abort();
+			    m_bufferThread?.Interrupt();
 			}
 			catch(ThreadStateException){}
 		}
