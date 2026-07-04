@@ -8,9 +8,14 @@ namespace Highpoint.Sage.Utility
     {
         static UnitTestDetector()
         {
-            string testAssemblyName = "Microsoft.VisualStudio.TestPlatform.TestFramework";
+            string[] testAssemblyNames =
+            {
+                "Microsoft.VisualStudio.TestPlatform.TestFramework",
+                "nunit.framework",
+                "xunit.core"
+            };
             UnitTestDetector.IsInUnitTest = AppDomain.CurrentDomain.GetAssemblies()
-                .Any(a => a.FullName.StartsWith(testAssemblyName));
+                .Any(a => testAssemblyNames.Any(n => a.FullName.StartsWith(n, StringComparison.OrdinalIgnoreCase)));
         }
 
         public static bool IsInUnitTest { get; private set; }

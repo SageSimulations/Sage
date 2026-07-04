@@ -42,6 +42,12 @@
       <Link>app.config</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <!-- Under 'dotnet test', ConfigurationManager reads the entry assembly's config, which is
+         testhost.dll.config in the output directory - not this assembly's own .config file. -->
+    <None Include="..\SageTesting\app.config">
+      <Link>testhost.dll.config</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
