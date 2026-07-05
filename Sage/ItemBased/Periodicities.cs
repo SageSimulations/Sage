@@ -40,8 +40,13 @@ namespace Highpoint.Sage.ItemBased {
 
         public TimeSpan GetNext() {
 			double d = m_distribution.GetNext();
-            return TimeSpan.FromSeconds(d * m_seconds);
-			
+            TimeSpan next = TimeSpan.FromSeconds(d * m_seconds);
+            // An unbounded distribution (e.g. Normal) can yield a negative sample, but a negative
+            // period is meaningless. Callers schedule events at Now + GetNext(), and the executive
+            // silently discards events requested before Now when causality violations are ignored -
+            // which would, for example, end a Ticker's pulse chain. Clamp to zero: "due in the
+            // past" means "due now".
+            return next < TimeSpan.Zero ? TimeSpan.Zero : next;
 		}
 	}   
 }
