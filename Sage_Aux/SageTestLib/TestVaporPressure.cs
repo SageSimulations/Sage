@@ -32,8 +32,8 @@ namespace Highpoint.Sage.Materials.Chemistry.VaporPressure
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureInPascals = new Hashtable();
 
-            string testDataDir = (Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".") + @"\TestData\";
-            string propertiesFile = testDataDir + @"\PureComponentProperties.csv";
+            string testDataDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".", "TestData");
+            string propertiesFile = Path.Combine(testDataDir, "PureComponentProperties.csv");
             Assert.IsTrue(File.Exists(propertiesFile), "Properties data file not found - " + propertiesFile);
 
             string[][] data = Load(propertiesFile);

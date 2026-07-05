@@ -40,11 +40,11 @@ namespace Highpoint.Sage.Materials.Chemistry.EmissionModels {
 			m_brs = new BasicReactionSupporter();
 			m_computedVaporPressureIn = new Hashtable();
 
-            string testDataDir = (Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".") + @"\TestData\";
-            _propertiesFile = testDataDir + @"\PureComponentProperties.csv";
+            string testDataDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".", "TestData");
+            _propertiesFile = Path.Combine(testDataDir, "PureComponentProperties.csv");
             Assert.IsTrue(File.Exists(_propertiesFile), "Properties data file not found - " + _propertiesFile);
 
-            _testDataFile = testDataDir + @"\emissionTest_12345-10.xml";
+            _testDataFile = Path.Combine(testDataDir, "emissionTest_12345-10.xml");
             Assert.IsTrue(File.Exists(_testDataFile), "Test data file not found - " + _testDataFile);
 
 

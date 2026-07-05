@@ -185,15 +185,21 @@ namespace Highpoint.Sage.Graphs.Tasks {
 
 		}
 
+		// %TEMP% only exists on Windows; Path.GetTempPath() is portable. The process id keeps
+		// the two target frameworks' concurrent test hosts from colliding on a shared name.
+		private static readonly string s_persistenceFile =
+			System.IO.Path.Combine(System.IO.Path.GetTempPath(),
+				string.Format("TestGraphPersistence_{0}.xml", Environment.ProcessId));
+
 		private void storeXML(TestGraph1 tg1) {
 			XmlSerializationContext xmlsc = new XmlSerializationContext();
 			xmlsc.StoreObject("TG",tg1);
-			xmlsc.Save(System.Environment.GetEnvironmentVariable("TEMP") + "\\TestGraphPersistence.xml");
+			xmlsc.Save(s_persistenceFile);
 		}
 
 		private void loadXML(ref TestGraph1 tg1) {
 			XmlSerializationContext xmlsc = new XmlSerializationContext();
-			xmlsc.Load(System.Environment.GetEnvironmentVariable("TEMP") + "\\TestGraphPersistence.xml");
+			xmlsc.Load(s_persistenceFile);
 			xmlsc.ContextEntities.Add("Model",new Model("Reconstituted Model"));
 			tg1 = (TestGraph1)xmlsc.LoadObject("TG");
 		}
