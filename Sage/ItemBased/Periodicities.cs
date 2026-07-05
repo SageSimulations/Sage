@@ -19,11 +19,12 @@ namespace Highpoint.Sage.ItemBased {
         }
 
         private double SecondsFromUnits(Units units) {
-            double retval = 0.0;
+            double retval = 1.0;
             switch (units) {
+                case Units.Seconds: retval = 1.0; break;
                 case Units.Minutes: retval = 60.0; break;
                 case Units.Hours: retval = 3600.0; break;
-                case Units.Days: retval = 8640.0; break;
+                case Units.Days: retval = 86400.0; break;
             }
 
             return retval;

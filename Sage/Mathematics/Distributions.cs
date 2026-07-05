@@ -287,7 +287,7 @@ namespace Highpoint.Sage.Mathematics {
                     randomVar *= 3600.0;
                     break;
                 case Units.Days:
-                    randomVar *= 8640.0;
+                    randomVar *= 86400.0;
                     break;
             }
             if (randomVar < 0)
