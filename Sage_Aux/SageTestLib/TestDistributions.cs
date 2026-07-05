@@ -28,6 +28,14 @@ namespace Highpoint.Sage.Mathematics {
         }
         private IModel m_model = null;
 
+        // Data-dump file names must be unique per process: the two target frameworks' test
+        // hosts run concurrently under 'dotnet test', and a shared fixed name in %TEMP% makes
+        // the second host's StreamWriter throw an in-use IOException.
+        private static string TempCsvFile(string name) {
+            return System.IO.Path.Combine(System.IO.Path.GetTempPath(),
+                string.Format("{0}_{1}.csv", name, Environment.ProcessId));
+        }
+
         [Test]
         [Highpoint.Sage.Utility.FieldDescription("Checks that the result of this distribution equals a normal distribution")]
         public void TestDistributionNormal() {
@@ -37,7 +45,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 5.0);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionNormal.csv");
+            string fileName = TempCsvFile("DistributionNormal");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
 
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
@@ -63,7 +72,7 @@ namespace Highpoint.Sage.Mathematics {
 
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionNormal.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -86,7 +95,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 10.5);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionEmpiricalFromHistogram.csv");
+            string fileName = TempCsvFile("DistributionEmpiricalFromHistogram");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -110,7 +120,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionEmpiricalFromHistogram.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -158,7 +168,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 5.2583426132260591);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionTriangular.csv");
+            string fileName = TempCsvFile("DistributionTriangular");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -182,7 +193,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionTriangular.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -195,7 +206,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 5.25);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionUniform.csv");
+            string fileName = TempCsvFile("DistributionUniform");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -219,7 +231,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionUniform.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -232,7 +244,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 5.0794415416798362);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionExponential.csv");
+            string fileName = TempCsvFile("DistributionExponential");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -259,7 +272,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionExponential.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -272,7 +285,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(tsd.GetNext().Equals(TimeSpan.FromMinutes(5.0794415416798362)));
             tsd.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\TimeSpanDistributionExponential.csv");
+            string fileName = TempCsvFile("TimeSpanDistributionExponential");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -299,7 +313,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\TimeSpanDistributionExponential.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -312,7 +326,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 1.6651092223153954);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionWeibull.csv");
+            string fileName = TempCsvFile("DistributionWeibull");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -336,7 +351,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionWeibull.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -349,7 +364,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.IsTrue(dist.GetNext() == 3.0);
             dist.SetCDFInterval(0.0, 1.0);
 
-            System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionCauchy.csv");
+            string fileName = TempCsvFile("DistributionCauchy");
+            System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
             Debug.WriteLine("Generating raw data.");
             int DATASETSIZE = 1500000;
             double[] rawData = new double[DATASETSIZE];
@@ -373,7 +389,7 @@ namespace Highpoint.Sage.Mathematics {
             tw.Close();
 
             if (m_visuallyVerify) {
-                System.Diagnostics.Process.Start("excel.exe", Environment.GetEnvironmentVariable("TEMP") + "\\DistributionCauchy.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
 
@@ -388,7 +404,8 @@ namespace Highpoint.Sage.Mathematics {
             Assert.AreEqual(5.0, dist.GetNext(), EPSILON);
             dist.SetCDFInterval(0.0, 1.0);
 
-                System.IO.StreamWriter tw = new System.IO.StreamWriter(Environment.GetEnvironmentVariable("TEMP") + "\\DistributionPoisson.csv");
+                string fileName = TempCsvFile("DistributionPoisson");
+                System.IO.StreamWriter tw = new System.IO.StreamWriter(fileName);
                 Debug.WriteLine("Generating raw data.");
                 const int DATASETSIZE = 1500000;
                 double[] rawData = new double[DATASETSIZE];
@@ -424,8 +441,7 @@ namespace Highpoint.Sage.Mathematics {
                 tw.Flush();
                 tw.Close();
 
-                System.Diagnostics.Process.Start("excel.exe",
-                    Environment.GetEnvironmentVariable("TEMP") + "\\DistributionPoisson.csv");
+                System.Diagnostics.Process.Start("excel.exe", fileName);
             }
         }
     }
