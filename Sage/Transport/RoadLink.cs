@@ -12,9 +12,90 @@ namespace Highpoint.Sage.Transport {
     /// </summary>
     public interface IVehicle {
         /// <summary>
-        /// The speed, in meters per second, at which this vehicle traverses a link when unimpeded.
+        /// The fastest this vehicle travels, in meters per second: its speed on unposted links,
+        /// and its physical ceiling everywhere. On a posted link, a driver's preferred speed is
+        /// the posted limit plus their IDriverTendencies offset (if any), and this value only
+        /// matters if the vehicle cannot go that fast (e.g. a governed truck).
         /// </summary>
         double DesiredSpeedMetersPerSecond { get; }
+    }
+
+    /// <summary>
+    /// Optionally implemented (alongside IVehicle) by vehicles whose drivers have behavioral
+    /// tendencies. Vehicles that do not implement this interface behave neutrally: full
+    /// headway, posted speed limit, and stopping on yellow.
+    /// </summary>
+    public interface IDriverTendencies {
+        /// <summary>
+        /// If true, this driver follows at half the minimum headway - at link exits and at
+        /// stop-line discharge.
+        /// </summary>
+        bool Tailgates { get; }
+
+        /// <summary>
+        /// The speed this person prefers to travel, expressed relative to whatever limit is
+        /// posted: a driver with an offset of +4.5 m/s (about +10 MPH; see
+        /// SpeedUnits.FromMilesPerHour) cruises 10 over on every posted road, one with a
+        /// negative offset cruises under the limit everywhere. The preference follows the
+        /// driver from road to road; only the vehicle's own top speed
+        /// (DesiredSpeedMetersPerSecond) can keep it from being reached. Has no effect on
+        /// unposted links.
+        /// </summary>
+        double PreferredSpeedLimitOffsetMetersPerSecond { get; }
+
+        /// <summary>
+        /// If true, this driver crosses a stop line on yellow; otherwise yellow is treated as red.
+        /// </summary>
+        bool AggressiveAtStoplight { get; }
+    }
+
+    /// <summary>
+    /// Applies IDriverTendencies (or neutral defaults for vehicles without them) to the
+    /// quantities the Transport blocks compute from vehicles.
+    /// </summary>
+    internal static class TendencyOps {
+
+        /// <summary>
+        /// The speed at which the vehicle actually travels a link. On a posted link this is
+        /// the driver's preferred speed - the limit plus their offset - unless the vehicle
+        /// physically cannot go that fast, in which case it travels at its top speed. On an
+        /// unposted link it is the vehicle's DesiredSpeedMetersPerSecond.
+        /// </summary>
+        /// <param name="vehicle">The vehicle.</param>
+        /// <param name="speedLimitMetersPerSecond">The link's posted limit; zero or less means unposted.</param>
+        public static double EffectiveSpeed(IVehicle vehicle, double speedLimitMetersPerSecond) {
+            double desired = vehicle.DesiredSpeedMetersPerSecond;
+            if (speedLimitMetersPerSecond <= 0.0) return desired;
+            IDriverTendencies tendencies = vehicle as IDriverTendencies;
+            double willing = speedLimitMetersPerSecond + (tendencies == null ? 0.0 : tendencies.PreferredSpeedLimitOffsetMetersPerSecond);
+            // A pathological negative offset must not stall (or reverse) the vehicle.
+            if (willing < 0.1) willing = 0.1;
+            return desired < willing ? desired : willing;
+        }
+
+        /// <summary>
+        /// The headway the vehicle observes behind its predecessor: half the base headway for
+        /// a tailgater, the full base headway otherwise.
+        /// </summary>
+        /// <param name="vehicle">The vehicle (any object; non-vehicles get the full headway).</param>
+        /// <param name="baseHeadway">The component's minimum headway.</param>
+        public static TimeSpan Headway(object vehicle, TimeSpan baseHeadway) {
+            IDriverTendencies tendencies = vehicle as IDriverTendencies;
+            if (tendencies != null && tendencies.Tailgates) return TimeSpan.FromTicks(baseHeadway.Ticks / 2);
+            return baseHeadway;
+        }
+
+        /// <summary>
+        /// Whether the driver crosses on the given indication: green for everyone, yellow only
+        /// for the aggressive.
+        /// </summary>
+        /// <param name="vehicle">The vehicle (any object; non-vehicles stop on yellow).</param>
+        /// <param name="indication">The signal indication shown.</param>
+        public static bool MayCross(object vehicle, SignalIndication indication) {
+            if (indication == SignalIndication.Green) return true;
+            IDriverTendencies tendencies = vehicle as IDriverTendencies;
+            return indication == SignalIndication.Yellow && tendencies != null && tendencies.AggressiveAtStoplight;
+        }
     }
 
     /// <summary>
@@ -118,6 +199,7 @@ namespace Highpoint.Sage.Transport {
 
         private readonly double m_lengthMeters;
         private readonly TimeSpan m_minimumHeadway;
+        private readonly double m_speedLimitMetersPerSecond;
         private readonly SimpleInputPort m_input;
         private readonly SimpleOutputPort m_output;
         private readonly VehicleLocationService m_locationService;
@@ -134,14 +216,18 @@ namespace Highpoint.Sage.Transport {
         /// <param name="lengthMeters">The length of the link, in meters. Must be positive.</param>
         /// <param name="minimumHeadway">The minimum time separation between two successive
         /// vehicles crossing the link's exit. Must not be negative.</param>
-        public RoadLink(IModel model, string name, Guid guid, double lengthMeters, TimeSpan minimumHeadway) {
+        /// <param name="speedLimitMetersPerSecond">The posted speed limit, in meters per second.
+        /// Zero (the default) means unposted: vehicles travel at their desired speed.</param>
+        public RoadLink(IModel model, string name, Guid guid, double lengthMeters, TimeSpan minimumHeadway, double speedLimitMetersPerSecond = 0.0) {
             if (lengthMeters <= 0.0) throw new ArgumentException("A RoadLink must have a positive length.", "lengthMeters");
             if (minimumHeadway < TimeSpan.Zero) throw new ArgumentException("A RoadLink's minimum headway cannot be negative.", "minimumHeadway");
+            if (speedLimitMetersPerSecond < 0.0) throw new ArgumentException("A RoadLink's speed limit cannot be negative; use zero for an unposted link.", "speedLimitMetersPerSecond");
 
             InitializeIdentity(model, name, null, guid);
 
             m_lengthMeters = lengthMeters;
             m_minimumHeadway = minimumHeadway;
+            m_speedLimitMetersPerSecond = speedLimitMetersPerSecond;
 
             m_input = new SimpleInputPort(model, "Input", Guid.NewGuid(), this, new DataArrivalHandler(OnVehicleEntering));
             m_output = new SimpleOutputPort(model, "Output", Guid.NewGuid(), this, null, null);
@@ -178,6 +264,11 @@ namespace Highpoint.Sage.Transport {
         public TimeSpan MinimumHeadway { get { return m_minimumHeadway; } }
 
         /// <summary>
+        /// The posted speed limit, in meters per second. Zero means unposted.
+        /// </summary>
+        public double SpeedLimitMetersPerSecond { get { return m_speedLimitMetersPerSecond; } }
+
+        /// <summary>
         /// The number of vehicles currently on the link. Useful as a lane-choice criterion.
         /// </summary>
         public int Occupancy { get { return m_occupancy; } }
@@ -187,20 +278,13 @@ namespace Highpoint.Sage.Transport {
             if (vehicle == null) {
                 throw new ArgumentException(string.Format("RoadLink {0} was presented {1}, which does not implement IVehicle.", Name, data == null ? "<null>" : data.GetType().FullName));
             }
-            double speed = vehicle.DesiredSpeedMetersPerSecond;
-            if (speed <= 0.0 || double.IsNaN(speed) || double.IsInfinity(speed)) {
-                throw new ArgumentException(string.Format("RoadLink {0} was presented a vehicle with non-positive or non-finite desired speed {1}.", Name, speed));
+            if (vehicle.DesiredSpeedMetersPerSecond <= 0.0 || double.IsNaN(vehicle.DesiredSpeedMetersPerSecond) || double.IsInfinity(vehicle.DesiredSpeedMetersPerSecond)) {
+                throw new ArgumentException(string.Format("RoadLink {0} was presented a vehicle with non-positive or non-finite desired speed {1}.", Name, vehicle.DesiredSpeedMetersPerSecond));
             }
+            double speed = TendencyOps.EffectiveSpeed(vehicle, m_speedLimitMetersPerSecond);
 
             DateTime now = m_model.Executive.Now;
-            DateTime freeFlowExit = now + TimeSpan.FromSeconds(m_lengthMeters / speed);
-
-            // No-passing physics: the exit line cannot be crossed sooner than one headway
-            // after the previous vehicle's (scheduled) crossing, so a fast follower inherits
-            // its leader's pace. This holds even across an empty link - two crossings can
-            // never be closer than the headway.
-            DateTime pacedExit = m_lastScheduledExit + m_minimumHeadway;
-            DateTime exitTime = freeFlowExit > pacedExit ? freeFlowExit : pacedExit;
+            DateTime exitTime = ProjectedExit(vehicle);
 
             m_lastScheduledExit = exitTime;
             m_occupancy++;
@@ -219,6 +303,33 @@ namespace Highpoint.Sage.Transport {
             }
             m_locationService.VehicleExited(vehicle, this);
             m_output.OwnerPut(userData);
+        }
+
+        /// <summary>
+        /// The exit time this link would assign a vehicle of the given speed if it entered now.
+        /// No-passing physics: the exit line cannot be crossed sooner than one minimum headway
+        /// after the previous vehicle's scheduled crossing, so a fast follower inherits its
+        /// leader's pace. This holds even across an empty link - two crossings can never be
+        /// closer than the headway. Useful as a lane-choice criterion.
+        /// </summary>
+        /// <param name="speedMetersPerSecond">The entering vehicle's travel speed.</param>
+        public DateTime ProjectedExit(double speedMetersPerSecond) {
+            DateTime freeFlowExit = m_model.Executive.Now + TimeSpan.FromSeconds(m_lengthMeters / speedMetersPerSecond);
+            DateTime pacedExit = m_lastScheduledExit + m_minimumHeadway;
+            return freeFlowExit > pacedExit ? freeFlowExit : pacedExit;
+        }
+
+        /// <summary>
+        /// The exit time this link would assign the specified vehicle if it entered now,
+        /// accounting for the driver's tendencies: the vehicle travels at its effective speed
+        /// under this link's posted limit, and a tailgater accepts half the minimum headway.
+        /// </summary>
+        /// <param name="vehicle">The prospective entrant.</param>
+        public DateTime ProjectedExit(IVehicle vehicle) {
+            double speed = TendencyOps.EffectiveSpeed(vehicle, m_speedLimitMetersPerSecond);
+            DateTime freeFlowExit = m_model.Executive.Now + TimeSpan.FromSeconds(m_lengthMeters / speed);
+            DateTime pacedExit = m_lastScheduledExit + TendencyOps.Headway(vehicle, m_minimumHeadway);
+            return freeFlowExit > pacedExit ? freeFlowExit : pacedExit;
         }
 
         /// <summary>
