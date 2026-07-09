@@ -115,6 +115,8 @@ namespace Highpoint.Sage.Mathematics {
 			        //m_highSumSquares += (dataPoint*dataPoint);
 			    } else {
 			        int whichBin = (int)((dataPoint-lowBound)/binIncrement);
+			        // Floating-point rounding can land a datapoint one ulp below highBound in bin NumBins.
+			        if ( whichBin >= m_bins.Length ) whichBin = m_bins.Length - 1;
 			        m_bins[whichBin]++;
 			        m_binsSum[whichBin] += dataPoint;
 			        m_binsSumSquares[whichBin] += (dataPoint*dataPoint);

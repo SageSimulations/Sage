@@ -198,11 +198,13 @@ namespace Highpoint.Sage.SimCore {
             if ( iExecutive != m_executive ) throw new InvalidOperationException("ExecController is starting within a model whose executive is not the same one to which it was initialized.");
             m_executive.ClockAboutToChange -= m_doThrottle; // In case we were listening from an earlier run.
             m_executive.ClockAboutToChange += m_doThrottle;
-            if (m_renderThread != null && m_renderThread.ThreadState == ThreadState.Running)
+            if (m_renderThread != null && m_renderThread.IsAlive)
             {
+                // The old thread is usually parked in Thread.Sleep; interrupt it rather than
+                // busy-waiting for it to notice the abort flag.
                 m_abortRendering = true;
-                // ReSharper disable once EmptyEmbeddedStatement
-                while (m_renderThread.IsAlive);
+                try { m_renderThread.Interrupt(); } catch (ThreadStateException) { }
+                m_renderThread.Join();
                 m_abortRendering = false;
             }
             m_renderThread = new Thread(RunRendering)

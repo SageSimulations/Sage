@@ -391,8 +391,12 @@ namespace Highpoint.Sage.Randoms {
 			m_beingFilled = m_bufferB;
 			m_bufferThread = new Thread(FillBuffer);
 			m_bufferThread.Start();
-			// Must wait for the buffer thread to lock on the lockObject.
-		    while (!m_bufferThread.ThreadState.Equals(ThreadState.WaitSleepJoin)) {/* spinwait for the buffer thread to lock on the lockObject.*/ }
+			// Must wait for the buffer thread to complete the first fill and park in its
+			// Monitor.Wait before a consumer can safely call SwapBuffers.
+		    while (!m_bufferThread.ThreadState.Equals(ThreadState.WaitSleepJoin)) {
+		        if (!m_bufferThread.IsAlive) throw new ApplicationException("RandomServer's buffer thread exited during initialization.");
+		        Thread.Sleep(0);
+		    }
 		    m_bufferThread.IsBackground = true; // Allow thread termination.
 		}
 

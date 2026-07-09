@@ -88,14 +88,14 @@ namespace Highpoint.Sage.SimCore {
                 ThreadPool.GetMinThreads(out anwt, out aniot);
                 ThreadPool.GetMaxThreads(out axwt, out axiot);
 
-                desiredMinWorkerThreads = Math.Max(anwt,desiredMinWorkerThreads);
-                desiredMaxWorkerThreads = Math.Max(axwt, desiredMaxIocThreads);
+                desiredMinWorkerThreads = Math.Max(anwt, desiredMinWorkerThreads);
+                desiredMaxWorkerThreads = Math.Max(axwt, desiredMaxWorkerThreads);
                 desiredMinIocThreads = Math.Max(aniot, desiredMinIocThreads);
                 desiredMaxIocThreads = Math.Max(axiot, desiredMaxIocThreads);
                 try {
 
+                    ThreadPool.SetMaxThreads(desiredMaxWorkerThreads, desiredMaxIocThreads);
                     ThreadPool.SetMinThreads(desiredMinWorkerThreads, desiredMinIocThreads);
-                    ThreadPool.SetMinThreads(desiredMinIocThreads, desiredMaxIocThreads);
 
                     _clrConfigDone = true;
                 } catch (System.Runtime.InteropServices.COMException ce) {
@@ -562,8 +562,11 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
                         m_currentEventType = ExecEventType.None;
                     }
 
+                    // Waits out any in-flight AcquireEventLock/ReleaseEventLock pair (e.g. a
+                    // DetachableEvent.Resume submitting its resume event). The empty lock block
+                    // is a barrier; pulsing here is illegal (lock not held) and nothing waits
+                    // on m_eventLock anyway.
                     while (EventLockCount > 0) {
-                        Monitor.Pulse(m_eventLock);
                         lock (m_eventLock) { }
                     }
 
@@ -1350,9 +1353,12 @@ NOTE - the engine will still run, we'll just ignore it if an event is requested 
             return -1;*/
             if ( ee1.m_when < ee2.m_when) return -1;
             if ( ee1.m_when > ee2.m_when ) return  1;
+            if ( ee1.m_priority > ee2.m_priority ) return -1;
             if ( ee1.m_priority < ee2.m_priority ) return  1;
-            if ( ee1.m_key == ee2.m_key ) return 0;
-            return -1;
+            // Same time and priority: serve in request order (keys increase monotonically).
+            // Deciding by key also keeps the comparator antisymmetric, which SortedList's
+            // binary searches require.
+            return ee1.m_key.CompareTo(ee2.m_key);
             /*
             if ( ((ExecEvent)x).m_ticks < ((ExecEvent)y).m_ticks ) return -1;
             if ( ((ExecEvent)x).m_ticks > ((ExecEvent)y).m_ticks ) return  1;

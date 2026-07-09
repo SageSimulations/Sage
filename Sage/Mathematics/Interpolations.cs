@@ -153,7 +153,7 @@ namespace Highpoint.Sage.Mathematics {
 		public double GetYValue(double xValue) {
 
 			int lowerNdx = 0;
-			while ( m_xVals[lowerNdx+1] < xValue ) lowerNdx++;
+			while ( ( lowerNdx+2 < m_xVals.Length ) && ( m_xVals[lowerNdx+1] < xValue ) ) lowerNdx++;
 
 			// Did we walk off the end (i.e. our lower index is the last element in the array?)
 			if ( double.IsNaN(m_xVals[lowerNdx+1]) ) lowerNdx--;

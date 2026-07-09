@@ -20,7 +20,7 @@ namespace Highpoint.Sage.SimCore {
         static ExecutiveFastLight() {
 #if LICENSING_ENABLED
             if (!Licensing.LicenseManager.Check()) {
-                System.Windows.Forms.MessageBox.Show("Sage® Simulation and Modeling Library license is invalid.","Licensing Error");
+                System.Windows.Forms.MessageBox.Show("Sageï¿½ Simulation and Modeling Library license is invalid.","Licensing Error");
             }
 #endif
         }
@@ -85,12 +85,22 @@ namespace Highpoint.Sage.SimCore {
 			}
 		}
 		
-		private class _ExecEvent {
+		private class _ExecEvent : IExecEvent {
 			public ExecEventReceiver Eer;
 			public long When;
 			public object UserData;
 			public long Key;
 			public bool IsDaemon;
+
+			// IExecEvent implementation, so that EventList consumers (e.g. ExecController's
+			// throttle) can read queued events from this executive like any other.
+			ExecEventReceiver IExecEvent.ExecEventReceiver { get { return Eer; } }
+			DateTime IExecEvent.When { get { return new DateTime(When); } }
+			double IExecEvent.Priority { get { return 0.0; } }
+			object IExecEvent.UserData { get { return UserData; } }
+			ExecEventType IExecEvent.EventType { get { return ExecEventType.Synchronous; } }
+			long IExecEvent.Key { get { return Key; } }
+			bool IExecEvent.IsDaemon { get { return IsDaemon; } }
 			public _ExecEvent(){
 				Eer = null;
 				When = 0L;
@@ -151,12 +161,15 @@ namespace Highpoint.Sage.SimCore {
 
 
                 nvc = (NameValueCollection) System.Configuration.ConfigurationManager.GetSection("diagnostics");
-                string strEba = nvc["ExecBreakAt"];
-                if (!m_hasTarget && strEba != null && strEba.Length > 0)
+                if (nvc != null)
                 {
-                    _targetdatestr = strEba;
-                    m_targetdate = DateTime.Parse(_targetdatestr);
-                    m_hasTarget = true;
+                    string strEba = nvc["ExecBreakAt"];
+                    if (!m_hasTarget && strEba != null && strEba.Length > 0)
+                    {
+                        _targetdatestr = strEba;
+                        m_targetdate = DateTime.Parse(_targetdatestr);
+                        m_hasTarget = true;
+                    }
                 }
             }
             else
@@ -401,10 +414,12 @@ namespace Highpoint.Sage.SimCore {
                     ExecutiveStartedSingleShot = (ExecutiveEvent)Delegate.RemoveAll(ExecutiveStartedSingleShot, ExecutiveStartedSingleShot);
                 }
 
+                m_execState = ExecState.Running;
                 if (_ignoreCausalityViolations)
                     StartWocv();
                 else
                     StartWcv();
+                m_execState = m_stopRequested ? ExecState.Stopped : ExecState.Finished;
                 if (m_stopRequested) {
                     if (m_executiveStopped != null)
                         m_executiveStopped(this);
@@ -572,7 +587,12 @@ namespace Highpoint.Sage.SimCore {
         /// <value></value>
 		public IList EventList {
 			get {
-				return ArrayList.ReadOnly(new ArrayList(m_eventArray));
+				// The heap array is 1-based and over-allocated; expose only the live events.
+				// Element 0 of the returned list is the next event to fire (the heap root);
+				// the remainder are in heap order, not service order.
+				ArrayList list = new ArrayList(m_numEventsPending);
+				for (int i = 1; i <= m_numEventsPending; i++) list.Add(m_eventArray[i]);
+				return ArrayList.ReadOnly(list);
 			}
 		}
 
